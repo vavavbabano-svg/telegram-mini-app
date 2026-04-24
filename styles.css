@@ -177,26 +177,26 @@ input {
 
 /* ЭКРАНЫ */
 
+
 .screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  padding: 20px;
+  display: none;
+  padding: 18px;
   padding-bottom: 90px;
+}
 
+.screen.active {
+  display: block;
+}
+
+.screen {
   opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-
-  transition: all 0.25s ease;
+  transform: translateY(6px);
+  transition: 0.2s ease;
 }
 
 .screen.active {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* контейнер для экранов */
