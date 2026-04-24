@@ -38,6 +38,8 @@ async function initUser() {
 
   const tgUser = tg.initDataUnsafe?.user;
 
+  console.log("TG USER:", tgUser); // 👈 СЮДА
+
   if (!tgUser) {
     userIdEl.textContent = "#guest";
     return;
@@ -51,6 +53,8 @@ async function initUser() {
     .select("*")
     .eq("id", userId)
     .maybeSingle();
+
+    console.log("SUPABASE DATA:", data); // 👈 И СЮДА
 
   if (error) {
     console.log("SELECT ERROR:", error);
