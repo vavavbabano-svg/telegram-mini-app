@@ -33,11 +33,14 @@ body {
 }
 
 /* TELEGRAM ICON */
-.tg-icon {
-  width: 46px;
-  height: 46px;
+.tg-btn {
+  width: 52px;
+  height: 52px;
 
-  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 50%;
   background: #2a2d3a;
 
@@ -46,22 +49,18 @@ body {
 
   transition: 0.3s;
   cursor: pointer;
-
-  /* ВАЖНО */
-  object-fit: contain;
-  display: block;
 }
 
-/* 🔥 ЭТО ГЛАВНЫЙ ФИКС */
-.tg-icon {
-  width: 46px;
-  height: 46px;
+.tg-btn img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
 }
 
-/* SVG/IMG растягивается внутри */
-.tg-icon {
-  object-fit: contain;
-  transform: scale(1.2);
+.tg-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(78, 161, 255, 0.9),
+              0 0 35px rgba(78, 161, 255, 0.6);
 }
 
 .tg-icon:hover {
