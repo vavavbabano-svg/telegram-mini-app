@@ -85,12 +85,8 @@ async function initUser() {
 
   console.log("USER FINAL:", data);
 
-  const display =
-    data?.number ??
-    data?.id ??
-    tgUser.id;
-
-  userIdEl.textContent = "#" + display;
+const display = data?.id;
+userIdEl.textContent = "#" + display;
 }
 
 // =====================
