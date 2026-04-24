@@ -6,15 +6,10 @@
 }
 
 body {
-  background: radial-gradient(
-      circle at top,
-      #1a1f28 0%,
-      #0b0d10 55%,
-      #07080b 100%
-  );
-
+  background: #0b0d10;
   color: #eaeaea;
 }
+
 .card, .user-block, .stars-block {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
