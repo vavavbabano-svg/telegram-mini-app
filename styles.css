@@ -12,8 +12,29 @@ body {
 
 /* TOP */
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   padding: 14px;
+
+  background: #0b0d10;
   border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.tg-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.support {
+  display: flex;
+  align-items: center;
 }
 
 /* SCREEN */
@@ -137,4 +158,7 @@ input {
 
 .tab.active {
   color: #ffd36a;
+}
+body {
+  overflow-x: hidden;
 }
