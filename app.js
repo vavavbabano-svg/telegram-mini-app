@@ -11,7 +11,18 @@ const supabase = createClient(
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-const user = tg.initDataUnsafe?.user;
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+const user = tg.initDataUnsafe?.user || tg.initDataUnsafe?.receiver;
+
+const userIdEl = document.getElementById("userId");
+
+if (user) {
+  userIdEl.textContent = "#" + (user.id || "unknown");
+} else {
+  userIdEl.textContent = "#guest";
+}
 
 if (!user) {
   alert("Открой через Telegram");
