@@ -263,14 +263,15 @@ input {
   color: white;
 }
 
+
 /* общий блок */
 .stars-block {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin-top: 0; /* чтобы вплотную к input */
 }
 
-/* INPUT (верхняя часть) */
+/* input (верх скруглён, низ прямой) */
 .stars-block input {
   width: 100%;
   padding: 12px;
@@ -286,43 +287,44 @@ input {
   margin: 0;
 }
 
-/* ПАКЕТЫ (нижняя часть) */
+/* контейнер кнопок */
 .packs {
   display: flex;
-  gap: 0;
-  overflow-x: auto;
+
+  width: 100%;
+  margin: 0;
 
   background: #2a2d35;
 
   border-radius: 0 0 10px 10px;
 
-  scrollbar-width: none;
+  overflow: hidden; /* чтобы края были ровные */
 }
 
-.packs::-webkit-scrollbar {
-  display: none;
-}
-
-/* кнопки пакетов */
+/* кнопки — РАВНЫЕ */
 .packs button {
-  flex: 0 0 auto;
+  flex: 1; /* растягиваем равномерно */
 
-  padding: 10px 14px;
+  padding: 12px 0;
 
   border: none;
+  border-radius: 0; /* ❌ никаких скруглений */
 
   background: transparent;
   color: #ddd;
 
   font-size: 13px;
+  text-align: center;
+
+  cursor: pointer;
 }
 
-/* разделение визуальное */
+/* разделители */
 .packs button:not(:last-child) {
-  border-right: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* актив/hover */
+/* эффект нажатия */
 .packs button:active {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
 }
