@@ -222,19 +222,20 @@ body {
 
 
 
+
 .title-image {
   width: 100%;
-  display: flex;
-  justify-content: center;
   margin-bottom: 16px;
 }
 
 .title-image img {
-  width: 260px;
-  max-width: 80%;
-  height: auto;
+  width: 100%;
+  max-width: 100%;
 
+  height: auto;
   object-fit: contain;
+
+  border-radius: 12px;
 
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
 
@@ -243,10 +244,5 @@ body {
 }
 
 .title-image img:active {
-  transform: scale(0.95);
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  transform: scale(0.98);
 }
