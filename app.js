@@ -27,6 +27,7 @@ function adjustPacks(amount) {
 
   packValueElement.innerText = newValue;
   // Обновляем количество звёзд в input
-  document.getElementById('stars').value = newValue;
-  update(); // обновляем расчёт рублёй
+  function setStars(val) {
+  document.getElementById("stars").value = val;
+  update();
 }
