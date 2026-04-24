@@ -192,7 +192,14 @@ input {
   color: white;
 }
 #userId {
-  color: #8b8f98;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
+  color: #8a8f98; /* серый */
+  letter-spacing: 0.5px;
+
+  position: absolute;
+  top: 15px;
+  left: 15px;
+
+  user-select: none;
 }
