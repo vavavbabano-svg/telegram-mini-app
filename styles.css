@@ -1,4 +1,5 @@
-/* RESET */
+
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
@@ -9,15 +10,19 @@
 body {
   background: #0e0f12;
   color: #eaeaea;
+
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* TOP BAR */
+/* ===== TOP BAR ===== */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   padding: 14px 16px;
+
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
@@ -32,7 +37,7 @@ body {
   height: 26px;
 }
 
-/* SCREEN */
+/* ===== SCREEN ===== */
 .screen {
   display: none;
   padding: 18px;
@@ -49,23 +54,21 @@ body {
   transform: translateY(0);
 }
 
-/* TITLE IMAGE */
-.title-image {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
+/* ===== TITLE IMAGE ===== */
 .title-image img {
   width: 100%;
-  max-width: 100%;
+  max-width: 320px;
+
+  display: block;
+  margin: 0 auto;
+
   border-radius: 12px;
+  object-fit: contain;
 
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
-  animation: pulse 2.5s infinite ease-in-out;
 }
 
-/* INPUT (ВАЖНО — ФИКС РАЗМЕРА) */
-
+/* ===== INPUTS ===== */
 input {
   width: 100%;
   padding: 12px;
@@ -75,164 +78,21 @@ input {
   border-radius: 10px;
 
   color: white;
-
   outline: none;
 }
 
-/* TOGGLE */
-.toggle {
-  display: flex;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-
-.toggle button {
-  flex: 1;
-  padding: 10px;
-
-  border: none;
-  border-radius: 10px;
-
-
-  background: #1b1d23;
-  color: #aaa;
-}
-
-.toggle .active {
-  background: #2a2d35;
-  color: white;
-}
-
-/* PACKS (ФИКС КНОПОК) */
-
-.packs {
-  display: flex;
-  gap: 8px;
-
-  overflow-x: auto;
-  white-space: nowrap;
-
-  padding: 6px 0;
-  margin-top: 10px;
-
-  scrollbar-width: none;
-}
-
-.packs::-webkit-scrollbar {
-  display: none;
-}
-
-.packs button {
-  flex: 0 0 auto;
-
-  padding: 10px 14px;
-
-  border: none;
-  border-radius: 10px;
-
-  background: #1b1d23;
-  color: #ddd;
-
-  font-size: 13px;
-}
-
-/* CALC */
-
-.calc {
-  display: flex;
-  justify-content: space-between;
-  margin: 14px 0;
-  color: #aaa;
-}
-
-/* BUY BUTTON (ФИКС БОЛЬШОЙ КНОПКИ) */
-
-.buy {
-  width: 100%;
-  padding: 14px;
-
-  border: none;
-  border-radius: 12px;
-
-  background: #2a2d35;
-  color: white;
-
-  font-weight: 600;
-
-}
-
-/* TABBAR (ФИКС РАЗМЕРА) */
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  display: flex;
-  justify-content: space-around;
-
-  padding: 10px;
-
-  background: rgba(15, 17, 21, 0.8);
-  backdrop-filter: blur(20px);
-
-  border-top: 1px solid rgba(255, 50, 50, 0.15);
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-
-  background: transparent;
-  border: none;
-
-  color: rgba(255,255,255,0.5);
-  font-size: 13px;
-}
-
-.tab.active {
-  color: #ff4d5a;
-}
-
-/* CONTAINER */
-.container {
-  background: #15171c;
-  border-radius: 16px;
-
-  padding: 18px;
-}
-
-
-/* общий блок */
+/* ===== USER BLOCK ===== */
 .user-block {
   display: flex;
   flex-direction: column;
-
   margin-bottom: 12px;
 }
 
-/* INPUT (квадратный, верх скруглён) */
-.user-block input {
-  width: 100%;
-  padding: 12px;
-
-  background: #1b1d23;
-  border: none;
-
-  border-radius: 10px 10px 0 0; /* только верх */
-
-  color: white;
-  outline: none;
-
-  margin: 0;
-}
-
-/* TOGGLE ОБЩИЙ БЛОК */
+/* ===== TOGGLE ===== */
 .toggle {
   display: flex;
   gap: 0;
-  margin: 12px 0;
+  margin: 0;
 }
 
 .toggle button {
@@ -246,7 +106,6 @@ input {
   cursor: pointer;
 }
 
-/* скругления только по краям */
 #selfBtn {
   border-radius: 0 0 0 10px;
 }
@@ -260,44 +119,28 @@ input {
   color: white;
 }
 
-
-/* общий блок */
+/* ===== STARS BLOCK ===== */
 .stars-block {
   display: flex;
   flex-direction: column;
-  margin-top: 0;
+  margin-top: 10px;
 }
 
-/* input */
+/* input stars */
 .stars-block input {
-  width: 100%;
-  padding: 12px;
-
-  background: #1b1d23;
-  border: none;
-
   border-radius: 10px 10px 0 0;
-
-  color: white;
-  outline: none;
 }
 
-/* контейнер кнопок */
-
-
+/* ===== PACKS ===== */
 .packs {
   display: flex;
   width: 100%;
-
-  margin: 0;
-  padding: 0;
 
   background: #22252c;
 
   overflow: hidden;
 }
 
-/* кнопки */
 .packs button {
   flex: 1;
 
@@ -310,7 +153,6 @@ input {
 
   color: #ffd86b;
   font-weight: 600;
-
   font-size: 13px;
 
   text-align: center;
@@ -318,17 +160,14 @@ input {
   cursor: pointer;
 }
 
-/* разделители */
 .packs button:not(:last-child) {
   border-right: 1px solid rgba(255,255,255,0.04);
 }
 
-/* нажатие */
 .packs button:active {
   background: #2e313a;
 }
 
-/* скругления ТОЛЬКО края */
 .packs button:first-child {
   border-bottom-left-radius: 10px;
 }
@@ -336,13 +175,60 @@ input {
 .packs button:last-child {
   border-bottom-right-radius: 10px;
 }
-.title-image img {
+
+/* ===== CALC ===== */
+.calc {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 14px 0;
+  color: #aaa;
+}
+
+/* ===== BUY BUTTON ===== */
+.buy {
   width: 100%;
-  max-width: 320px;
-  height: auto;
+  padding: 14px;
 
-  display: block;
-  margin: 0 auto;
-
+  border: none;
   border-radius: 12px;
+
+  background: #2a2d35;
+  color: white;
+
+  font-weight: 600;
+}
+
+/* ===== TABBAR ===== */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+
+  padding: 10px;
+
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(20px);
+
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+
+  background: transparent;
+  border: none;
+
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #ff4d5a;
 }
