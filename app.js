@@ -45,7 +45,7 @@ async function initUser() {
 
   const userId = String(tgUser.id);
 
-  // 1. ищем пользователя
+  // 1. пробуем найти
   let { data, error } = await supabase
     .from("users")
     .select("*")
@@ -54,11 +54,9 @@ async function initUser() {
 
   if (error) {
     console.log("SELECT ERROR:", error);
-    userIdEl.textContent = "#error";
-    return;
   }
 
-  // 2. если нет — создаём
+  // 2. если нет — СОЗДАЁМ
   if (!data) {
 
     const { error: insertError } = await supabase
@@ -75,9 +73,7 @@ async function initUser() {
       return;
     }
 
-    // 3. ждём и ПЕРЕЧИТЫВАЕМ (важно!)
-    await new Promise(r => setTimeout(r, 300));
-
+    // 3. повторно читаем
     const res = await supabase
       .from("users")
       .select("*")
@@ -87,9 +83,8 @@ async function initUser() {
     data = res.data;
   }
 
-  console.log("FINAL USER:", data);
+  console.log("USER FINAL:", data);
 
-  // 4. жёсткий fallback
   const display =
     data?.number ??
     data?.id ??
@@ -97,7 +92,6 @@ async function initUser() {
 
   userIdEl.textContent = "#" + display;
 }
-
 
 // =====================
 // CALCULATOR
