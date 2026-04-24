@@ -51,12 +51,14 @@ async function initUser() {
 
   if (error) {
     console.log(error);
+    userIdEl.textContent = "#error";
     return;
   }
 
+  // 🔥 если нет юзера — создаём
   if (!data) {
 
-    const { data: newUser } = await supabase
+    const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({
         id: String(tgUser.id),
@@ -64,13 +66,22 @@ async function initUser() {
         stars: 0
       })
       .select()
-      .maybeSingle();
+      .single();
 
-    userIdEl.textContent = "#" + newUser.id;
-    return;
+    if (insertError) {
+      console.log(insertError);
+      userIdEl.textContent = "#err";
+      return;
+    }
+
+    data = newUser;
   }
 
-  userIdEl.textContent = "#" + (data.number ?? data.id);
+  // 🔥 ГЛАВНЫЙ ФИКС
+  // ждём гарантированно number (если вдруг null — берём id как fallback)
+  const displayNumber = data.number || data.id;
+
+  userIdEl.textContent = "#" + displayNumber;
 }
 
 
