@@ -16,18 +16,21 @@ function setStars(val) {
   starsInput.value = val;
   update();
 }
+
+// если используешь стрелки/пакеты
 function adjustPacks(amount) {
   let packValueElement = document.getElementById('packValue');
+
+  if (!packValueElement) return;
+
   let currentValue = parseInt(packValueElement.innerText, 10);
   let newValue = currentValue + amount;
 
-  // Ограничим минимальное и максимальное значение
   if (newValue < 50) newValue = 50;
   if (newValue > 5000) newValue = 5000;
 
   packValueElement.innerText = newValue;
-  // Обновляем количество звёзд в input
-  function setStars(val) {
-  document.getElementById("stars").value = val;
+
+  starsInput.value = newValue;
   update();
 }
