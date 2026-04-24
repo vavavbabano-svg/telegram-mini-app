@@ -203,19 +203,62 @@ input {
   padding: 18px;
 }
 
+
+/* общий блок */
 .user-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-
+  
   margin-bottom: 12px;
 }
 
-/* делаем компактнее */
+/* INPUT (квадратный, верх скруглён) */
 .user-block input {
-  margin-top: 0;
+  width: 100%;
+  padding: 12px;
+
+  background: #1b1d23;
+  border: none;
+
+  border-radius: 10px 10px 0 0; /* только верх */
+
+  color: white;
+  outline: none;
+
+  margin: 0;
 }
 
+/* TOGGLE ОБЩИЙ БЛОК */
 .toggle {
+  display: flex;
+  gap: 0; /* кнопки вплотную */
   margin: 0;
+}
+
+/* кнопки */
+.toggle button {
+  flex: 1;
+  padding: 10px;
+
+  border: none;
+  background: #2a2d35;
+  color: #aaa;
+
+  cursor: pointer;
+}
+
+/* левая кнопка */
+#selfBtn {
+  border-radius: 0 0 0 10px;
+}
+
+/* правая кнопка */
+#otherBtn {
+  border-radius: 0 0 10px 0;
+}
+
+/* активная */
+.toggle .active {
+  background: #3a3f4a;
+  color: white;
 }
