@@ -9,24 +9,28 @@ const supabase = createClient(
 
 // TELEGRAM
 const tg = window.Telegram.WebApp;
-tg.expand();
 
-const tg = window.Telegram.WebApp;
+tg.ready();
 tg.expand();
-
-const user = tg.initDataUnsafe?.user || tg.initDataUnsafe?.receiver;
 
 const userIdEl = document.getElementById("userId");
 
-if (user) {
-  userIdEl.textContent = "#" + (user.id || "unknown");
-} else {
-  userIdEl.textContent = "#guest";
+function setUser() {
+  const user = tg.initDataUnsafe?.user;
+
+  if (!user) {
+    userIdEl.textContent = "#guest";
+    return;
+  }
+
+  userIdEl.textContent = "#" + user.id;
 }
 
-if (!user) {
-  alert("Открой через Telegram");
-}
+// пробуем сразу
+setUser();
+
+// и ещё раз через задержку (важно)
+setTimeout(setUser, 500);
 
 // ELEMENTS
 const starsInput = document.getElementById("stars");
