@@ -202,3 +202,20 @@ input {
 
   padding: 18px;
 }
+
+.user-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-bottom: 12px;
+}
+
+/* делаем компактнее */
+.user-block input {
+  margin-top: 0;
+}
+
+.toggle {
+  margin: 0;
+}
