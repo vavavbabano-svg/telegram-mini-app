@@ -6,11 +6,16 @@
   <title>Admin Panel</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Helvetica, Arial;
+      font-family: Helvetica, Arial, sans-serif;
       background: #1a1d22;
       color: #f5f7fa;
       padding: 16px;
@@ -20,15 +25,20 @@
       margin-bottom: 12px;
     }
 
+    h3 {
+      margin: 0 0 8px 0;
+    }
+
     input {
       width: 100%;
       padding: 12px;
       border: none;
       border-radius: 10px;
       margin-bottom: 10px;
-      background: #22262c;
+      background: #2a2e35;
       color: white;
       font-weight: 600;
+      font-size: 16px;
     }
 
     button {
@@ -39,7 +49,13 @@
       background: #3a1418;
       color: white;
       font-weight: 700;
+      font-size: 16px;
       cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:active {
+      opacity: 0.8;
     }
 
     .panel {
@@ -49,12 +65,35 @@
 
     .card {
       background: #22262c;
-      padding: 12px;
+      padding: 16px;
       border-radius: 12px;
-      margin-top: 10px;
+      margin-top: 16px;
     }
 
-    .ok {
+    .order {
+      background: #2a2e35;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .order span {
+      color: #f0b90b;
+      font-weight: 700;
+    }
+
+    .logout {
+      background: #2a2e35;
+      margin-top: 20px;
+    }
+
+    .success {
+      color: #4caf50;
+      font-weight: 700;
+    }
+
+    .empty {
       color: #9aa0a6;
     }
   </style>
@@ -62,37 +101,49 @@
 
 <body>
 
-<h2>Вход в админку</h2>
+<h2>🔐 Вход в админку</h2>
 
-<input id="pass" placeholder="пароль">
+<input id="pass" type="password" placeholder="Пароль">
 <button onclick="login()">Войти</button>
 
 <div id="panel" class="panel">
-
-  <h2>Админ панель</h2>
+  <h2>⚙️ Админ панель</h2>
 
   <div class="card">
-    <h3>Заказы</h3>
-    <div id="orders" class="ok">Загрузка...</div>
+    <h3>📦 Последние заказы</h3>
+    <div id="orders" class="empty">Загрузка...</div>
   </div>
 
   <div class="card">
-    <h3>Выдать звезды</h3>
+    <h3>⭐ Выдать звёзды</h3>
 
-    <input id="userId" placeholder="Telegram ID">
-    <input id="amount" placeholder="Количество">
+    <input id="userId" type="text" placeholder="Telegram ID пользователя">
+    <input id="amount" type="number" placeholder="Количество звёзд">
 
     <button onclick="giveStars()">Выдать</button>
   </div>
 
+  <button class="logout" onclick="logout()">🚪 Выйти</button>
 </div>
 
 <script>
+// =====================
+// TG + SUPABASE
+// =====================
 const tg = window.Telegram.WebApp;
 tg.ready();
 
-const PASSWORD = "1234";
+const supabase = window.supabase.createClient(
+  "https://naxxslgxyelefzdxjhze.supabase.co",
+  // ⚠️ Используем anon key, но для админки лучше сделать отдельную таблицу с RLS
+  "sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF"
+);
 
+const PASSWORD = "1234"; // потом поменяй на нормальный
+
+// =====================
+// ЛОГИН
+// =====================
 function login() {
   const pass = document.getElementById("pass").value;
 
@@ -100,32 +151,92 @@ function login() {
     document.getElementById("panel").style.display = "block";
     loadOrders();
   } else {
-    alert("Неверный пароль");
+    alert("❌ Неверный пароль");
   }
 }
 
+function logout() {
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("pass").value = "";
+}
+
 // =====================
-// ЗАГЛУШКА ЗАКАЗОВ
+// ЗАГРУЗКА ЗАКАЗОВ
 // =====================
-function loadOrders() {
-  document.getElementById("orders").innerHTML =
-    "Пока нет подключения к базе (Supabase добавим сюда позже)";
+async function loadOrders() {
+  const container = document.getElementById("orders");
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    container.innerHTML = "❌ Ошибка загрузки";
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="empty">Пока нет заказов</div>';
+    return;
+  }
+
+  container.innerHTML = data.map(o => `
+    <div class="order">
+      👤 <span>${o.username || '—'}</span> &nbsp;
+      ⭐ <span>${o.stars}</span> &nbsp;
+      💰 <span>${o.amount_rub} ₽</span> &nbsp;
+      📅 ${new Date(o.created_at).toLocaleString("ru-RU")}
+    </div>
+  `).join("");
 }
 
 // =====================
 // ВЫДАЧА ЗВЁЗД
 // =====================
 async function giveStars() {
+  const userId = document.getElementById("userId").value.trim();
+  const amount = parseInt(document.getElementById("amount").value);
 
-  const userId = document.getElementById("userId").value;
-  const amount = Number(document.getElementById("amount").value);
-
-  if (!userId || !amount) {
-    return alert("Заполни поля");
+  if (!userId || !amount || amount <= 0) {
+    return alert("⚠️ Заполни все поля корректно");
   }
 
-  // тут позже подключим supabase
-  alert(`Выдано ${amount} ⭐ пользователю ${userId}`);
+  // Получаем текущий баланс
+  const { data: user, error: selectError } = await supabase
+    .from("users")
+    .select("stars")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (selectError) {
+    console.error(selectError);
+    return alert("❌ Ошибка: пользователь не найден");
+  }
+
+  if (!user) {
+    return alert("❌ Пользователь с таким ID не найден");
+  }
+
+  const newStars = (user.stars || 0) + amount;
+
+  const { error: updateError } = await supabase
+    .from("users")
+    .update({ stars: newStars })
+    .eq("id", userId);
+
+  if (updateError) {
+    console.error(updateError);
+    return alert("❌ Ошибка при выдаче звёзд");
+  }
+
+  alert(`✅ Выдано ${amount} ⭐ пользователю ${userId}\nНовый баланс: ${newStars} ⭐`);
+  
+  // Очистка полей
+  document.getElementById("userId").value = "";
+  document.getElementById("amount").value = "";
 }
 </script>
 
