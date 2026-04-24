@@ -219,3 +219,14 @@ body {
 .tab:active {
   transform: scale(0.92);
 }
+
+
+.title-image img {
+  width: 160px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  transition: transform 0.2s ease;
+}
+
+.title-image img:active {
+  transform: scale(0.95);
+}
