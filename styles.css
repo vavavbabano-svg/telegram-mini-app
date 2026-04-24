@@ -167,10 +167,20 @@ input {
   border: none;
   border-radius: 14px;
 
-  background: #2a2f38;
+  background: #7a1f26; /* тёмно-красный */
   color: #fff;
 
-  font-weight: 600;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+.buy:hover {
+  background: #92252d;
+}
+.buy {
+  margin-top: 14px;
 }
 
 /* ===== TAB BAR ===== */
