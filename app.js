@@ -22,23 +22,33 @@ if (!user) {
 }
 
 // =====================
+// ELEMENTS
+// =====================
+const userIdEl = document.getElementById("userId");
+const rubOutEl = document.getElementById("rubOut");
+const starsInput = document.getElementById("stars");
+const starsOut = document.getElementById("starsOut");
+
+// =====================
 // USER INIT
 // =====================
 async function initUser() {
 
-  let { data } = await supabase
+  let { data, error } = await supabase
     .from("users")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!data) {
+
     const { data: newUser } = await supabase
       .from("users")
       .insert({
         id: user.id,
         username: user.username || "no_username",
-        stars: 0
+        stars: 0,
+        number: Date.now() // временный номер (позже сделаем нормальный #1 #2 #3)
       })
       .select()
       .single();
@@ -46,14 +56,14 @@ async function initUser() {
     data = newUser;
   }
 
-  document.getElementById("userId").textContent = "#" + data.number;
-  document.getElementById("rubOut").textContent = data.stars + " ₽";
+  userIdEl.textContent = "#" + (data.number || "0");
+  rubOutEl.textContent = (data.stars || 0) + " ₽";
 }
 
 initUser();
 
 // =====================
-// MODE
+// MODE (себе / другому)
 // =====================
 const selfBtn = document.getElementById("selfBtn");
 const otherBtn = document.getElementById("otherBtn");
@@ -67,6 +77,7 @@ selfBtn.onclick = () => {
   mode = "self";
   selfBtn.classList.add("active");
   otherBtn.classList.remove("active");
+
   username.value = "@" + (user.username || user.id);
 };
 
@@ -74,6 +85,7 @@ otherBtn.onclick = () => {
   mode = "other";
   otherBtn.classList.add("active");
   selfBtn.classList.remove("active");
+
   username.value = "";
 };
 
@@ -81,19 +93,19 @@ otherBtn.onclick = () => {
 // STARS UI
 // =====================
 window.setStars = function (val) {
-  document.getElementById("stars").value = val;
-  document.getElementById("starsOut").textContent = val + " ⭐";
-  document.getElementById("rubOut").textContent = val + " ₽";
+  starsInput.value = val;
+  starsOut.textContent = val + " ⭐";
+  rubOutEl.textContent = val + " ₽";
 };
 
-document.getElementById("stars").addEventListener("input", (e) => {
+starsInput.addEventListener("input", (e) => {
   const val = e.target.value || 0;
-  document.getElementById("starsOut").textContent = val + " ⭐";
-  document.getElementById("rubOut").textContent = val + " ₽";
+  starsOut.textContent = val + " ⭐";
+  rubOutEl.textContent = val + " ₽";
 });
 
 // =====================
-// BUY → SUPABASE UPDATE
+// ADD STARS
 // =====================
 async function addStars(amount) {
 
@@ -101,21 +113,34 @@ async function addStars(amount) {
     .from("users")
     .select("stars")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   await supabase
     .from("users")
     .update({
-      stars: data.stars + amount
+      stars: (data?.stars || 0) + amount
     })
     .eq("id", user.id);
 }
 
+// =====================
+// BUY BUTTON
+// =====================
 document.querySelector(".buy").onclick = async () => {
-  const stars = Number(document.getElementById("stars").value);
-  if (!stars) return;
+
+  const stars = Number(starsInput.value);
+  if (!stars || stars <= 0) return;
 
   await addStars(stars);
 
   alert("Добавлено: " + stars + " ⭐");
+
+  // обновить UI
+  const { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  rubOutEl.textContent = data.stars + " ₽";
 };
