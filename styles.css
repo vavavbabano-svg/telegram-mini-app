@@ -1,8 +1,8 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: linear-gradient(135deg, #4b0082, #1e3cff);
-  color: white;
+  background: #0f0f1a;
+  color: #e6e6e6;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,24 +10,40 @@ body {
 }
 
 .card {
-  background: rgba(0,0,0,0.3);
+  background: #1a1a2e;
   padding: 30px;
-  border-radius: 15px;
+  border-radius: 16px;
+  width: 320px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   text-align: center;
-  width: 300px;
+}
+
+h1 {
+  color: #a78bfa;
 }
 
 input {
   width: 90%;
-  padding: 10px;
+  padding: 12px;
   margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  background: #2a2a40;
+  color: white;
 }
 
 button {
-  padding: 12px;
   width: 100%;
+  padding: 12px;
+  margin-top: 10px;
   border: none;
-  background: #ffcc00;
-  cursor: pointer;
+  border-radius: 10px;
+  background: #7c3aed;
+  color: white;
   font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #6d28d9;
 }
