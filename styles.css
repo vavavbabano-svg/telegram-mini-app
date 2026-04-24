@@ -7,13 +7,11 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
 }
 
+
 body {
-  background: linear-gradient(
-    to bottom,
-    #2a0508 0%,
-    #12070a 40%,
-    #0b0c10 100%
-  );
+  background: #0e0f12;
+  color: #eaeaea;
+}
 
   color: #eaeaea;
 
