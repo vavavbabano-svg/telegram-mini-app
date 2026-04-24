@@ -1,34 +1,31 @@
 
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
 }
 
 body {
-  background: #1e1f26;
+  background: #0f1115;
   color: #eaeaea;
 }
 
-/* ===================== */
 /* TOP BAR */
-/* ===================== */
-
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  width: 100%;
-  padding: 15px;
-  background: #2a2d3a;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 #userId {
-  font-weight: 700;
-  font-size: 16px;
-  color: #8a8f98;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
 }
 
 .support {
@@ -37,213 +34,110 @@ body {
 }
 
 .tg-icon {
-  width: 32px;
-  height: 32px;
-  display: block;
-  object-fit: contain;
+  width: 26px;
+  height: 26px;
+  opacity: 0.9;
 }
 
-/* ===================== */
 /* MAIN */
-/* ===================== */
-
 .container {
-  padding: 20px;
-  text-align: center;
+  padding: 18px;
 }
 
+/* TITLE */
 h1 {
-  margin: 20px 0;
-  color: #4ea1ff;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #ffffff;
 }
 
+/* INPUT */
 input {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
 
-  border: none;
+  background: #151922;
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 10px;
 
-  background: #2a2d3a;
   color: white;
+  outline: none;
 }
 
-/* ===================== */
 /* TOGGLE */
-/* ===================== */
-
 .toggle {
   display: flex;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 8px;
+  margin: 12px 0;
 }
 
 .toggle button {
   flex: 1;
   padding: 10px;
 
-  border: none;
   border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
 
-  background: #2a2d3a;
-  color: white;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
 
   cursor: pointer;
 }
 
 .toggle .active {
-  background: #4ea1ff;
-}
-
-/* ===================== */
-/* CALC */
-/* ===================== */
-
-.calc {
-  display: flex;
-  justify-content: space-between;
-  margin: 15px 0;
-  color: #4ea1ff;
-}
-
-/* ===================== */
-/* BUY BUTTON */
-/* ===================== */
-
-.buy {
-  width: 100%;
-  padding: 12px;
-
-  background: #4ea1ff;
-  border: none;
-  border-radius: 10px;
-
+  background: #1b2230;
   color: white;
-  font-weight: bold;
-
-  cursor: pointer;
 }
 
-/* ===================== */
 /* PACKS */
-/* ===================== */
-
 .packs {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
   margin-top: 10px;
 }
 
 .packs button {
-  padding: 8px 12px;
+  padding: 10px;
 
-  border: none;
   border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
 
-  background: #2a2d3a;
+  background: #151922;
   color: #ffd700;
 
   cursor: pointer;
 }
 
 .packs button:hover {
-  background: #3a3f52;
+  border-color: rgba(255,255,255,0.15);
 }
 
-/* ===================== */
-/* PACK SLIDER */
-/* ===================== */
-
-.pack {
+/* CALC */
+.calc {
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 15px;
-  padding: 10px 20px;
-
-  background: #2a2d3a;
-  border-radius: 10px;
-
-  color: #eaeaea;
+  justify-content: space-between;
+  margin: 14px 0;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
 }
 
-.arrow {
-  background: #3b3f4a;
-  border: none;
-
-  color: #ffd700;
-  font-size: 20px;
-
-  padding: 5px 10px;
-  border-radius: 5px;
-
-  cursor: pointer;
-}
-
-.arrow:hover {
-  background: #4ea1ff;
-}
-
-.pack-value {
-  font-size: 18px;
-  color: #ffd700;
-}
-
-/* ===================== */
-/* MODAL */
-/* ===================== */
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-
+/* BUTTON */
+.buy {
   width: 100%;
-  height: 100%;
-
-  background: rgba(0,0,0,0.6);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.hidden {
-  display: none;
-}
-
-.modal-box {
-  background: #2a2d3a;
-  padding: 20px;
-
-  border-radius: 15px;
-
-  width: 80%;
-  max-width: 320px;
-
-  text-align: center;
-  color: white;
-}
-
-.timer {
-  font-size: 28px;
-  color: #4ea1ff;
-  margin: 10px 0;
-}
-
-.modal-box button {
-  width: 100%;
-  padding: 10px;
+  padding: 12px;
 
   border: none;
   border-radius: 10px;
 
-  background: #4ea1ff;
+  background: #2f7cff;
   color: white;
 
+  font-weight: 600;
   cursor: pointer;
+}
+
+.buy:hover {
+  background: #2566d6;
 }
