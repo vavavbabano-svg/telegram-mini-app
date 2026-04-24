@@ -132,42 +132,46 @@ input {
 }
 
 /* ===== PACKS ===== */
+
 .packs {
   display: flex;
   width: 100%;
-
-  background: #22252c;
-
   overflow: hidden;
+  background: #22252c;
 }
 
 .packs button {
   flex: 1;
+  height: 44px;
 
-  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
   border: none;
   border-radius: 0;
 
   background: #1b1d23;
-
   color: #ffd86b;
-  font-weight: 600;
-  font-size: 13px;
 
-  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
 
   cursor: pointer;
 }
 
+/* разделители */
 .packs button:not(:last-child) {
   border-right: 1px solid rgba(255,255,255,0.04);
 }
 
+/* нажатие */
 .packs button:active {
   background: #2e313a;
 }
 
+/* скругления только по краям */
 .packs button:first-child {
   border-bottom-left-radius: 10px;
 }
@@ -176,6 +180,11 @@ input {
   border-bottom-right-radius: 10px;
 }
 
+/* иконка */
+.packs button img {
+  width: 14px;
+  height: 14px;
+}
 /* ===== CALC ===== */
 .calc {
   display: flex;
@@ -233,15 +242,3 @@ input {
   color: #ff4d5a;
 }
 
-.packs button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.packs button img {
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-}
