@@ -164,11 +164,13 @@ input {
   width: 100%;
   padding: 14px;
 
+  margin-top: 14px;
+
   border: none;
   border-radius: 14px;
 
-  background: #7a1f26; /* тёмно-красный */
-  color: #fff;
+  background: #3a1216; /* 🔥 тёмный винный */
+  color: #f5f7fa;
 
   font-weight: 700;
 
