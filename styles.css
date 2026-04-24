@@ -98,3 +98,36 @@ input {
   background: #2a2d3a;
   color: white;
 }
+.packs {
+  margin-top: 20px;
+}
+
+.pack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: #2a2d3a; /* фон пакета */
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #eaeaea;
+}
+
+.arrow {
+  background: #3b3f4a;
+  border: none;
+  color: #ffd700; /* золотистый оттенок стрелок */
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.arrow:hover {
+  background: #4ea1ff; /* синяя подсветка при наведении */
+}
+
+.pack-value {
+  font-size: 18px;
+  color: #ffd700; /* золотистый оттенок для числа */
+}

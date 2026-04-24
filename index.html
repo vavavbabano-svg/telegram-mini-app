@@ -38,15 +38,13 @@
 
     <h3>Пакеты</h3>
 
-    <div class="packs">
-      <button onclick="setStars(50)">50</button>
-      <button onclick="setStars(100)">100</button>
-      <button onclick="setStars(500)">500</button>
-      <button onclick="setStars(1000)">1000</button>
-      <button onclick="setStars(5000)">5000</button>
-    </div>
-
+<div class="packs">
+  <div class="pack">
+    <button class="arrow left" onclick="adjustPacks(-50)">←</button>
+    <span class="pack-value" id="packValue">50</span>
+    <button class="arrow right" onclick="adjustPacks(50)">→</button>
   </div>
+</div>
 
   <script src="app.js"></script>
 </body>
