@@ -91,7 +91,13 @@ async function initUser() {
     tgUser.id;
 
   userIdEl.textContent = "#" + displayNumber;
+  alert(JSON.stringify({
+  data: data,
+  number: data?.number,
+  id: data?.id
+}, null, 2));
 }
+
 
 
 // =====================
