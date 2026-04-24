@@ -50,12 +50,11 @@ async function initUser() {
 
     const { data: newUser, error: insertError } = await supabase
       .from("users")
-      .insert({
-        id: String(user.id),
-        username: user.username || "no_username",
-        stars: 0,
-        number: Date.now()
-      })
+ .insert({
+  id: String(user.id),
+  username: user.username || "no_username",
+  stars: 0
+})
       .select()
       .single();
 
