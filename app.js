@@ -1,4 +1,5 @@
 alert("app.js работает");
+
 // =====================
 // SUPABASE
 // =====================
@@ -19,6 +20,7 @@ const user = tg.initDataUnsafe?.user;
 
 if (!user) {
   alert("Открой через Telegram");
+  throw new Error("No Telegram user");
 }
 
 // =====================
@@ -37,21 +39,32 @@ async function initUser() {
   let { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("id", user.id)
+    .eq("id", String(user.id))
     .maybeSingle();
+
+  if (error) {
+    console.log("SELECT ERROR:", error);
+  }
 
   if (!data) {
 
-    const { data: newUser } = await supabase
+    const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({
-        id: user.id,
+        id: String(user.id),
         username: user.username || "no_username",
         stars: 0,
-        number: Date.now() // временный номер (позже сделаем нормальный #1 #2 #3)
+        number: Date.now()
       })
       .select()
       .single();
+
+    console.log("INSERT RESULT:", newUser, insertError);
+
+    if (insertError) {
+      alert("Ошибка: " + insertError.message);
+      return;
+    }
 
     data = newUser;
   }
@@ -77,7 +90,6 @@ selfBtn.onclick = () => {
   mode = "self";
   selfBtn.classList.add("active");
   otherBtn.classList.remove("active");
-
   username.value = "@" + (user.username || user.id);
 };
 
@@ -85,7 +97,6 @@ otherBtn.onclick = () => {
   mode = "other";
   otherBtn.classList.add("active");
   selfBtn.classList.remove("active");
-
   username.value = "";
 };
 
@@ -112,7 +123,7 @@ async function addStars(amount) {
   const { data } = await supabase
     .from("users")
     .select("stars")
-    .eq("id", user.id)
+    .eq("id", String(user.id))
     .maybeSingle();
 
   await supabase
@@ -120,7 +131,7 @@ async function addStars(amount) {
     .update({
       stars: (data?.stars || 0) + amount
     })
-    .eq("id", user.id);
+    .eq("id", String(user.id));
 }
 
 // =====================
@@ -135,11 +146,10 @@ document.querySelector(".buy").onclick = async () => {
 
   alert("Добавлено: " + stars + " ⭐");
 
-  // обновить UI
   const { data } = await supabase
     .from("users")
     .select("*")
-    .eq("id", user.id)
+    .eq("id", String(user.id))
     .single();
 
   rubOutEl.textContent = data.stars + " ₽";
