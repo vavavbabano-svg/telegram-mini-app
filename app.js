@@ -137,39 +137,41 @@ window.setStars = (v) => {
 };
 
 // =====================
-// BUY BUTTON
+// BUY BUTTON (без автоначисления, с заказом админу)
 // =====================
 document.querySelector(".buy").onclick = async () => {
-
   const stars = Number(starsInput.value);
   if (!stars || stars <= 0) return;
 
   const tgUser = tg.initDataUnsafe?.user;
-
   if (!tgUser) return alert("Нет пользователя");
 
-  const { data } = await supabase
-    .from("users")
-    .select("stars")
-    .eq("id", String(tgUser.id))
-    .maybeSingle();
+  const amountRub = (stars * RATE).toFixed(2);
 
-  await supabase
-    .from("users")
-    .update({
-      stars: (data?.stars || 0) + stars
-    })
-    .eq("id", String(tgUser.id));
+  // Показываем реквизиты
+  const message = `⭐ Заказ: ${stars} звёзд\n💰 Сумма: ${amountRub} ₽\n\n💳 Реквизиты для оплаты:\nКарта: 2200 1234 5678 9012\nИли TON: UQC... (твой адрес)\n\nПосле оплаты админ начислит звёзды вручную.\nНажми "Ок", чтобы отправить заказ.`;
 
-  alert("Добавлено: " + stars + " ⭐");
+  if (!confirm(message)) return;
 
-  // очистка после покупки
+  // Отправляем заказ боту
+  tg.sendData(JSON.stringify({
+    type: "order",
+    user_id: String(tgUser.id),
+    username: tgUser.username || tgUser.first_name || "—",
+    stars: stars,
+    amount_rub: amountRub,
+    status: "new"
+  }));
+
+  alert("✅ Заказ отправлен! После проверки оплаты звёзды будут начислены.");
+
+  // Очистка
   starsInput.value = "";
   update(0);
 };
 
 // =====================
-// BOTTOM NAV (НОВОЕ)
+// BOTTOM NAV
 // =====================
 const tabs = {
   tabBuy: "screenBuy",
@@ -210,6 +212,7 @@ window.addEventListener("load", () => {
     nav.classList.add("show");
   }, 100);
 });
+
 async function getNextNumber() {
   const { data, error } = await supabase
     .from("counters")
@@ -236,4 +239,5 @@ async function getNextNumber() {
   return next;
 }
 
+// 🔥 ЗАПУСК
 initUser();
