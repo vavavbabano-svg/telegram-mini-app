@@ -1,10 +1,8 @@
-
-/* ===== BASE ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial;
 }
 
 body {
@@ -12,56 +10,51 @@ body {
   color: #eaeaea;
 }
 
-/* ===== TOP ===== */
+/* TOP */
 .topbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 14px 16px;
+  padding: 14px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-#userId {
-  color: rgba(255,255,255,0.5);
-  font-size: 14px;
-}
-
-/* ===== SCREEN ===== */
+/* SCREEN */
 .screen {
+  display: none;
   padding: 16px;
-  padding-bottom: 100px;
+  padding-bottom: 90px;
 }
 
-/* ===== IMAGE ===== */
+.screen.active {
+  display: block;
+}
+
+/* IMAGE */
 .title-image img {
   width: 100%;
-  max-width: 340px;
+  max-width: 320px;
+  margin: 0 auto;
   display: block;
-  margin: 0 auto 16px auto;
   border-radius: 14px;
 }
 
-/* ===== CARD ===== */
-.user-block,
-.stars-block {
+/* CARD */
+.card {
   background: #14171c;
   border-radius: 14px;
   overflow: hidden;
   margin-bottom: 12px;
 }
 
-/* ===== INPUT ===== */
+/* INPUT */
 input {
   width: 100%;
   padding: 14px;
-
   border: none;
-  outline: none;
-
   background: #14171c;
   color: white;
+  outline: none;
 }
 
-/* ===== TOGGLE ===== */
+/* TOGGLE */
 .toggle {
   display: flex;
 }
@@ -69,7 +62,6 @@ input {
 .toggle button {
   flex: 1;
   padding: 12px;
-
   border: none;
   background: #1b1f26;
   color: #aaa;
@@ -80,27 +72,33 @@ input {
   color: white;
 }
 
-/* ===== PACKS ===== */
+/* PACKS */
 .packs {
   display: flex;
 }
 
 .packs button {
   flex: 1;
-  padding: 12px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
   border: none;
   background: #1b1f26;
-
   color: #ffd36a;
   font-weight: 600;
 }
 
-.packs button:not(:last-child) {
-  border-right: 1px solid rgba(255,255,255,0.05);
+.packs button img {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
-/* ===== CALC ===== */
+/* CALC */
 .calc {
   display: flex;
   justify-content: space-between;
@@ -108,38 +106,30 @@ input {
   color: #888;
 }
 
-/* ===== BUY ===== */
+/* BUY */
 .buy {
   width: 100%;
   padding: 14px;
-
   border: none;
   border-radius: 14px;
-
   background: #2a2f38;
   color: white;
-
   font-weight: 600;
 }
 
-/* ===== TABBAR ===== */
+/* TAB */
 .tabbar {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-
+  width: 100%;
   display: flex;
   padding: 10px;
-
   background: #0b0d10;
   border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .tab {
   flex: 1;
-  padding: 10px;
-
   border: none;
   background: transparent;
   color: #777;
