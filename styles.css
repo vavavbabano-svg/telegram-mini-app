@@ -140,14 +140,8 @@ input {
   font-weight: 600;
 
   cursor: pointer;
-}
 
-.packs button:first-child {
-  border-radius: 12px 0 0 12px;
-}
-
-.packs button:last-child {
-  border-radius: 0 12px 12px 0;
+  border-radius: 0; /* 🔥 полностью убрали скругления */
 }
 
 .packs button img {
