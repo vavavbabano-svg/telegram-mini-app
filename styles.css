@@ -1,14 +1,33 @@
 body {
+  margin: 0;
   font-family: Arial;
+  background: linear-gradient(135deg, #4b0082, #1e3cff);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: rgba(0,0,0,0.3);
+  padding: 30px;
+  border-radius: 15px;
   text-align: center;
-  margin-top: 80px;
+  width: 300px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
 }
 
 button {
-  padding: 15px 30px;
-  font-size: 18px;
-  background: black;
-  color: white;
+  padding: 12px;
+  width: 100%;
   border: none;
-  border-radius: 10px;
+  background: #ffcc00;
+  cursor: pointer;
+  font-weight: bold;
 }

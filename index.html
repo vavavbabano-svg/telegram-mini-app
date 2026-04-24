@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Mini App</title>
+  <meta charset="UTF-8">
+  <title>Stars Shop</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <h1>Мой Telegram Mini App 🚀</h1>
+  <div class="card">
+    <h1>⭐ Покупка звёзд</h1>
 
-  <button onclick="buy()">Купить</button>
+    <input id="username" placeholder="Telegram username">
+
+    <input id="stars" type="number" placeholder="Количество звёзд">
+
+    <h2 id="price">Цена: 0 ₽</h2>
+
+    <button onclick="buy()">Купить</button>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin</title>
+</head>
+<body>
+<!-- Это комментарий -->
+  <h2>Вход в админку</h2>
+
+  <input id="pass" placeholder="пароль">
+  <button onclick="login()">Войти</button>
+
+  <div id="panel" style="display:none;">
+    <h2>Заказы</h2>
+    <div id="orders"></div>
+  </div>
+
+  <script>
+    const PASSWORD = "1234";
+
+    function login() {
+      const pass = document.getElementById("pass").value;
+
+      if (pass === PASSWORD) {
+        document.getElementById("panel").style.display = "block";
+        loadOrders();
+      } else {
+        alert("Неверный пароль");
+      }
+    }
+
+    function loadOrders() {
+      document.getElementById("orders").innerHTML =
+        "Здесь будут заказы (пока подключим позже к серверу)";
+    }
+  </script>
+
+</body>
+</html>

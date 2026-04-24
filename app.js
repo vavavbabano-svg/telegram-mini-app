@@ -1,29 +1,43 @@
 const tg = window.Telegram.WebApp;
-
-// 1. говорим Telegram: "приложение готово"
 tg.ready();
 tg.expand();
 
-// 2. получаем пользователя
-const user = tg.initDataUnsafe?.user;
+const PRICE = 1.65;
 
-// 3. показываем пользователя на экране
-if (user) {
-  document.body.innerHTML += `
-    <h2>Привет, ${user.first_name} 👋</h2>
-    <p>ID: ${user.id}</p>
-    <p>@${user.username || "нет username"}</p>
-  `;
-} else {
-  document.body.innerHTML += `<h2>Привет, гость 👋</h2>`;
-}
+const starsInput = document.getElementById("stars");
+const priceText = document.getElementById("price");
 
-// 4. кнопка "Купить"
+starsInput.addEventListener("input", () => {
+  const stars = Number(starsInput.value || 0);
+  priceText.innerText = "Цена: " + (stars * PRICE).toFixed(2) + " ₽";
+});
+
 function buy() {
-  tg.sendData(JSON.stringify({
-    action: "buy",
-    user_id: user?.id
-  }));
+  const username = document.getElementById("username").value;
+  const stars = Number(document.getElementById("stars").value);
 
-  alert("Заказ отправлен 🚀");
+  if (!username || !stars) {
+    alert("Заполни поля");
+    return;
+  }
+
+  let time = 5;
+
+  const interval = setInterval(() => {
+    alert("Подтверждение через " + time + " сек");
+    time--;
+
+    if (time < 0) {
+      clearInterval(interval);
+
+      tg.sendData(JSON.stringify({
+        type: "order",
+        username,
+        stars,
+        price: stars * PRICE
+      }));
+
+      alert("Заказ отправлен 🚀");
+    }
+  }, 1000);
 }
