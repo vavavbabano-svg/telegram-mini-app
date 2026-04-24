@@ -221,12 +221,32 @@ body {
 }
 
 
+
+.title-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
 .title-image img {
-  width: 160px;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  width: 260px;
+  max-width: 80%;
+  height: auto;
+
+  object-fit: contain;
+
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+
+  animation: pulse 2.5s infinite ease-in-out;
   transition: transform 0.2s ease;
 }
 
 .title-image img:active {
   transform: scale(0.95);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
