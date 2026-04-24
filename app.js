@@ -45,7 +45,7 @@ async function initUser() {
 
   const userId = String(tgUser.id);
 
-  // 1. пробуем найти
+  // 1. ищем пользователя
   let { data, error } = await supabase
     .from("users")
     .select("*")
@@ -54,9 +54,11 @@ async function initUser() {
 
   if (error) {
     console.log("SELECT ERROR:", error);
+    userIdEl.textContent = "#error";
+    return;
   }
 
-  // 2. если нет — СОЗДАЁМ
+  // 2. если нет — создаём
   if (!data) {
 
     const { error: insertError } = await supabase
@@ -73,7 +75,7 @@ async function initUser() {
       return;
     }
 
-    // 3. повторно читаем
+    // повторно читаем
     const res = await supabase
       .from("users")
       .select("*")
@@ -85,8 +87,10 @@ async function initUser() {
 
   console.log("USER FINAL:", data);
 
-const display = data?.id;
-userIdEl.textContent = "#" + display;
+  // 3. FIX отображения #
+  const display = data?.id || userId;
+
+  userIdEl.textContent = "#" + display;
 }
 
 // =====================
