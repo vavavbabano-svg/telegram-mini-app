@@ -1,32 +1,37 @@
+
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Helvetica, Arial;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background: #1a1d22;
   color: #f5f7fa;
+  overflow-x: hidden;
 }
 
-.card, .user-block, .stars-block {
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+/* ===== APP LAYOUT WIDTH ===== */
+.topbar,
+.screen,
+.tabbar {
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-/* TOP */
+/* ===== TOP BAR ===== */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  width: 100%;
-  box-sizing: border-box;
-
   padding: 14px 16px;
 
- background: #1a1d22;
-  border-color: rgba(255,255,255,0.06);
+  background: #1a1d22;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .tg-icon {
@@ -35,41 +40,39 @@ body {
   display: block;
 }
 
-.support {
-  display: flex;
-  align-items: center;
-}
-
-/* SCREEN */
+/* ===== SCREEN ===== */
 .screen {
   display: none;
   padding: 16px;
-  padding-bottom: 90px;
+  padding-bottom: 100px;
 }
 
 .screen.active {
   display: block;
 }
 
-/* IMAGE */
+/* ===== IMAGE ===== */
+.title-image {
+  margin-bottom: 18px;
+}
+
 .title-image img {
   width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
   display: block;
   border-radius: 14px;
 }
 
-/* CARD */
+/* ===== CARDS ===== */
 .card,
 .user-block,
 .stars-block {
+  margin-top: 12px;
   background: #22262c;
-  border: none;
   border-radius: 14px;
+  overflow: hidden;
 }
 
-/* INPUT */
+/* ===== INPUT ===== */
 input {
   width: 100%;
   padding: 14px;
@@ -81,7 +84,7 @@ input {
   color: #f5f7fa;
 }
 
-/* TOGGLE */
+/* ===== TOGGLE ===== */
 .toggle {
   display: flex;
 }
@@ -89,19 +92,31 @@ input {
 .toggle button {
   flex: 1;
   padding: 12px;
+
   border: none;
   background: #1b1f26;
   color: #aaa;
+
+  cursor: pointer;
+}
+
+.toggle button:first-child {
+  border-radius: 12px 0 0 12px;
+}
+
+.toggle button:last-child {
+  border-radius: 0 12px 12px 0;
 }
 
 .toggle .active {
   background: #2a2f38;
-  color: white;
+  color: #fff;
 }
 
-/* PACKS */
+/* ===== PACKS ===== */
 .packs {
   display: flex;
+  width: 100%;
 }
 
 .packs button {
@@ -117,15 +132,24 @@ input {
   background: #1b1f26;
   color: #ffd36a;
   font-weight: 600;
+
+  cursor: pointer;
+}
+
+.packs button:first-child {
+  border-radius: 12px 0 0 12px;
+}
+
+.packs button:last-child {
+  border-radius: 0 12px 12px 0;
 }
 
 .packs button img {
   width: 14px;
   height: 14px;
-  flex-shrink: 0;
 }
 
-/* CALC */
+/* ===== CALC ===== */
 .calc {
   display: flex;
   justify-content: space-between;
@@ -133,33 +157,32 @@ input {
   color: #888;
 }
 
-/* BUY */
+/* ===== BUY ===== */
 .buy {
   width: 100%;
   padding: 14px;
+
   border: none;
   border-radius: 14px;
+
   background: #2a2f38;
-  color: white;
+  color: #fff;
+
   font-weight: 600;
 }
 
-/* TAB */
+/* ===== TAB BAR ===== */
 .tabbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
 
-  width: 100%;
-
   display: flex;
-
   padding: 10px;
 
-   background: #1a1d22;
-   border-color: rgba(255,255,255,0.06);
-  box-sizing: border-box;
+  background: #1a1d22;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .tab {
@@ -172,21 +195,8 @@ input {
 .tab.active {
   color: #ffd36a;
 }
-body {
-  overflow-x: hidden;
-}
-.title-image {
-  margin-bottom: 18px;
-}
 
+/* ===== SPACING FIX ===== */
 .user-block {
-  margin-top: 14px;
-}
-* {
-  box-sizing: border-box;
-}
-input, button {
-  outline: none;
-  box-shadow: none;
-  -webkit-tap-highlight-color: transparent;
+  margin-top: 10px;
 }
