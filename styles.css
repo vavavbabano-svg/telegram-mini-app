@@ -336,3 +336,13 @@ input {
 .packs button:last-child {
   border-bottom-right-radius: 10px;
 }
+.title-image img {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+
+  display: block;
+  margin: 0 auto;
+
+  border-radius: 12px;
+}
