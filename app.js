@@ -12,8 +12,7 @@ const supabase = createClient(
 // =====================
 const tg = window.Telegram.WebApp;
 
-tg.ready();
-tg.expand();
+
 tg.ready();
 tg.expand();
 
