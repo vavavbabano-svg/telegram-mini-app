@@ -1,4 +1,5 @@
-alert("app.js работает");
+
+const RATE = 1.64;
 
 // =====================
 // SUPABASE
@@ -30,6 +31,19 @@ const userIdEl = document.getElementById("userId");
 const rubOutEl = document.getElementById("rubOut");
 const starsInput = document.getElementById("stars");
 const starsOut = document.getElementById("starsOut");
+const selfBtn = document.getElementById("selfBtn");
+const otherBtn = document.getElementById("otherBtn");
+const username = document.getElementById("username");
+
+// =====================
+// CALCULATOR
+// =====================
+function updateCalc(val) {
+  const stars = Number(val) || 0;
+
+  starsOut.textContent = stars + " ⭐";
+  rubOutEl.textContent = (stars * RATE).toFixed(2) + " ₽";
+}
 
 // =====================
 // USER INIT
@@ -42,23 +56,19 @@ async function initUser() {
     .eq("id", String(user.id))
     .maybeSingle();
 
-  if (error) {
-    console.log("SELECT ERROR:", error);
-  }
+  if (error) console.log(error);
 
   if (!data) {
 
     const { data: newUser, error: insertError } = await supabase
       .from("users")
- .insert({
-  id: String(user.id),
-  username: user.username || "no_username",
-  stars: 0
-})
+      .insert({
+        id: String(user.id),
+        username: user.username || "no_username",
+        stars: 0
+      })
       .select()
       .single();
-
-    console.log("INSERT RESULT:", newUser, insertError);
 
     if (insertError) {
       alert("Ошибка: " + insertError.message);
@@ -68,19 +78,15 @@ async function initUser() {
     data = newUser;
   }
 
-  userIdEl.textContent = "#" + (data.number || "0");
+  userIdEl.textContent = "#" + (data.number || "?");
   rubOutEl.textContent = (data.stars || 0) + " ₽";
 }
 
 initUser();
 
 // =====================
-// MODE (себе / другому)
+// MODE
 // =====================
-const selfBtn = document.getElementById("selfBtn");
-const otherBtn = document.getElementById("otherBtn");
-const username = document.getElementById("username");
-
 let mode = "self";
 
 username.value = user.username ? "@" + user.username : "@" + user.id;
@@ -89,6 +95,7 @@ selfBtn.onclick = () => {
   mode = "self";
   selfBtn.classList.add("active");
   otherBtn.classList.remove("active");
+
   username.value = "@" + (user.username || user.id);
 };
 
@@ -96,23 +103,24 @@ otherBtn.onclick = () => {
   mode = "other";
   otherBtn.classList.add("active");
   selfBtn.classList.remove("active");
+
   username.value = "";
 };
 
 // =====================
-// STARS UI
+// STARS INPUT
+// =====================
+starsInput.addEventListener("input", (e) => {
+  updateCalc(e.target.value);
+});
+
+// =====================
+// PACK BUTTONS
 // =====================
 window.setStars = function (val) {
   starsInput.value = val;
-  starsOut.textContent = val + " ⭐";
-  rubOutEl.textContent = val + " ₽";
+  updateCalc(val);
 };
-
-starsInput.addEventListener("input", (e) => {
-  const val = e.target.value || 0;
-  starsOut.textContent = val + " ⭐";
-  rubOutEl.textContent = val + " ₽";
-});
 
 // =====================
 // ADD STARS
@@ -143,7 +151,7 @@ document.querySelector(".buy").onclick = async () => {
 
   await addStars(stars);
 
-  alert("Добавлено: " + stars + " ⭐");
+  alert(`Добавлено: ${stars} ⭐`);
 
   const { data } = await supabase
     .from("users")
@@ -151,5 +159,5 @@ document.querySelector(".buy").onclick = async () => {
     .eq("id", String(user.id))
     .single();
 
-  rubOutEl.textContent = data.stars + " ₽";
+  rubOutEl.textContent = (data.stars * RATE).toFixed(2) + " ₽";
 };
