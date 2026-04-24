@@ -175,19 +175,25 @@ const screenRef = document.getElementById("screenRef");
 
 
 
-function setTab(activeTab) {
+
+function setTab(tab) {
 
   const tabs = [tabBuy, tabSell, tabRef];
   const screens = [screenBuy, screenSell, screenRef];
 
-  // tabs UI
+  // reset tabs
   tabs.forEach(t => t.classList.remove("active"));
-  activeTab.classList.add("active");
+  tab.classList.add("active");
 
-  // screens switch
+  // reset screens
   screens.forEach(s => s.classList.remove("active"));
 
-  if (activeTab === tabBuy) screenBuy.classList.add("active");
-  if (activeTab === tabSell) screenSell.classList.add("active");
-  if (activeTab === tabRef) screenRef.classList.add("active");
+  if (tab === tabBuy) screenBuy.classList.add("active");
+  if (tab === tabSell) screenSell.classList.add("active");
+  if (tab === tabRef) screenRef.classList.add("active");
 }
+
+// events
+tabBuy?.addEventListener("click", () => setTab(tabBuy));
+tabSell?.addEventListener("click", () => setTab(tabSell));
+tabRef?.addEventListener("click", () => setTab(tabRef));
