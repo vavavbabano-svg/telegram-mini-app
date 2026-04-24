@@ -231,11 +231,10 @@ input {
 /* TOGGLE ОБЩИЙ БЛОК */
 .toggle {
   display: flex;
-  gap: 0; /* кнопки вплотную */
-  margin: 0;
+  gap: 0;
+  margin: 12px 0;
 }
 
-/* кнопки */
 .toggle button {
   flex: 1;
   padding: 10px;
@@ -247,17 +246,15 @@ input {
   cursor: pointer;
 }
 
-/* левая кнопка */
+/* скругления только по краям */
 #selfBtn {
   border-radius: 0 0 0 10px;
 }
 
-/* правая кнопка */
 #otherBtn {
   border-radius: 0 0 10px 0;
 }
 
-/* активная */
 .toggle .active {
   background: #3a3f4a;
   color: white;
@@ -268,10 +265,10 @@ input {
 .stars-block {
   display: flex;
   flex-direction: column;
-  margin-top: 0; /* чтобы вплотную к input */
+  margin-top: 0;
 }
 
-/* input (верх скруглён, низ прямой) */
+/* input */
 .stars-block input {
   width: 100%;
   padding: 12px;
@@ -283,8 +280,6 @@ input {
 
   color: white;
   outline: none;
-
-  margin: 0;
 }
 
 /* контейнер кнопок */
@@ -292,24 +287,26 @@ input {
 
 .packs {
   display: flex;
-
   width: 100%;
-  margin: 0;
 
-  background: #1b1d23;
+  margin: 0;
+  padding: 0;
+
+  background: #22252c;
 
   overflow: hidden;
 }
 
-/* базовая кнопка */
+/* кнопки */
 .packs button {
   flex: 1;
+
   padding: 12px 0;
 
   border: none;
-  outline: none;
+  border-radius: 0;
 
-  background: #22252c;
+  background: #1b1d23;
 
   color: #ffd86b;
   font-weight: 600;
@@ -321,22 +318,17 @@ input {
   cursor: pointer;
 }
 
-/* убираем ВСЕ рамки */
-.packs button {
-  border-radius: 0;
-}
-
-/* разделители тонкие */
+/* разделители */
 .packs button:not(:last-child) {
   border-right: 1px solid rgba(255,255,255,0.04);
 }
 
-/* актив / нажатие */
+/* нажатие */
 .packs button:active {
   background: #2e313a;
 }
 
-/* 🔥 скругления только по краям */
+/* скругления ТОЛЬКО края */
 .packs button:first-child {
   border-bottom-left-radius: 10px;
 }
