@@ -21,22 +21,20 @@ body {
 }
 
 #userId {
-  color: #4ea1ff;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 16px;
+  color: #8a8f98;
 }
 
-/* SUPPORT ICON */
 .support {
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .tg-icon {
   width: 32px;
   height: 32px;
   object-fit: contain;
-  display: block;
 }
 
 .tg-icon:hover {
