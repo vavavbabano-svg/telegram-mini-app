@@ -8,11 +8,11 @@ const bot = new TelegramBot(token, { polling: true });
 // Подключение к Supabase (service_role ключ из .env)
 const supabase = createClient(
   'https://naxxslgxyelefzdxjhze.supabase.co',
-  'ТВОЙ_SERVICE_ROLE_КЛЮЧ_СЮДА' // ← замени на реальный или process.env.SUPABASE_SERVICE_KEY
+  'sb_secret_M5a1Dlx-uqc613tsceQ5FQ_FtEnukVn' // ← замени на реальный или process.env.SUPABASE_SERVICE_KEY
 );
 
 // Твой Telegram ID для уведомлений
-const ADMIN_ID = 'ТВОЙ_TELEGRAM_ID'; // ← вставь свой ID (число)
+const ADMIN_ID = '1444520038'; // ← вставь свой ID (число)
 
 // =====================
 // ОБРАБОТКА ЗАКАЗОВ
