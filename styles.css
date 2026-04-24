@@ -208,7 +208,7 @@ input {
 .user-block {
   display: flex;
   flex-direction: column;
-  
+
   margin-bottom: 12px;
 }
 
@@ -261,4 +261,68 @@ input {
 .toggle .active {
   background: #3a3f4a;
   color: white;
+}
+
+/* общий блок */
+.stars-block {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+/* INPUT (верхняя часть) */
+.stars-block input {
+  width: 100%;
+  padding: 12px;
+
+  background: #1b1d23;
+  border: none;
+
+  border-radius: 10px 10px 0 0;
+
+  color: white;
+  outline: none;
+
+  margin: 0;
+}
+
+/* ПАКЕТЫ (нижняя часть) */
+.packs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+
+  background: #2a2d35;
+
+  border-radius: 0 0 10px 10px;
+
+  scrollbar-width: none;
+}
+
+.packs::-webkit-scrollbar {
+  display: none;
+}
+
+/* кнопки пакетов */
+.packs button {
+  flex: 0 0 auto;
+
+  padding: 10px 14px;
+
+  border: none;
+
+  background: transparent;
+  color: #ddd;
+
+  font-size: 13px;
+}
+
+/* разделение визуальное */
+.packs button:not(:last-child) {
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+/* актив/hover */
+.packs button:active {
+  background: rgba(255,255,255,0.05);
 }
