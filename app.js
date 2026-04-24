@@ -50,15 +50,15 @@ async function initUser() {
     .maybeSingle();
 
   if (error) {
-    console.log(error);
+    console.log("SELECT ERROR:", error);
     userIdEl.textContent = "#error";
     return;
   }
 
-  // 🔥 ЕСЛИ НЕТ — СОЗДАЁМ
+  // 🔥 если пользователя нет — создаём
   if (!data) {
 
-    await supabase
+    const { error: insertError } = await supabase
       .from("users")
       .insert({
         id: String(tgUser.id),
@@ -66,7 +66,13 @@ async function initUser() {
         stars: 0
       });
 
-    // 🔥 ВАЖНО: ПЕРЕЧИТЫВАЕМ ИЗ БД
+    if (insertError) {
+      console.log("INSERT ERROR:", insertError);
+      userIdEl.textContent = "#err";
+      return;
+    }
+
+    // 🔥 повторно читаем из БД (гарантированно свежие данные)
     const res = await supabase
       .from("users")
       .select("*")
@@ -78,10 +84,14 @@ async function initUser() {
 
   console.log("USER FROM DB:", data);
 
-  // 🔥 ФИНАЛЬНЫЙ ФОРМАТ
-  userIdEl.textContent = "#" + (data.number ?? data.id);
-}
+  // 🔥 ЖЕЛЕЗНЫЙ fallback (чтобы никогда не было просто "#")
+  const displayNumber =
+    data?.number ??
+    data?.id ??
+    tgUser.id;
 
+  userIdEl.textContent = "#" + displayNumber;
+}
 
 
 // =====================
