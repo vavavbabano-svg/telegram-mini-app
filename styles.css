@@ -6,8 +6,8 @@
 }
 
 body {
-  background: #20242b;
-  color: #eaeaea;
+  background: var(--tg-bg, #e9edf2);
+  color: var(--tg-text, #f5f7fa);
 }
 
 .card, .user-block, .stars-block {
@@ -25,8 +25,8 @@ body {
 
   padding: 14px 16px;
 
-  background: #20242b;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: #f1f3f5;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .tg-icon {
@@ -64,7 +64,8 @@ body {
 .card,
 .user-block,
 .stars-block {
-  background: #22262c;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
   border-radius: 14px;
 }
 
@@ -154,9 +155,8 @@ input {
 
   padding: 10px;
 
-  background: #20242b;
-  border-top: 1px solid rgba(255,255,255,0.04);
-
+   background: #f1f3f5;
+   border-top: 1px solid rgba(0,0,0,0.06);
   box-sizing: border-box;
 }
 
