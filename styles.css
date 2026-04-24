@@ -16,11 +16,47 @@ body {
   justify-content: space-between;
   padding: 15px;
   background: #2a2d3a;
+  align-items: center;
 }
 
-.support {
+/* ID */
+#userId {
   color: #4ea1ff;
-  text-decoration: none;
+  font-weight: bold;
+}
+
+/* SUPPORT ICON */
+.support {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TELEGRAM ICON */
+.tg-icon {
+  width: 46px;
+  height: 46px;
+  padding: 10px;
+  border-radius: 50%;
+  background: #2a2d3a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  object-fit: contain;
+
+  box-shadow: 0 0 12px rgba(78, 161, 255, 0.7),
+              0 0 28px rgba(78, 161, 255, 0.5);
+
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.tg-icon:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(78, 161, 255, 0.9),
+              0 0 35px rgba(78, 161, 255, 0.6);
 }
 
 /* MAIN */
@@ -44,7 +80,7 @@ input {
   color: white;
 }
 
-/* toggle */
+/* TOGGLE */
 .toggle {
   display: flex;
   gap: 10px;
@@ -64,7 +100,7 @@ input {
   background: #4ea1ff;
 }
 
-/* calc */
+/* CALC */
 .calc {
   display: flex;
   justify-content: space-between;
@@ -72,7 +108,7 @@ input {
   color: #4ea1ff;
 }
 
-/* buy button */
+/* BUY BUTTON */
 .buy {
   width: 100%;
   padding: 12px;
@@ -83,58 +119,12 @@ input {
   font-weight: bold;
 }
 
-/* packs */
-.packs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.packs button {
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: #2a2d3a;
-  color: white;
-}
-.packs {
-  margin-top: 20px;
-}
-
-.pack {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  background: #2a2d3a; /* фон пакета */
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: #eaeaea;
-}
-
-.arrow {
-  background: #3b3f4a;
-  border: none;
-  color: #ffd700; /* золотистый оттенок стрелок */
-  font-size: 20px;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.arrow:hover {
-  background: #4ea1ff; /* синяя подсветка при наведении */
-}
-
-.pack-value {
-  font-size: 18px;
-  color: #ffd700; /* золотистый оттенок для числа */
-}
+/* STARS BLOCK */
 .stars-block {
   margin: 10px 0;
 }
 
+/* PACK BUTTONS */
 .packs {
   display: flex;
   gap: 8px;
@@ -148,7 +138,7 @@ input {
   border: none;
   border-radius: 10px;
   background: #2a2d3a;
-  color: #ffd700; /* лёгкий золотой оттенок */
+  color: #ffd700;
   font-size: 14px;
   cursor: pointer;
 }
@@ -156,27 +146,39 @@ input {
 .packs button:hover {
   background: #3a3f52;
 }
-.tg-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  padding: 6px;
+
+/* PACK SLIDER */
+.pack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
   background: #2a2d3a;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #eaeaea;
+}
 
-  /* СВЕЧЕНИЕ */
-  box-shadow: 0 0 10px rgba(78, 161, 255, 0.6),
-              0 0 20px rgba(78, 161, 255, 0.4);
-
-  transition: 0.3s;
+.arrow {
+  background: #3b3f4a;
+  border: none;
+  color: #ffd700;
+  font-size: 20px;
   cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
-/* при наведении */
-.tg-icon:hover {
-  box-shadow: 0 0 15px rgba(78, 161, 255, 0.9),
-              0 0 30px rgba(78, 161, 255, 0.6);
-  transform: scale(1.05);
+.arrow:hover {
+  background: #4ea1ff;
 }
+
+.pack-value {
+  font-size: 18px;
+  color: #ffd700;
+}
+
+/* MODAL */
 .modal {
   position: fixed;
   top: 0;
