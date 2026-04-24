@@ -10,12 +10,13 @@
 <body>
 
   <!-- TOP BAR -->
- <div class="topbar">
-  <div id="userId">#1</div>
-  <a class="support" href="https://t.me/your_bot" target="_blank">
-    <img src="img/telegram-svgrepo-com.svg" class="tg-icon">
-  </a>
-</div>
+  <div class="topbar">
+    <div id="userId">#1</div>
+
+    <a class="support" href="https://t.me/your_bot" target="_blank">
+      <img src="img/telegram-svgrepo-com.svg" class="tg-icon">
+    </a>
+  </div>
 
   <!-- MAIN -->
   <div class="container">
@@ -31,17 +32,17 @@
 
     <div class="stars-block">
 
-  <input id="stars" type="number" placeholder="Количество звёзд">
+      <input id="stars" type="number" placeholder="Количество звёзд">
 
-  <div class="packs">
-    <button onclick="setStars(50)">50</button>
-    <button onclick="setStars(100)">100</button>
-    <button onclick="setStars(500)">500</button>
-    <button onclick="setStars(1000)">1000</button>
-    <button onclick="setStars(5000)">5000</button>
-  </div>
+      <div class="packs">
+        <button onclick="setStars(50)">50</button>
+        <button onclick="setStars(100)">100</button>
+        <button onclick="setStars(500)">500</button>
+        <button onclick="setStars(1000)">1000</button>
+        <button onclick="setStars(5000)">5000</button>
+      </div>
 
-</div>
+    </div>
 
     <div class="calc">
       <span id="starsOut">0 ⭐</span>
@@ -50,16 +51,22 @@
 
     <button class="buy">Купить</button>
 
-    <h3>Пакеты</h3>
-
-<div class="packs">
-  <div class="pack">
-    <button class="arrow left" onclick="adjustPacks(-50)">←</button>
-    <span class="pack-value" id="packValue">50</span>
-    <button class="arrow right" onclick="adjustPacks(50)">→</button>
   </div>
-</div>
+
+  <!-- MODAL (ПРАВИЛЬНО ВНИЗУ) -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-box">
+      <h2>Подтверждение</h2>
+
+      <p id="confirmText"></p>
+
+      <div class="timer" id="timer">5</div>
+
+      <button id="confirmBtn">Подтвердить</button>
+    </div>
+  </div>
 
   <script src="app.js"></script>
+
 </body>
 </html>

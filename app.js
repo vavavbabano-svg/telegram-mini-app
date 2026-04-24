@@ -34,3 +34,41 @@ function adjustPacks(amount) {
   starsInput.value = newValue;
   update();
 }
+const modal = document.getElementById("modal");
+const confirmText = document.getElementById("confirmText");
+const timerEl = document.getElementById("timer");
+const confirmBtn = document.getElementById("confirmBtn");
+
+let countdown;
+
+document.querySelector(".buy").addEventListener("click", () => {
+  const stars = starsInput.value;
+  const username = document.getElementById("username").value;
+  const total = (stars * PRICE).toFixed(2);
+
+  confirmText.innerText = `${username} — ${stars} ⭐ за ${total} ₽`;
+
+  modal.classList.remove("hidden");
+
+  let time = 5;
+  timerEl.innerText = time;
+
+  clearInterval(countdown);
+
+  countdown = setInterval(() => {
+    time--;
+    timerEl.innerText = time;
+
+    if (time <= 0) {
+      clearInterval(countdown);
+      confirmBtn.disabled = false;
+    }
+  }, 1000);
+
+  confirmBtn.disabled = true;
+});
+
+confirmBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+  alert("Заказ отправлен (пока тест)");
+});
