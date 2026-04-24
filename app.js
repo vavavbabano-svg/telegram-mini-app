@@ -174,26 +174,20 @@ const screenSell = document.getElementById("screenSell");
 const screenRef = document.getElementById("screenRef");
 
 
+
 function setTab(activeTab) {
 
   const tabs = [tabBuy, tabSell, tabRef];
   const screens = [screenBuy, screenSell, screenRef];
 
-  // tabs state
+  // tabs UI
   tabs.forEach(t => t.classList.remove("active"));
   activeTab.classList.add("active");
 
-  // smooth animation delay trick (iOS feel)
-  screens.forEach(s => {
-    s.classList.remove("active");
-    s.style.transition = "all 0.2s ease";
-  });
+  // screens switch
+  screens.forEach(s => s.classList.remove("active"));
 
-  requestAnimationFrame(() => {
-
-    if (activeTab === tabBuy) screenBuy.classList.add("active");
-    if (activeTab === tabSell) screenSell.classList.add("active");
-    if (activeTab === tabRef) screenRef.classList.add("active");
-
-  });
+  if (activeTab === tabBuy) screenBuy.classList.add("active");
+  if (activeTab === tabSell) screenSell.classList.add("active");
+  if (activeTab === tabRef) screenRef.classList.add("active");
 }

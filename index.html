@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -25,8 +26,10 @@
     </a>
   </div>
 
-  <!-- MAIN -->
-  <div class="container">
+  <!-- SCREENS WRAPPER -->
+
+  <!-- BUY SCREEN -->
+  <div id="screenBuy" class="screen active">
 
     <h1>⭐ Покупка Звезд</h1>
 
@@ -57,18 +60,27 @@
     <button class="buy">Купить</button>
 
   </div>
+
+  <!-- SELL SCREEN -->
+  <div id="screenSell" class="screen">
+    <h1>💸 Продажа</h1>
+    <p>Здесь будет продажа звёзд</p>
+  </div>
+
+  <!-- REF SCREEN -->
+  <div id="screenRef" class="screen">
+    <h1>👥 Рефералы</h1>
+    <p>Здесь будет реферальная система</p>
+  </div>
+
+  <!-- TAB BAR -->
   <div class="tabbar">
 
-  <button class="tab active" id="tabBuy">Покупка</button>
-  <button class="tab" id="tabSell">Продажа</button>
-  <button class="tab" id="tabRef">Рефералы</button>
+    <button class="tab active" id="tabBuy">Покупка</button>
+    <button class="tab" id="tabSell">Продажа</button>
+    <button class="tab" id="tabRef">Рефералы</button>
 
-</div>
-
-<!-- ЭКРАНЫ -->
-<div id="screenBuy" class="screen active"></div>
-<div id="screenSell" class="screen"></div>
-<div id="screenRef" class="screen"></div>
+  </div>
 
 </body>
 </html>

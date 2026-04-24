@@ -211,8 +211,9 @@ body {
   background: rgba(15, 17, 21, 0.8);
 }
 
+
 .tab {
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
 .tab:active {
