@@ -55,33 +55,31 @@ async function initUser() {
     return;
   }
 
-  // 🔥 если нет юзера — создаём
+  // 🔥 ЕСЛИ НЕТ — СОЗДАЁМ
   if (!data) {
 
-    const { data: newUser, error: insertError } = await supabase
+    await supabase
       .from("users")
       .insert({
         id: String(tgUser.id),
         username: tgUser.username || null,
         stars: 0
-      })
-      .select()
-      .single();
+      });
 
-    if (insertError) {
-      console.log(insertError);
-      userIdEl.textContent = "#err";
-      return;
-    }
+    // 🔥 ВАЖНО: ПЕРЕЧИТЫВАЕМ ИЗ БД
+    const res = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", String(tgUser.id))
+      .maybeSingle();
 
-    data = newUser;
+    data = res.data;
   }
 
-  // 🔥 ГЛАВНЫЙ ФИКС
-  // ждём гарантированно number (если вдруг null — берём id как fallback)
-  const displayNumber = data.number || data.id;
+  console.log("USER FROM DB:", data);
 
-  userIdEl.textContent = "#" + displayNumber;
+  // 🔥 ФИНАЛЬНЫЙ ФОРМАТ
+  userIdEl.textContent = "#" + (data.number ?? data.id);
 }
 
 
