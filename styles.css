@@ -75,11 +75,6 @@ body {
   animation: pulse 2.5s infinite ease-in-out;
 }
 
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
 /* INPUT (ВАЖНО — ФИКС РАЗМЕРА) */
 input {
   width: 100%;
