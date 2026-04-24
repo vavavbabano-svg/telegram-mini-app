@@ -68,18 +68,6 @@ body {
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
 }
 
-/* ===== INPUTS ===== */
-input {
-  width: 100%;
-  padding: 12px;
-
-  background: #1b1d23;
-  border: none;
-  border-radius: 10px;
-
-  color: white;
-  outline: none;
-}
 
 /* ===== USER BLOCK ===== */
 .user-block {
@@ -88,11 +76,29 @@ input {
   margin-bottom: 12px;
 }
 
+/* ===== INPUT ===== */
+.user-block input {
+  width: 100%;
+  padding: 12px;
+
+  background: #1b1d23;
+  border: none;
+  outline: none;
+
+  color: white;
+
+  /* верх скруглён, низ квадрат */
+  border-radius: 10px 10px 0 0;
+
+  margin: 0;
+}
+
 /* ===== TOGGLE ===== */
 .toggle {
   display: flex;
   gap: 0;
   margin: 0;
+  transform: translateY(-1px); /* 👈 чтобы касалось input */
 }
 
 .toggle button {
@@ -104,16 +110,21 @@ input {
   color: #aaa;
 
   cursor: pointer;
+
+  border-radius: 0; /* базово всё квадрат */
 }
 
+/* левый */
 #selfBtn {
   border-radius: 0 0 0 10px;
 }
 
+/* правый */
 #otherBtn {
   border-radius: 0 0 10px 0;
 }
 
+/* актив */
 .toggle .active {
   background: #3a3f4a;
   color: white;
