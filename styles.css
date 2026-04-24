@@ -33,26 +33,10 @@ body {
 }
 
 .tg-icon {
-  width: 48px;
-  height: 48px;
-
-  display: block;
-
-  /* квадрат */
-  border-radius: 10px;
-
-  /* фон кнопки */
-  background: #2a2d3a;
-
-  /* убрали свечение полностью */
-  box-shadow: none;
-
-  padding: 8px;
-
+  width: 32px;
+  height: 32px;
   object-fit: contain;
-
-  transition: 0.2s ease;
-  cursor: pointer;
+  display: block;
 }
 
 .tg-icon:hover {
