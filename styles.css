@@ -1,38 +1,45 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: #0f0f1a;
-  color: #e6e6e6;
+  background: #0b0f1a; /* единый тёмный фон */
+  color: #eaeaea;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
+/* ПЛАШКА ПОКУПКИ */
 .card {
-  background: #1a1a2e;
-  padding: 20px;
-  border-radius: 16px;
+  background: #121a2b; /* чуть светлее фона */
+  padding: 24px;
+  border-radius: 18px;
   width: 90%;
   max-width: 360px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
   text-align: center;
+  border: 1px solid rgba(124, 58, 237, 0.2);
 }
 
+/* ЗАГОЛОВОК */
 h1 {
   color: #a78bfa;
+  margin-bottom: 20px;
 }
 
+/* ПОЛЯ */
 input {
-  width: 90%;
+  width: 100%;
   padding: 12px;
   margin: 10px 0;
   border: none;
   border-radius: 10px;
-  background: #2a2a40;
+  background: #1b2740;
   color: white;
+  outline: none;
 }
 
+/* КНОПКА */
 button {
   width: 100%;
   padding: 12px;
@@ -48,6 +55,8 @@ button {
 button:hover {
   background: #6d28d9;
 }
-input, button {
-  font-size: 16px;
+
+/* ЦЕНА */
+h2 {
+  color: #c4b5fd;
 }
