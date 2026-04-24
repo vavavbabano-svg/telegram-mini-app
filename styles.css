@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #1a1d22;
+  background: #20242b;
   color: #eaeaea;
 }
 
@@ -16,7 +16,16 @@ body {
 
 /* TOP */
 .topbar {
-  background: #1a1d22;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 14px 16px;
+
+  background: #20242b;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
@@ -134,8 +143,21 @@ input {
 
 /* TAB */
 .tabbar {
-  background: #1a1d22;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  width: 100%;
+
+  display: flex;
+
+  padding: 10px;
+
+  background: #20242b;
   border-top: 1px solid rgba(255,255,255,0.04);
+
+  box-sizing: border-box;
 }
 
 .tab {
@@ -157,4 +179,7 @@ body {
 
 .user-block {
   margin-top: 14px;
+}
+* {
+  box-sizing: border-box;
 }
