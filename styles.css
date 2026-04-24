@@ -30,32 +30,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
 }
 
-/* TELEGRAM ICON */
 .tg-icon {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
 
-  padding: 10px;
-  border-radius: 50%;
-  background: #2a2d3a;
-
-  object-fit: contain;
   display: block;
 
-  box-shadow: 0 0 12px rgba(78, 161, 255, 0.7),
-              0 0 28px rgba(78, 161, 255, 0.5);
+  /* квадрат */
+  border-radius: 10px;
 
-  transition: 0.3s;
+  /* фон кнопки */
+  background: #2a2d3a;
+
+  /* убрали свечение полностью */
+  box-shadow: none;
+
+  padding: 8px;
+
+  object-fit: contain;
+
+  transition: 0.2s ease;
   cursor: pointer;
 }
 
 .tg-icon:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 18px rgba(78, 161, 255, 0.9),
-              0 0 35px rgba(78, 161, 255, 0.6);
+  transform: scale(1.05);
 }
 
 /* MAIN */
