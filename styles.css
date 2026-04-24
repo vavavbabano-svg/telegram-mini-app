@@ -304,8 +304,6 @@ input {
 /* базовая кнопка */
 .packs button {
   flex: 1;
-
-
   padding: 12px 0;
 
   border: none;
