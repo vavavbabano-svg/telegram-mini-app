@@ -11,6 +11,7 @@
 
 <body>
 
+<!-- TOP -->
 <div class="topbar">
   <div id="userId">#</div>
 
@@ -19,66 +20,78 @@
   </a>
 </div>
 
-  <!-- BUY -->
-  <div id="screenBuy" class="screen active">
+<!-- BUY -->
+<div id="screenBuy" class="screen active">
 
-    <div class="title-image">
-      <img src="img/звезда12.jpg" alt="">
-    </div>
-
-    <div class="card">
-
-      <input id="username" placeholder="Username">
-
-      <div class="toggle">
-        <button id="selfBtn" class="active">Себе</button>
-        <button id="otherBtn">Другому</button>
-      </div>
-
-    </div>
-
-    <div class="stars-block">
-
-  <div class="stars-input-wrap">
-    <input id="stars" type="number" placeholder="Количество звёзд">
-    <div class="price-indicator">
-      <span id="rubOut">0 ₽</span>
-    </div>
+  <div class="title-image">
+    <img src="img/звезда12.jpg" alt="">
   </div>
 
-  <div class="packs">
-    <button onclick="setStars(50)"><img src="img/тгзвезда21.png">50</button>
-    <button onclick="setStars(100)"><img src="img/тгзвезда21.png">100</button>
-    <button onclick="setStars(500)"><img src="img/тгзвезда21.png">500</button>
-    <button onclick="setStars(1000)"><img src="img/тгзвезда21.png">1000</button>
-    <button onclick="setStars(5000)"><img src="img/тгзвезда21.png">5000</button>
+  <div class="card">
+
+    <input id="username" placeholder="Username">
+
+    <div class="toggle">
+      <button id="selfBtn" class="active">Себе</button>
+      <button id="otherBtn">Другому</button>
+    </div>
+
+  </div>
+
+  <div class="stars-block">
+
+    <div class="stars-input-wrap">
+      <input id="stars" type="number" placeholder="Количество звёзд">
+      <div class="price-indicator">
+        <span id="rubOut">0 ₽</span>
+      </div>
+    </div>
+
+    <div class="packs">
+      <button onclick="setStars(50)"><img src="img/тгзвезда21.png">50</button>
+      <button onclick="setStars(100)"><img src="img/тгзвезда21.png">100</button>
+      <button onclick="setStars(500)"><img src="img/тгзвезда21.png">500</button>
+      <button onclick="setStars(1000)"><img src="img/тгзвезда21.png">1000</button>
+      <button onclick="setStars(5000)"><img src="img/тгзвезда21.png">5000</button>
+    </div>
+
+  </div>
+
+  <button class="buy">Купить</button>
+
+</div>
+
+<!-- SELL -->
+<div id="screenSell" class="screen">
+  <h1>Продажа</h1>
+</div>
+
+<!-- REF -->
+<div id="screenRef" class="screen">
+  <h1>Рефералы</h1>
+</div>
+
+<!-- 🔥 НОВЫЙ BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+
+  <div class="nav-item" data-tab="tabBuy">
+    <div class="icon">🛒</div>
+    <span>Покупка</span>
+  </div>
+
+  <div class="nav-item" data-tab="tabSell">
+    <div class="icon">💸</div>
+    <span>Продажа</span>
+  </div>
+
+  <div class="nav-item" data-tab="tabRef">
+    <div class="icon">👥</div>
+    <span>Рефка</span>
   </div>
 
 </div>
 
-
-    <button class="buy">Купить</button>
-
-  </div>
-
-  <!-- SELL -->
-  <div id="screenSell" class="screen">
-    <h1>Продажа</h1>
-  </div>
-
-  <!-- REF -->
-  <div id="screenRef" class="screen">
-    <h1>Рефералы</h1>
-  </div>
-
-  <!-- TAB -->
-  <div class="tabbar">
-    <button class="tab active" id="tabBuy">Покупка</button>
-    <button class="tab" id="tabSell">Продажа</button>
-    <button class="tab" id="tabRef">Рефералы</button>
-  </div>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>

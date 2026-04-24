@@ -5,22 +5,19 @@
   box-sizing: border-box;
   font-family: Helvetica, Arial;
   -webkit-tap-highlight-color: transparent;
-
-  font-weight: 600; /* 🔥 ВЕЗДЕ ЖИРНЫЙ */
+  font-weight: 600;
 }
 
 body {
   background: #1a1d22;
   color: #f5f7fa;
   overflow-x: hidden;
-
-  font-weight: 600;
 }
 
-/* ===== APP LAYOUT WIDTH ===== */
+/* ===== APP WIDTH ===== */
 .topbar,
 .screen,
-.tabbar {
+.bottom-nav {
   max-width: 420px;
   margin: 0 auto;
 }
@@ -35,8 +32,6 @@ body {
 
   background: #1a1d22;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-
-  font-weight: 600;
 }
 
 .tg-icon {
@@ -49,7 +44,9 @@ body {
 .screen {
   display: none;
   padding: 16px;
-  padding-bottom: 100px;
+
+  /* чтобы контент не уезжал под меню */
+  padding-bottom: 120px;
 }
 
 .screen.active {
@@ -69,14 +66,11 @@ body {
 
 /* ===== CARDS ===== */
 .card,
-.user-block,
 .stars-block {
   margin-top: 12px;
   background: #22262c;
   border-radius: 14px;
   overflow: hidden;
-
-  font-weight: 600;
 }
 
 /* ===== INPUT ===== */
@@ -89,8 +83,6 @@ input {
 
   background: transparent;
   color: #f5f7fa;
-
-  font-weight: 600;
 }
 
 /* ===== TOGGLE ===== */
@@ -108,14 +100,41 @@ input {
 
   cursor: pointer;
 
-  font-weight: 600;
-
-  border-radius: 0; /* 🔥 убрали ВСЕ скругления */
+  border-radius: 0;
 }
 
 .toggle .active {
   background: #2a2f38;
   color: #fff;
+}
+
+/* ===== STARS INPUT ===== */
+.stars-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.stars-input-wrap input {
+  width: 100%;
+  padding: 14px 90px 14px 14px;
+
+  background: #232830; /* чуть светлее чем было */
+  color: #f5f7fa;
+
+  border: none;
+
+  border-radius: 14px 14px 0 0;
+}
+
+.price-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-weight: 700;
+  color: #ffd36a;
 }
 
 /* ===== PACKS ===== */
@@ -137,11 +156,9 @@ input {
   background: #1b1f26;
   color: #ffd36a;
 
-  font-weight: 600;
-
   cursor: pointer;
 
-  border-radius: 0; /* 🔥 полностью убрали скругления */
+  border-radius: 0;
 }
 
 .packs button img {
@@ -149,102 +166,92 @@ input {
   height: 14px;
 }
 
-/* ===== CALC ===== */
-.calc {
-  display: flex;
-  justify-content: space-between;
-  margin: 14px 0;
-  color: #888;
-
-  font-weight: 700; /* чуть сильнее для цифр */
-}
-
-/* ===== BUY ===== */
+/* ===== BUY BUTTON ===== */
 .buy {
   width: 100%;
   padding: 14px;
-
-  margin-top: 14px;
+  margin-top: 16px;
 
   border: none;
   border-radius: 14px;
 
-  background: #4a1a1f; /* 🔥 чуть светлее */
+  background: #3a1418; /* темнее */
   color: #f5f7fa;
 
   font-weight: 700;
 
   cursor: pointer;
-
-  transition: 0.2s ease;
-}
-.buy:hover {
-  background: #5a2026;
-}
-.buy {
-  margin-top: 14px;
+  transition: 0.2s;
 }
 
-/* ===== TAB BAR ===== */
-.tabbar {
+.buy:active {
+  transform: scale(0.98);
+  background: #4a1a1f;
+}
+
+/* ===== 🔥 BOTTOM NAV (GLASS) ===== */
+.bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
 
-  display: flex;
-  padding: 10px;
-
-  background: #1a1d22;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-.tab {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: #777;
-
-  font-weight: 600;
-}
-
-.tab.active {
-  color: #ffd36a;
-}
-
-/* ===== SPACING FIX ===== */
-.user-block {
-  margin-top: 10px;
-}
-/* ===== STARS INPUT WRAP ===== */
-.stars-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* input */
-.stars-input-wrap input {
+  margin: 0 auto;
   width: 100%;
-  padding: 14px 90px 14px 14px; /* место под цену справа */
-  background: #1b1f26;
-  border: none;
-  color: #f5f7fa;
+  max-width: 420px;
 
-  font-weight: 600;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 
-  border-radius: 14px 14px 0 0;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  background: linear-gradient(
+    to top,
+    rgba(20, 22, 26, 0.95),
+    rgba(30, 32, 36, 0.75)
+  );
+
+  border-top: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 -10px 25px rgba(0,0,0,0.4);
+
+  border-radius: 30px 30px 0 0;
+
+  opacity: 0;
+  transform: translateY(40px);
+  animation: navIn 0.4s ease forwards;
 }
 
-/* цена справа */
-.price-indicator {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+@keyframes navIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  font-weight: 700;
-  color: #ffd36a;
+/* ===== NAV ITEM ===== */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  pointer-events: none;
+  color: #9aa0a6;
+  font-size: 12px;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-item .icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+/* клик эффект */
+.nav-item:active {
+  transform: scale(0.95);
 }

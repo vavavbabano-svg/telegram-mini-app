@@ -27,10 +27,6 @@ const userIdEl = document.getElementById("userId");
 const starsInput = document.getElementById("stars");
 const rubOut = document.getElementById("rubOut");
 
-if (!rubOut) {
-  console.warn("rubOut not found in DOM");
-}
-
 const selfBtn = document.getElementById("selfBtn");
 const otherBtn = document.getElementById("otherBtn");
 const username = document.getElementById("username");
@@ -76,7 +72,9 @@ function update(val) {
   const s = Math.max(0, Number(val) || 0);
   const price = (s * RATE).toFixed(2);
 
-  rubOut.textContent = `${price} ₽`;
+  if (rubOut) {
+    rubOut.textContent = `${price} ₽`;
+  }
 }
 
 // =====================
@@ -142,10 +140,14 @@ document.querySelector(".buy").onclick = async () => {
     .eq("id", String(tgUser.id));
 
   alert("Добавлено: " + stars + " ⭐");
+
+  // очистка после покупки
+  starsInput.value = "";
+  update(0);
 };
 
 // =====================
-// TABS
+// BOTTOM NAV (НОВОЕ)
 // =====================
 const tabs = {
   tabBuy: "screenBuy",
@@ -153,19 +155,36 @@ const tabs = {
   tabRef: "screenRef"
 };
 
-Object.keys(tabs).forEach(id => {
+// переключение через нижнее меню
+document.querySelectorAll(".nav-item").forEach(item => {
 
-  document.getElementById(id).onclick = () => {
+  item.addEventListener("click", () => {
 
+    const tab = item.dataset.tab;
+
+    // скрываем все
     Object.values(tabs).forEach(screen => {
       document.getElementById(screen).classList.remove("active");
     });
 
-    Object.keys(tabs).forEach(t => {
-      document.getElementById(t).classList.remove("active");
-    });
+    // показываем нужный
+    document.getElementById(tabs[tab]).classList.add("active");
 
-    document.getElementById(id).classList.add("active");
-    document.getElementById(tabs[id]).classList.add("active");
-  };
+    // анимация клика
+    item.style.transform = "scale(0.95)";
+    setTimeout(() => {
+      item.style.transform = "scale(1)";
+    }, 150);
+
+  });
+
+});
+
+// появление меню
+window.addEventListener("load", () => {
+  const nav = document.getElementById("bottomNav");
+
+  setTimeout(() => {
+    nav.classList.add("show");
+  }, 100);
 });
