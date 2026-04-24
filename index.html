@@ -3,21 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stars Shop</title>
+  <title>Stars App</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-  <div class="card">
-    <h1>⭐ Покупка звёзд</h1>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div id="userId">ID: 1</div>
+    <a class="support" href="https://t.me/your_bot" target="_blank">Support</a>
+  </div>
 
-    <input id="username" placeholder="Telegram username">
+  <!-- MAIN -->
+  <div class="container">
+
+    <h1>⭐ Buy Stars</h1>
+
+    <input id="username" placeholder="Username">
+
+    <div class="toggle">
+      <button class="active">Себе</button>
+      <button>Другому</button>
+    </div>
 
     <input id="stars" type="number" placeholder="Количество звёзд">
 
-    <h2 id="price">Цена: 0 ₽</h2>
+    <div class="calc">
+      <span id="starsOut">0 ⭐</span>
+      <span id="rubOut">0 ₽</span>
+    </div>
 
-    <button onclick="buy()">Купить</button>
+    <button class="buy">Купить</button>
+
+    <h3>Пакеты</h3>
+
+    <div class="packs">
+      <button onclick="setStars(50)">50</button>
+      <button onclick="setStars(100)">100</button>
+      <button onclick="setStars(500)">500</button>
+      <button onclick="setStars(1000)">1000</button>
+      <button onclick="setStars(5000)">5000</button>
+    </div>
+
   </div>
 
   <script src="app.js"></script>
