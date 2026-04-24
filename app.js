@@ -43,27 +43,37 @@ async function initUser() {
     return;
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("users")
-    .select("id, username, stars, number")
+    .select("*")
     .eq("id", String(tgUser.id))
     .maybeSingle();
 
   if (error) {
-    console.log("Supabase error:", error);
-    userIdEl.textContent = "#error";
+    console.log(error);
     return;
   }
 
   if (!data) {
-    userIdEl.textContent = "#new";
+
+    const { data: newUser } = await supabase
+      .from("users")
+      .insert({
+        id: String(tgUser.id),
+        username: tgUser.username || null,
+        stars: 0
+      })
+      .select()
+      .maybeSingle();
+
+    userIdEl.textContent = "#" + newUser.id;
     return;
   }
 
-  userIdEl.textContent = "#" + (data.number ?? "?");
+  userIdEl.textContent = "#" + (data.number ?? data.id);
 }
 
-initUser();
+
 
 // =====================
 // CALCULATOR

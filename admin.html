@@ -1,39 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Helvetica, Arial;
+      background: #1a1d22;
+      color: #f5f7fa;
+      padding: 16px;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: #22262c;
+      color: white;
+      font-weight: 600;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #3a1418;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .panel {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: #22262c;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .ok {
+      color: #9aa0a6;
+    }
+  </style>
 </head>
+
 <body>
-<!-- Это комментарий -->
-  <h2>Вход в админку</h2>
 
-  <input id="pass" placeholder="пароль">
-  <button onclick="login()">Войти</button>
+<h2>Вход в админку</h2>
 
-  <div id="panel" style="display:none;">
-    <h2>Заказы</h2>
-    <div id="orders"></div>
+<input id="pass" placeholder="пароль">
+<button onclick="login()">Войти</button>
+
+<div id="panel" class="panel">
+
+  <h2>Админ панель</h2>
+
+  <div class="card">
+    <h3>Заказы</h3>
+    <div id="orders" class="ok">Загрузка...</div>
   </div>
 
-  <script>
-    const PASSWORD = "1234";
+  <div class="card">
+    <h3>Выдать звезды</h3>
 
-    function login() {
-      const pass = document.getElementById("pass").value;
+    <input id="userId" placeholder="Telegram ID">
+    <input id="amount" placeholder="Количество">
 
-      if (pass === PASSWORD) {
-        document.getElementById("panel").style.display = "block";
-        loadOrders();
-      } else {
-        alert("Неверный пароль");
-      }
-    }
+    <button onclick="giveStars()">Выдать</button>
+  </div>
 
-    function loadOrders() {
-      document.getElementById("orders").innerHTML =
-        "Здесь будут заказы (пока подключим позже к серверу)";
-    }
-  </script>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+
+const PASSWORD = "1234";
+
+function login() {
+  const pass = document.getElementById("pass").value;
+
+  if (pass === PASSWORD) {
+    document.getElementById("panel").style.display = "block";
+    loadOrders();
+  } else {
+    alert("Неверный пароль");
+  }
+}
+
+// =====================
+// ЗАГЛУШКА ЗАКАЗОВ
+// =====================
+function loadOrders() {
+  document.getElementById("orders").innerHTML =
+    "Пока нет подключения к базе (Supabase добавим сюда позже)";
+}
+
+// =====================
+// ВЫДАЧА ЗВЁЗД
+// =====================
+async function giveStars() {
+
+  const userId = document.getElementById("userId").value;
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!userId || !amount) {
+    return alert("Заполни поля");
+  }
+
+  // тут позже подключим supabase
+  alert(`Выдано ${amount} ⭐ пользователю ${userId}`);
+}
+</script>
 
 </body>
 </html>
