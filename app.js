@@ -43,10 +43,13 @@ async function initUser() {
     return;
   }
 
+  const userId = String(tgUser.id);
+
+  // 1. ищем пользователя
   let { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("id", String(tgUser.id))
+    .eq("id", userId)
     .maybeSingle();
 
   if (error) {
@@ -55,13 +58,13 @@ async function initUser() {
     return;
   }
 
-  // 🔥 если пользователя нет — создаём
+  // 2. если нет — создаём
   if (!data) {
 
     const { error: insertError } = await supabase
       .from("users")
       .insert({
-        id: String(tgUser.id),
+        id: userId,
         username: tgUser.username || null,
         stars: 0
       });
@@ -72,32 +75,28 @@ async function initUser() {
       return;
     }
 
-    // 🔥 повторно читаем из БД (гарантированно свежие данные)
+    // 3. ждём и ПЕРЕЧИТЫВАЕМ (важно!)
+    await new Promise(r => setTimeout(r, 300));
+
     const res = await supabase
       .from("users")
       .select("*")
-      .eq("id", String(tgUser.id))
+      .eq("id", userId)
       .maybeSingle();
 
     data = res.data;
   }
 
-  console.log("USER FROM DB:", data);
+  console.log("FINAL USER:", data);
 
-  // 🔥 ЖЕЛЕЗНЫЙ fallback (чтобы никогда не было просто "#")
-  const displayNumber =
+  // 4. жёсткий fallback
+  const display =
     data?.number ??
     data?.id ??
     tgUser.id;
 
-  userIdEl.textContent = "#" + displayNumber;
-  alert(JSON.stringify({
-  data: data,
-  number: data?.number,
-  id: data?.id
-}, null, 2));
+  userIdEl.textContent = "#" + display;
 }
-
 
 
 // =====================
