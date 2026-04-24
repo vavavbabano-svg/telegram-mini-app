@@ -187,3 +187,11 @@ input {
 
   user-select: none;
 }
+.topbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  padding: 15px !important;
+  background: #2a2d3a;
+}
