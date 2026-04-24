@@ -8,97 +8,56 @@
 }
 
 body {
-  background: #0e0f12;
-  color: #eaeaea;
-
-  min-height: 100vh;
-  overflow-x: hidden;
+  background: #0f1115;
+  color: #e6e6e6;
 }
 
 /* ===== TOP BAR ===== */
 .topbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-
   padding: 14px 16px;
-
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 #userId {
   font-size: 14px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.6);
-}
-
-.tg-icon {
-  width: 26px;
-  height: 26px;
+  color: rgba(255,255,255,0.5);
 }
 
 /* ===== SCREEN ===== */
 .screen {
-  display: none;
   padding: 18px;
   padding-bottom: 110px;
-
-  opacity: 0;
-  transform: translateY(6px);
-  transition: 0.25s ease;
 }
 
-.screen.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ===== TITLE IMAGE ===== */
+/* ===== IMAGE ===== */
 .title-image img {
   width: 100%;
   max-width: 320px;
-
   display: block;
-  margin: 0 auto;
-
+  margin: 0 auto 16px auto;
   border-radius: 12px;
-  object-fit: contain;
-
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
-}
-
-
-/* ===== USER BLOCK ===== */
-.user-block {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
 }
 
 /* ===== INPUT ===== */
-.user-block input {
+input {
   width: 100%;
   padding: 12px;
 
-  background: #1b1d23;
-  border: none;
-  outline: none;
+  background: #1a1d24;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
 
   color: white;
+  outline: none;
 
-  /* верх скруглён, низ квадрат */
-  border-radius: 10px 10px 0 0;
-
-  margin: 0;
+  margin-bottom: 10px;
 }
 
 /* ===== TOGGLE ===== */
 .toggle {
   display: flex;
-  gap: 0;
-  margin: 0;
-  transform: translateY(-1px); /* 👈 чтобы касалось input */
 }
 
 .toggle button {
@@ -106,106 +65,69 @@ body {
   padding: 10px;
 
   border: none;
-  background: #2a2d35;
+  background: #1a1d24;
   color: #aaa;
 
   cursor: pointer;
-
-  border-radius: 0; /* базово всё квадрат */
 }
 
-/* левый */
 #selfBtn {
-  border-radius: 0 0 0 10px;
+  border-radius: 10px 0 0 10px;
 }
 
-/* правый */
 #otherBtn {
-  border-radius: 0 0 10px 0;
+  border-radius: 0 10px 10px 0;
 }
 
-/* актив */
 .toggle .active {
-  background: #3a3f4a;
+  background: #2a2f3a;
   color: white;
 }
 
 /* ===== STARS BLOCK ===== */
-.stars-block {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-}
-
-/* input stars */
 .stars-block input {
   border-radius: 10px 10px 0 0;
 }
 
 /* ===== PACKS ===== */
-
 .packs {
   display: flex;
-  width: 100%;
   overflow: hidden;
-  background: #22252c;
 }
 
 .packs button {
   flex: 1;
-  height: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  padding: 12px;
 
   border: none;
-  border-radius: 0;
-
-  background: #1b1d23;
+  background: #1a1d24;
   color: #ffd86b;
 
-  font-size: 13px;
   font-weight: 600;
-
   cursor: pointer;
 }
 
-/* разделители */
 .packs button:not(:last-child) {
-  border-right: 1px solid rgba(255,255,255,0.04);
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
-/* нажатие */
-.packs button:active {
-  background: #2e313a;
-}
-
-/* скругления только по краям */
 .packs button:first-child {
-  border-bottom-left-radius: 10px;
+  border-radius: 0 0 0 10px;
 }
 
 .packs button:last-child {
-  border-bottom-right-radius: 10px;
+  border-radius: 0 0 10px 10px;
 }
 
-/* иконка */
-.packs button img {
-  width: 14px;
-  height: 14px;
-}
 /* ===== CALC ===== */
 .calc {
   display: flex;
   justify-content: space-between;
-
   margin: 14px 0;
-  color: #aaa;
+  color: #999;
 }
 
-/* ===== BUY BUTTON ===== */
+/* ===== BUY ===== */
 .buy {
   width: 100%;
   padding: 14px;
@@ -213,7 +135,7 @@ body {
   border: none;
   border-radius: 12px;
 
-  background: #2a2d35;
+  background: #2a2f3a;
   color: white;
 
   font-weight: 600;
@@ -230,26 +152,20 @@ body {
 
   padding: 10px;
 
-  background: rgba(15, 17, 21, 0.85);
-  backdrop-filter: blur(20px);
-
-  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(15, 17, 21, 0.9);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .tab {
   flex: 1;
   padding: 10px;
 
-  background: transparent;
   border: none;
+  background: transparent;
 
-  color: rgba(255,255,255,0.5);
-  font-size: 13px;
-
-  cursor: pointer;
+  color: #777;
 }
 
 .tab.active {
-  color: #ff4d5a;
+  color: white;
 }
-
