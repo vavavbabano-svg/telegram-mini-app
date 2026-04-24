@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #12151b;
+  background: #1a1d22;
   color: #eaeaea;
 }
 
@@ -16,18 +16,8 @@ body {
 
 /* TOP */
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 14px;
-
-  background: #0b0d10;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: #1a1d22;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .tg-icon {
@@ -62,11 +52,11 @@ body {
 }
 
 /* CARD */
-.card {
-  background: #14171c;
+.card,
+.user-block,
+.stars-block {
+  background: #22262c;
   border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 12px;
 }
 
 /* INPUT */
@@ -144,13 +134,8 @@ input {
 
 /* TAB */
 .tabbar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  padding: 10px;
-  background: #0b0d10;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  background: #1a1d22;
+  border-top: 1px solid rgba(255,255,255,0.04);
 }
 
 .tab {
