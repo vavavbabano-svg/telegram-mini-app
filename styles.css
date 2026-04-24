@@ -7,16 +7,19 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
 }
 
-
 body {
   background: linear-gradient(
     to bottom,
-    #2a0508 0%,   /* тёмно-красный сверху */
+    #2a0508 0%,
     #12070a 40%,
-    #0b0c10 100%  /* почти чёрный снизу */
+    #0b0c10 100%
   );
 
   color: #eaeaea;
+
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* TOP BAR */
@@ -35,39 +38,62 @@ body {
   color: rgba(255,255,255,0.6);
 }
 
-.support {
-  display: flex;
-  align-items: center;
-}
-
 .tg-icon {
   width: 26px;
   height: 26px;
-  opacity: 0.9;
 }
 
-/* MAIN */
-.container {
+/* SCREEN */
+.screen {
+  display: none;
   padding: 18px;
+  padding-bottom: 110px;
+
+  opacity: 0;
+  transform: translateY(6px);
+  transition: 0.25s ease;
 }
 
-/* TITLE */
-h1 {
-  font-size: 20px;
-  font-weight: 600;
+.screen.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* TITLE IMAGE */
+.title-image {
+  width: 100%;
   margin-bottom: 16px;
-  color: #ffffff;
 }
 
-/* INPUT */
+.title-image img {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
 
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+  animation: pulse 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* INPUT (ВАЖНО — ФИКС РАЗМЕРА) */
 input {
+  width: 100%;
+  padding: 12px;
+
+  margin-top: 10px;
+
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 70, 70, 0.15);
-}
+  border-radius: 10px;
 
-input:focus {
-  border-color: rgba(255, 80, 80, 0.5);
+  color: white;
+  font-size: 14px;
+  outline: none;
 }
 
 /* TOGGLE */
@@ -86,8 +112,6 @@ input:focus {
 
   background: transparent;
   color: rgba(255,255,255,0.6);
-
-  cursor: pointer;
 }
 
 .toggle .active {
@@ -95,7 +119,7 @@ input:focus {
   color: white;
 }
 
-/* PACKS */
+/* PACKS (ФИКС КНОПОК) */
 .packs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -103,16 +127,16 @@ input:focus {
   margin-top: 10px;
 }
 
-
 .packs button {
+  padding: 10px;
+  border-radius: 10px;
+
+  border: 1px solid rgba(255, 80, 80, 0.15);
+
   background: rgba(255, 255, 255, 0.04);
   color: #ffb3b3;
-  border: 1px solid rgba(255, 80, 80, 0.15);
-}
 
-.packs button:hover {
-  border-color: rgba(255, 80, 80, 0.4);
-  background: rgba(255, 50, 50, 0.08);
+  font-size: 13px;
 }
 
 /* CALC */
@@ -124,21 +148,36 @@ input:focus {
   color: rgba(255,255,255,0.7);
 }
 
-/* BUTTON */
-
+/* BUY BUTTON (ФИКС БОЛЬШОЙ КНОПКИ) */
 .buy {
+  width: 100%;
+  padding: 14px;
+
+  border: none;
+  border-radius: 12px;
+
   background: linear-gradient(135deg, #7a1018, #b81c2a);
-  box-shadow: 0 10px 25px rgba(184, 28, 42, 0.25);
+  color: white;
+
+  font-weight: 600;
+  font-size: 15px;
 }
 
-.buy:hover {
-  background: linear-gradient(135deg, #901522, #ff2a3d);
-}
-
-
+/* TABBAR (ФИКС РАЗМЕРА) */
 .tabbar {
-  background: rgba(10, 10, 12, 0.85);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-around;
+
+  padding: 10px;
+
+  background: rgba(15, 17, 21, 0.8);
   backdrop-filter: blur(20px);
+
   border-top: 1px solid rgba(255, 50, 50, 0.15);
 }
 
@@ -151,88 +190,16 @@ input:focus {
 
   color: rgba(255,255,255,0.5);
   font-size: 13px;
-
-  cursor: pointer;
 }
 
 .tab.active {
   color: #ff4d5a;
 }
 
-/* ЭКРАНЫ */
-
-
-.screen {
-  display: none;
-  padding: 18px;
-  padding-bottom: 90px;
-}
-
-.screen.active {
-  display: block;
-}
-
-.screen {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: 0.2s ease;
-}
-
-.screen.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* контейнер для экранов */
-body {
-  position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.tabbar {
-  backdrop-filter: blur(20px);
-  background: rgba(15, 17, 21, 0.8);
-}
-
-
-.tab {
-  transition: transform 0.15s ease, color 0.15s ease;
-}
-
-.tab:active {
-  transform: scale(0.92);
-}
-
-
-
-
-.title-image {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.title-image img {
-  width: 100%;
-  max-width: 100%;
-
-  height: auto;
-  object-fit: contain;
-
-  border-radius: 12px;
-
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
-
-  animation: pulse 2.5s infinite ease-in-out;
-  transition: transform 0.2s ease;
-}
-
-.title-image img:active {
-  transform: scale(0.98);
-}
-
+/* CONTAINER */
 .container {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 16px;
   backdrop-filter: blur(10px);
+  padding: 18px;
 }
