@@ -16,17 +16,10 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-// 🔥 берём реальную тему Telegram
-const theme = tg.themeParams;
+const bg = "#1a1d22"; // фиксируем один стиль
+const text = "#f5f7fa";
 
-const bg = theme.bg_color || "#e9edf2";
-const text = theme.text_color || "#f5f7fa";
 
-// применяем системно
-document.body.style.background = bg;
-document.body.style.color = text;
-
-// синхра с верхней панелью Telegram
 tg.setHeaderColor(bg);
 tg.setBackgroundColor(bg);
 
