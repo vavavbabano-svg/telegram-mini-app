@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stars App</title>
+
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Telegram API -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <div id="userId">#1</div>
+    <div id="userId">#</div>
 
     <a class="support" href="https://t.me/your_bot" target="_blank">
       <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" class="tg-icon">
@@ -26,8 +30,8 @@
     <input id="username" placeholder="Username">
 
     <div class="toggle">
-      <button class="active">Себе</button>
-      <button>Другому</button>
+      <button id="selfBtn" class="active">Себе</button>
+      <button id="otherBtn">Другому</button>
     </div>
 
     <div class="stars-block">
@@ -51,19 +55,6 @@
 
     <button class="buy">Купить</button>
 
-  </div>
-
-  <!-- MODAL -->
-  <div class="modal hidden" id="modal">
-    <div class="modal-box">
-      <h2>Подтверждение</h2>
-
-      <p id="confirmText"></p>
-
-      <div class="timer" id="timer">5</div>
-
-      <button id="confirmBtn">Подтвердить</button>
-    </div>
   </div>
 
   <script src="app.js"></script>

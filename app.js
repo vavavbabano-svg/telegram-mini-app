@@ -1,74 +1,51 @@
-const PRICE = 1.65;
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-const starsInput = document.getElementById("stars");
-const starsOut = document.getElementById("starsOut");
-const rubOut = document.getElementById("rubOut");
+const user = tg.initDataUnsafe?.user;
 
-starsInput.addEventListener("input", update);
+// 🧠 ID в левом углу
+const userId = user?.id || Math.floor(Math.random() * 99999);
+document.getElementById("userId").textContent = "#" + userId;
 
-function update() {
-  let s = Number(starsInput.value || 0);
-  starsOut.innerText = s + " ⭐";
-  rubOut.innerText = (s * PRICE).toFixed(2) + " ₽";
-}
+// =====================
+// MODE: себе / другому
+// =====================
+const selfBtn = document.getElementById("selfBtn");
+const otherBtn = document.getElementById("otherBtn");
+const username = document.getElementById("username");
 
+let mode = "self";
+
+// по умолчанию
+username.value = user?.username ? "@" + user.username : "@" + userId;
+
+selfBtn.onclick = () => {
+  mode = "self";
+  selfBtn.classList.add("active");
+  otherBtn.classList.remove("active");
+
+  username.value = user?.username ? "@" + user.username : "@" + userId;
+};
+
+otherBtn.onclick = () => {
+  mode = "other";
+  otherBtn.classList.add("active");
+  selfBtn.classList.remove("active");
+
+  username.value = "";
+};
+
+// =====================
+// STARS LOGIC
+// =====================
 function setStars(val) {
-  starsInput.value = val;
-  update();
+  document.getElementById("stars").value = val;
+  document.getElementById("starsOut").textContent = val + " ⭐";
+  document.getElementById("rubOut").textContent = val + " ₽";
 }
 
-// если используешь стрелки/пакеты
-function adjustPacks(amount) {
-  let packValueElement = document.getElementById('packValue');
-
-  if (!packValueElement) return;
-
-  let currentValue = parseInt(packValueElement.innerText, 10);
-  let newValue = currentValue + amount;
-
-  if (newValue < 50) newValue = 50;
-  if (newValue > 5000) newValue = 5000;
-
-  packValueElement.innerText = newValue;
-
-  starsInput.value = newValue;
-  update();
-}
-const modal = document.getElementById("modal");
-const confirmText = document.getElementById("confirmText");
-const timerEl = document.getElementById("timer");
-const confirmBtn = document.getElementById("confirmBtn");
-
-let countdown;
-
-document.querySelector(".buy").addEventListener("click", () => {
-  const stars = starsInput.value;
-  const username = document.getElementById("username").value;
-  const total = (stars * PRICE).toFixed(2);
-
-  confirmText.innerText = `${username} — ${stars} ⭐ за ${total} ₽`;
-
-  modal.classList.remove("hidden");
-
-  let time = 5;
-  timerEl.innerText = time;
-
-  clearInterval(countdown);
-
-  countdown = setInterval(() => {
-    time--;
-    timerEl.innerText = time;
-
-    if (time <= 0) {
-      clearInterval(countdown);
-      confirmBtn.disabled = false;
-    }
-  }, 1000);
-
-  confirmBtn.disabled = true;
-});
-
-confirmBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-  alert("Заказ отправлен (пока тест)");
+document.getElementById("stars").addEventListener("input", (e) => {
+  const val = e.target.value || 0;
+  document.getElementById("starsOut").textContent = val + " ⭐";
+  document.getElementById("rubOut").textContent = val + " ₽";
 });

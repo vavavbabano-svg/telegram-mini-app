@@ -191,3 +191,8 @@ input {
   background: #4ea1ff;
   color: white;
 }
+#userId {
+  color: #8b8f98;
+  font-weight: 700;
+  font-size: 14px;
+}
