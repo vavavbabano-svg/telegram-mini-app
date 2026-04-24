@@ -235,3 +235,5 @@ async function getNextNumber() {
 
   return next;
 }
+
+initUser();
