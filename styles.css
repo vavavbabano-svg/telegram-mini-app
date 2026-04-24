@@ -232,3 +232,16 @@ input {
 .tab.active {
   color: #ff4d5a;
 }
+
+.packs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.packs button img {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+}
