@@ -12,13 +12,10 @@ const supabase = createClient(
 // =====================
 const tg = window.Telegram.WebApp;
 
-
 tg.ready();
 tg.expand();
 
-const bg = "#1a1d22"; // фиксируем один стиль
-const text = "#f5f7fa";
-
+const bg = "#1a1d22";
 
 tg.setHeaderColor(bg);
 tg.setBackgroundColor(bg);
@@ -28,8 +25,11 @@ tg.setBackgroundColor(bg);
 // =====================
 const userIdEl = document.getElementById("userId");
 const starsInput = document.getElementById("stars");
-const starsOut = document.getElementById("starsOut");
 const rubOut = document.getElementById("rubOut");
+
+if (!rubOut) {
+  console.warn("rubOut not found in DOM");
+}
 
 const selfBtn = document.getElementById("selfBtn");
 const otherBtn = document.getElementById("otherBtn");
@@ -73,9 +73,10 @@ initUser();
 // CALCULATOR
 // =====================
 function update(val) {
-  const s = Number(val) || 0;
-  starsOut.textContent = s + " ⭐";
-  rubOut.textContent = (s * RATE).toFixed(2) + " ₽";
+  const s = Math.max(0, Number(val) || 0);
+  const price = (s * RATE).toFixed(2);
+
+  rubOut.textContent = `${price} ₽`;
 }
 
 // =====================

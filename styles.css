@@ -204,3 +204,35 @@ input {
 .user-block {
   margin-top: 10px;
 }
+/* ===== STARS INPUT WRAP ===== */
+.stars-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* input */
+.stars-input-wrap input {
+  width: 100%;
+  padding: 14px 90px 14px 14px; /* место под цену справа */
+  background: #1b1f26;
+  border: none;
+  color: #f5f7fa;
+
+  font-weight: 600;
+
+  border-radius: 14px 14px 0 0;
+}
+
+/* цена справа */
+.price-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-weight: 700;
+  color: #ffd36a;
+
+  pointer-events: none;
+}
