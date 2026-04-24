@@ -289,55 +289,60 @@ input {
 
 /* контейнер кнопок */
 
+
 .packs {
   display: flex;
-  
+
   width: 100%;
   margin: 0;
 
-  background: #23262d;
-  border-radius: 0 0 10px 10px;
+  background: #1b1d23;
 
   overflow: hidden;
 }
 
-/* кнопки */
+/* базовая кнопка */
 .packs button {
   flex: 1;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
 
   padding: 12px 0;
 
   border: none;
   outline: none;
 
-  background: #1b1d23;
+  background: #22252c;
 
-  color: #ffd86b; /* желтый текст */
+  color: #ffd86b;
   font-weight: 600;
 
   font-size: 13px;
 
+  text-align: center;
 
   cursor: pointer;
 }
 
-/* разделители мягкие */
+/* убираем ВСЕ рамки */
+.packs button {
+  border-radius: 0;
+}
+
+/* разделители тонкие */
 .packs button:not(:last-child) {
   border-right: 1px solid rgba(255,255,255,0.04);
 }
 
-/* hover / tap */
+/* актив / нажатие */
 .packs button:active {
-  background: #2a2d35;
+  background: #2e313a;
 }
 
-/* если добавишь иконку */
-.packs img {
-  width: 14px;
-  height: 14px;
+/* 🔥 скругления только по краям */
+.packs button:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.packs button:last-child {
+  border-bottom-right-radius: 10px;
 }
