@@ -7,11 +7,8 @@
 }
 
 body {
-  background: linear-gradient(to bottom, #3a3a3a, #1c1c1c);
-  color: #f2f2f2;
-
-  min-height: 100vh;
-  overflow-x: hidden;
+  background: #0e0f12;
+  color: #eaeaea;
 }
 
 /* TOP BAR */
