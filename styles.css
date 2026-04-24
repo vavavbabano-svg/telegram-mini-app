@@ -156,3 +156,24 @@ input {
 .packs button:hover {
   background: #3a3f52;
 }
+.tg-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 6px;
+  background: #2a2d3a;
+
+  /* СВЕЧЕНИЕ */
+  box-shadow: 0 0 10px rgba(78, 161, 255, 0.6),
+              0 0 20px rgba(78, 161, 255, 0.4);
+
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+/* при наведении */
+.tg-icon:hover {
+  box-shadow: 0 0 15px rgba(78, 161, 255, 0.9),
+              0 0 30px rgba(78, 161, 255, 0.6);
+  transform: scale(1.05);
+}
