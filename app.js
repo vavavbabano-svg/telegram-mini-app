@@ -161,3 +161,39 @@ document.querySelector(".buy").onclick = async () => {
 
   rubOutEl.textContent = (data.stars * RATE).toFixed(2) + " ₽";
 };
+
+// =====================
+// TABS
+// =====================
+const tabBuy = document.getElementById("tabBuy");
+const tabSell = document.getElementById("tabSell");
+const tabRef = document.getElementById("tabRef");
+
+const screenBuy = document.getElementById("screenBuy");
+const screenSell = document.getElementById("screenSell");
+const screenRef = document.getElementById("screenRef");
+
+
+function setTab(activeTab) {
+
+  const tabs = [tabBuy, tabSell, tabRef];
+  const screens = [screenBuy, screenSell, screenRef];
+
+  // tabs state
+  tabs.forEach(t => t.classList.remove("active"));
+  activeTab.classList.add("active");
+
+  // smooth animation delay trick (iOS feel)
+  screens.forEach(s => {
+    s.classList.remove("active");
+    s.style.transition = "all 0.2s ease";
+  });
+
+  requestAnimationFrame(() => {
+
+    if (activeTab === tabBuy) screenBuy.classList.add("active");
+    if (activeTab === tabSell) screenSell.classList.add("active");
+    if (activeTab === tabRef) screenRef.classList.add("active");
+
+  });
+}

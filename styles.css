@@ -141,3 +141,80 @@ input {
 .buy:hover {
   background: #2566d6;
 }
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-around;
+
+  background: #151922;
+  border-top: 1px solid rgba(255,255,255,0.06);
+
+  padding: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+
+  background: transparent;
+  border: none;
+
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.tab.active {
+  color: white;
+  font-weight: 600;
+}
+
+/* ЭКРАНЫ */
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  padding: 20px;
+  padding-bottom: 90px;
+
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+
+  transition: all 0.25s ease;
+}
+
+.screen.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* контейнер для экранов */
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.tabbar {
+  backdrop-filter: blur(20px);
+  background: rgba(15, 17, 21, 0.8);
+}
+
+.tab {
+  transition: all 0.2s ease;
+}
+
+.tab:active {
+  transform: scale(0.92);
+}
