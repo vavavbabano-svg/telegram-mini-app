@@ -35,10 +35,9 @@ const username = document.getElementById("username");
 // USER (SUPABASE)
 // =====================
 async function initUser() {
-
   const tgUser = tg.initDataUnsafe?.user;
 
-  console.log("TG USER:", tgUser); // 👈 СЮДА
+  console.log("TG USER:", tgUser);
 
   if (!tgUser) {
     userIdEl.textContent = "#guest";
@@ -47,54 +46,45 @@ async function initUser() {
 
   const userId = String(tgUser.id);
 
-  // 1. ищем пользователя
   let { data, error } = await supabase
     .from("users")
     .select("*")
     .eq("id", userId)
     .maybeSingle();
 
-    console.log("SUPABASE DATA:", data); // 👈 И СЮДА
-
   if (error) {
     console.log("SELECT ERROR:", error);
-    userIdEl.textContent = "#error";
     return;
   }
 
-  // 2. если нет — создаём
+  // 👇 ЕСЛИ НЕТ ПОЛЬЗОВАТЕЛЯ
   if (!data) {
 
-    const { error: insertError } = await supabase
+    const number = await getNextNumber();
+
+    const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({
         id: userId,
         username: tgUser.username || null,
-        stars: 0
-      });
+        stars: 0,
+        number: number
+      })
+      .select()
+      .single();
 
     if (insertError) {
       console.log("INSERT ERROR:", insertError);
-      userIdEl.textContent = "#err";
       return;
     }
 
-    // повторно читаем
-    const res = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .maybeSingle();
-
-    data = res.data;
+    data = newUser;
   }
 
   console.log("USER FINAL:", data);
 
-  // 3. FIX отображения #
-  const display = data?.id || userId;
-
-  userIdEl.textContent = "#" + display;
+  // 🔥 ВЫВОД НОМЕРА
+  userIdEl.textContent = "#" + data.number;
 }
 
 // =====================
@@ -220,3 +210,28 @@ window.addEventListener("load", () => {
     nav.classList.add("show");
   }, 100);
 });
+async function getNextNumber() {
+  const { data, error } = await supabase
+    .from("counters")
+    .select("last_number")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.log("COUNTER ERROR:", error);
+    return 1;
+  }
+
+  const next = (data.last_number || 0) + 1;
+
+  const { error: updateError } = await supabase
+    .from("counters")
+    .update({ last_number: next })
+    .eq("id", 1);
+
+  if (updateError) {
+    console.log("UPDATE COUNTER ERROR:", updateError);
+  }
+
+  return next;
+}
