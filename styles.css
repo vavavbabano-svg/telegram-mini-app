@@ -36,21 +36,32 @@ body {
 .tg-icon {
   width: 46px;
   height: 46px;
+
   padding: 10px;
   border-radius: 50%;
   background: #2a2d3a;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  object-fit: contain;
 
   box-shadow: 0 0 12px rgba(78, 161, 255, 0.7),
               0 0 28px rgba(78, 161, 255, 0.5);
 
   transition: 0.3s;
   cursor: pointer;
+
+  /* ВАЖНО */
+  object-fit: contain;
+  display: block;
+}
+
+/* 🔥 ЭТО ГЛАВНЫЙ ФИКС */
+.tg-icon {
+  width: 46px;
+  height: 46px;
+}
+
+/* SVG/IMG растягивается внутри */
+.tg-icon {
+  object-fit: contain;
+  transform: scale(1.2);
 }
 
 .tg-icon:hover {
