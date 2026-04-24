@@ -288,43 +288,56 @@ input {
 }
 
 /* контейнер кнопок */
+
 .packs {
   display: flex;
-
+  
   width: 100%;
   margin: 0;
 
-  background: #2a2d35;
-
+  background: #23262d;
   border-radius: 0 0 10px 10px;
 
-  overflow: hidden; /* чтобы края были ровные */
+  overflow: hidden;
 }
 
-/* кнопки — РАВНЫЕ */
+/* кнопки */
 .packs button {
-  flex: 1; /* растягиваем равномерно */
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
   padding: 12px 0;
 
   border: none;
-  border-radius: 0; /* ❌ никаких скруглений */
+  outline: none;
 
-  background: transparent;
-  color: #ddd;
+  background: #1b1d23;
+
+  color: #ffd86b; /* желтый текст */
+  font-weight: 600;
 
   font-size: 13px;
-  text-align: center;
+
 
   cursor: pointer;
 }
 
-/* разделители */
+/* разделители мягкие */
 .packs button:not(:last-child) {
-  border-right: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.04);
 }
 
-/* эффект нажатия */
+/* hover / tap */
 .packs button:active {
-  background: rgba(255,255,255,0.06);
+  background: #2a2d35;
+}
+
+/* если добавишь иконку */
+.packs img {
+  width: 14px;
+  height: 14px;
 }
