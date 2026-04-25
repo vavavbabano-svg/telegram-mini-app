@@ -326,6 +326,7 @@ button:active {
   font-size: 12px;
   display: inline-block;
   width: fit-content;
-  justify-self: start;       /* прижимаем к левому краю */
+  justify-self: start;
+  margin-left: 4px;          /* чуть правее */
 }
 
