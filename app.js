@@ -326,7 +326,7 @@ function setupAdmin() {
   }
 }
 
-/* ================= ADMIN CICK ================= */
+/* ================= ADMIN CLICK ================= */
 el.admin.addEventListener("click", async () => {
   try {
     const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
