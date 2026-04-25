@@ -126,7 +126,7 @@ document.querySelectorAll(".packs button").forEach(btn => {
   });
 });
 
-/* ================= INPUT (можно стирать 50) ================= */
+/* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
   let val = e.target.value;
   
@@ -138,9 +138,23 @@ el.stars.addEventListener("input", e => {
   update(Number(val));
 });
 
-// Ставим 50 только если поле ещё не трогали
 el.stars.value = 50;
 update(50);
+
+/* ================= ЗАКРЫТИЕ КЛАВИАТУРЫ ПО ENTER ================= */
+el.stars.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    el.stars.blur();
+  }
+});
+
+el.username.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    el.username.blur();
+  }
+});
 
 /* ================= TOGGLE ================= */
 el.self.onclick = () => {
@@ -165,6 +179,54 @@ el.other.onclick = () => {
     el.other.classList.remove("active");
   }
 })();
+
+/* ================= КЛАВИАТУРА НЕ ДВИГАЕТ КНОПКУ ================= */
+const buyBtn = el.buy;
+buyBtn.style.transition = "none";
+
+el.stars.addEventListener("focus", () => {
+  buyBtn.style.position = "relative";
+  buyBtn.style.bottom = "auto";
+  buyBtn.style.marginTop = "12px";
+  buyBtn.style.width = "100%";
+  buyBtn.style.maxWidth = "100%";
+  buyBtn.style.transform = "none";
+  buyBtn.style.left = "auto";
+});
+
+el.username.addEventListener("focus", () => {
+  buyBtn.style.position = "relative";
+  buyBtn.style.bottom = "auto";
+  buyBtn.style.marginTop = "12px";
+  buyBtn.style.width = "100%";
+  buyBtn.style.maxWidth = "100%";
+  buyBtn.style.transform = "none";
+  buyBtn.style.left = "auto";
+});
+
+el.stars.addEventListener("blur", () => {
+  setTimeout(() => {
+    buyBtn.style.position = "fixed";
+    buyBtn.style.bottom = "12px";
+    buyBtn.style.left = "50%";
+    buyBtn.style.transform = "translateX(-50%)";
+    buyBtn.style.marginTop = "0";
+    buyBtn.style.width = "calc(100% - 24px)";
+    buyBtn.style.maxWidth = "420px";
+  }, 200);
+});
+
+el.username.addEventListener("blur", () => {
+  setTimeout(() => {
+    buyBtn.style.position = "fixed";
+    buyBtn.style.bottom = "12px";
+    buyBtn.style.left = "50%";
+    buyBtn.style.transform = "translateX(-50%)";
+    buyBtn.style.marginTop = "0";
+    buyBtn.style.width = "calc(100% - 24px)";
+    buyBtn.style.maxWidth = "420px";
+  }, 200);
+});
 
 /* ================= PAYMENT ================= */
 let selectedPayment = null;
@@ -245,59 +307,6 @@ function setupAdmin() {
     btn.remove();
   }
 }
-
-/* ================= КЛАВИАТУРА НЕ ДВИГАЕТ КНОПКУ ================= */
-let originalBottom = "12px";
-
-// Сохраняем оригинальное положение кнопки
-const buyBtn = el.buy;
-buyBtn.style.transition = "none";
-
-// При фокусе на инпут — кнопка остаётся внизу экрана, а не над клавиатурой
-el.stars.addEventListener("focus", () => {
-  buyBtn.style.position = "relative";
-  buyBtn.style.bottom = "auto";
-  buyBtn.style.marginTop = "12px";
-  buyBtn.style.width = "100%";
-  buyBtn.style.maxWidth = "100%";
-  buyBtn.style.transform = "none";
-  buyBtn.style.left = "auto";
-});
-
-el.username.addEventListener("focus", () => {
-  buyBtn.style.position = "relative";
-  buyBtn.style.bottom = "auto";
-  buyBtn.style.marginTop = "12px";
-  buyBtn.style.width = "100%";
-  buyBtn.style.maxWidth = "100%";
-  buyBtn.style.transform = "none";
-  buyBtn.style.left = "auto";
-});
-
-// При потере фокуса — возвращаем как было
-el.stars.addEventListener("blur", () => {
-  setTimeout(() => {
-    buyBtn.style.position = "fixed";
-    buyBtn.style.bottom = "12px";
-    buyBtn.style.left = "50%";
-    buyBtn.style.transform = "translateX(-50%)";
-    buyBtn.style.marginTop = "0";
-    buyBtn.style.width = "calc(100% - 24px)";
-    buyBtn.style.maxWidth = "420px";
-  }, 200);
-});
-
-el.username.addEventListener("blur", () => {
-  setTimeout(() => {
-    buyBtn.style.position = "fixed";
-    buyBtn.style.bottom = "12px";
-    buyBtn.style.left = "50%";
-    buyBtn.style.transform = "translateX(-50%)";
-    buyBtn.style.marginTop = "0";
-    buyBtn.style.width = "calc(100% - 24px)";
-    buyBtn.style.maxWidth = "420px";
-  }, 200);
-});
 
 (async () => {
   await initUser();
