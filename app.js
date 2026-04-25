@@ -248,6 +248,12 @@ document.querySelectorAll(".pay-card").forEach(card => {
 });
 
 /* ================= BUY ================= */
+const modal = document.getElementById("paymentModal");
+const modalClose = document.getElementById("modalClose");
+const modalAmount = document.getElementById("modalAmount");
+const modalTimer = document.getElementById("modalTimer");
+let modalTimeout;
+
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   
@@ -273,8 +279,24 @@ el.buy.onclick = () => {
     currency = "RUB";
   }
 
-  if (!confirm(`⭐ ${stars} → ${amount} ${currency}`)) return;
+  // Показываем модальное окно
+  modalAmount.textContent = `⭐ ${stars} → ${amount} ${currency}`;
+  modal.classList.add("active");
+  
+  let sec = 5;
+  modalTimer.textContent = `Ожидание оплаты... (автопереход через ${sec} сек)`;
+  
+  modalTimeout = setInterval(() => {
+    sec--;
+    if (sec <= 0) {
+      clearInterval(modalTimeout);
+      window.location.href = "success.html";
+    } else {
+      modalTimer.textContent = `Ожидание оплаты... (автопереход через ${sec} сек)`;
+    }
+  }, 1000);
 
+  // Отправляем данные боту
   tg.sendData(JSON.stringify({
     type: "order",
     user_id: tgUser.id,
@@ -284,13 +306,31 @@ el.buy.onclick = () => {
     currency: currency,
     payment_method: selectedPayment
   }));
+};
 
+// Закрытие модалки
+modalClose.onclick = () => {
+  clearInterval(modalTimeout);
+  modal.classList.remove("active");
   el.stars.value = 50;
   update(50);
   document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
   selectedPayment = null;
   currentCurrency = "RUB";
 };
+
+// Клик вне модалки
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    clearInterval(modalTimeout);
+    modal.classList.remove("active");
+    el.stars.value = 50;
+    update(50);
+    document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
+    selectedPayment = null;
+    currentCurrency = "RUB";
+  }
+});
 
 /* ================= ADMIN ================= */
 const ADMIN_ID = 1444520038;
