@@ -10,7 +10,7 @@
   --blue: #2D6BFF;
 
   --r: 14px;
-  --gap: 8px;                /* было 12px */
+  --gap: 8px;
 
   --fw-regular: 500;
   --fw-medium: 600;
@@ -37,11 +37,11 @@ body {
 /* APP */
 .app {
   width: 100%;
-  padding: 8px 12px;          /* было 12px */
+  padding: 8px 12px;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;                  /* было 12px */
+  gap: 8px;
 }
 
 /* TOP */
@@ -54,9 +54,43 @@ body {
   color: var(--muted);
 }
 
+#userId {
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  display: inline-block;
+  width: fit-content;
+  justify-self: start;
+  margin-left: 4px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: end;
+}
+
+/* ADMIN */
+.admin-btn {
+  background: var(--btn);
+  border: none;
+  color: var(--text);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-btn.hidden {
+  display: none;
+}
 
 .tg-btn {
-
   width: 28px;
   height: 28px;
   display: flex;
@@ -76,7 +110,7 @@ body {
 .card {
   background: var(--card);
   border-radius: var(--r);
-  padding: 10px;              /* было 12px */
+  padding: 10px;
   margin: 0;
 }
 
@@ -85,14 +119,14 @@ body {
   margin: 0;
   padding: 0;
   border: none;
-  border-radius: 22px;       /* было 18px */
+  border-radius: 22px;
   overflow: hidden;
   background: transparent;
 }
 
 .hero-img {
   width: 100%;
-  height: 155px;             /* было 140px */
+  height: 155px;
   margin: 0;
   padding: 0;
   line-height: 0;
@@ -111,8 +145,8 @@ body {
 /* INPUT */
 input {
   width: 100%;
-  padding: 10px;             /* было 12px */
-  border-radius: 10px;       /* было 12px */
+  padding: 10px;
+  border-radius: 10px;
   border: none;
   outline: none;
   background: var(--input);
@@ -123,18 +157,18 @@ input {
 .row {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 6px;                  /* было 8px */
+  gap: 6px;
   align-items: center;
 }
 
 /* BUTTONS */
 .btn.small {
-  padding: 8px 10px;         /* было 10px 12px */
-  border-radius: 10px;       /* было 12px */
+  padding: 8px 10px;
+  border-radius: 10px;
   border: none;
   background: var(--btn);
   color: var(--muted);
-  font-size: 13px;           /* добавил */
+  font-size: 13px;
 }
 
 .btn.small.active {
@@ -147,15 +181,21 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 10px;
-  flex-wrap: nowrap;
 }
 
-.price-line input {
-  width: 70px;
+.price-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.price-item input {
+  width: 80px;
   text-align: center;
-  padding: 10px 6px;
+  padding: 10px;
   border-radius: 10px;
   border: none;
   outline: none;
@@ -170,14 +210,11 @@ input {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  white-space: nowrap;
 }
 
-
-
 .arrow-icon {
-  width: 67px;       /* было 48px */
-  height: 36px;      /* было 28px */
+  width: 36px;
+  height: 36px;
   opacity: 0.8;
   flex-shrink: 0;
 }
@@ -186,28 +223,24 @@ input {
   color: var(--muted);
   font-weight: var(--fw-bold);
   font-size: 16px;
-  white-space: nowrap;
-  min-width: 80px;
   text-align: center;
-
+  min-width: 80px;
 }
-
-
 
 /* PACKS */
 .packs {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 6px;                  /* было 8px */
+  gap: 6px;
 }
 
 .packs button {
-  padding: 8px;              /* было 10px */
-  border-radius: 10px;       /* было 12px */
+  padding: 8px;
+  border-radius: 10px;
   border: none;
   background: var(--btn);
   color: var(--muted);
-  font-size: 13px;           /* добавил */
+  font-size: 13px;
 }
 
 .packs button.active {
@@ -215,17 +248,17 @@ input {
   color: #fff;
 }
 
-/* ----- ПЛАТвЁЖКИ ----- */
+/* ----- ПЛАТЁЖКИ ----- */
 .payment-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;                 /* было 16px */
+  gap: 12px;
   width: 100%;
 }
 
 .pay-card {
   background: #1c1c1e;
-  border-radius: 18px;       /* было 22px */
+  border-radius: 18px;
   aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
@@ -245,14 +278,14 @@ input {
 
 .currency-tag {
   position: absolute;
-  top: 10px;                 /* было 14px */
-  right: 10px;               /* было 14px */
+  top: 10px;
+  right: 10px;
   color: #5ef57c;
-  font-size: 11px;           /* было 12px */
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 4px 10px;         /* было 5px 14px */
-  border-radius: 16px;       /* было 20px */
+  padding: 4px 10px;
+  border-radius: 16px;
   background: rgba(20, 30, 20, 0.8);
   backdrop-filter: blur(6px);
   border: 0.5px solid rgba(94, 245, 124, 0.35);
@@ -263,18 +296,18 @@ input {
 }
 
 .payment-logo {
-  width: 75px;               /* было 90px */
-  height: 75px;              /* было 90px */
+  width: 75px;
+  height: 75px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;       /* было 22px */
+  border-radius: 18px;
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 70%);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
-  margin-bottom: 10px;       /* было 14px */
+  margin-bottom: 10px;
   backdrop-filter: blur(4px);
   overflow: hidden;
-  padding: 8px;              /* было 10px */
+  padding: 8px;
 }
 
 .payment-logo img {
@@ -294,12 +327,12 @@ input {
 
 .payment-name {
   color: #ffffff;
-  font-size: 14px;           /* было 16px */
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.4px;
   text-align: center;
   opacity: 0.95;
-  margin-top: 4px;           /* было 6px */
+  margin-top: 4px;
 }
 
 .pay-card.selected {
@@ -310,7 +343,7 @@ input {
 
 /* TERMS */
 .terms {
-  font-size: 11px;           /* было 12px */
+  font-size: 11px;
   color: var(--muted);
   text-align: center;
 }
@@ -330,23 +363,8 @@ input {
   color: #fff;
   font-weight: var(--fw-bold);
   font-size: 15px;
-  transition: all 0.2s ease;   /* добавить эту строку */
-  z-index: 10;                 /* добавить эту строку */
-}
-
-/* ADMIN */
-.admin-btn {
-  background: var(--btn);
-  border: none;
-  color: var(--text);
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.admin-btn.hidden {
-  display: none;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
 /* CLICK */
@@ -354,23 +372,3 @@ button:active {
   transform: scale(0.98);
   filter: brightness(1.15);
 }
-
-#userId {
-  font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  padding: 4px 10px;
-  font-size: 12px;
-  display: inline-block;
-  width: fit-content;
-  justify-self: start;
-  margin-left: 4px;
-}
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  justify-self: end;
-}
-
-

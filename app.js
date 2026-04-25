@@ -301,7 +301,10 @@ function setupAdmin() {
 
   if (!btn || !user) return;
 
-  if (Number(user.id) === ADMIN_ID) {
+  const myId = Number(user.id);
+
+  if (myId === ADMIN_ID) {
+    btn.classList.remove("hidden");
     btn.style.display = "block";
   } else {
     btn.remove();

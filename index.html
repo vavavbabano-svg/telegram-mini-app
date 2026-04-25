@@ -13,13 +13,16 @@
 
 <div class="app">
 
-<!-- TOP -->
+  <!-- TOP -->
 <div class="topbar">
   <div id="userId">#----</div>
   <div class="logo"></div>
-  <a class="tg-btn" href="https://t.me/MyStars812support_bot" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
-  </a>
+  <div class="topbar-right">
+    <button id="adminBtn" class="admin-btn hidden">Admin</button>
+    <a class="tg-btn" href="https://t.me/MyStars812support_bot" target="_blank">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
+    </a>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -40,24 +43,31 @@
 
   </div>
 
-<!-- STARS -->
-<div class="card">
-  <div class="price-line">
-    <input id="stars" type="number" placeholder="50" value="50">
-    <span class="price-label">Stars</span>
-    <img src="img/стрелка2.png" alt="→" class="arrow-icon">
-    <div id="rubOut">82.00 ₽</div>
-    <span class="price-label" id="currencyLabel">RUB</span>
-  </div>
+  <!-- STARS -->
+  <div class="card">
+    <div class="price-line">
+      <div class="price-item">
+        <input id="stars" type="number" placeholder="Stars" min="50" value="50">
+        <span class="price-label">Stars</span>
+      </div>
+      
+      <img src="img/стрелка2.png" alt="→" class="arrow-icon">
+      
+      <div class="price-item">
+        <div id="rubOut">82.00 ₽</div>
+        <span class="price-label" id="currencyLabel">RUB</span>
+      </div>
+    </div>
 
-  <div class="packs">
-    <button data-stars="50">50</button>
-    <button data-stars="100">100</button>
-    <button data-stars="500">500</button>
-    <button data-stars="1000">1K</button>
-    <button data-stars="5000">5K</button>
+    <div class="packs">
+      <button data-stars="50">50</button>
+      <button data-stars="100">100</button>
+      <button data-stars="500">500</button>
+      <button data-stars="1000">1K</button>
+      <button data-stars="5000">5K</button>
+    </div>
+
   </div>
-</div>
 
   <!-- PAYMENTS -->
   <div class="card">
@@ -91,9 +101,6 @@
 
 <!-- BUY -->
 <button class="buy">Купить звёзды</button>
-
-<!-- ADMIN -->
-<button id="adminBtn" class="admin-btn hidden">Admin</button>
 
 <script type="module" src="app.js"></script>
 </body>
