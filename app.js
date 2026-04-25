@@ -248,7 +248,7 @@ document.querySelectorAll(".pay-card").forEach(card => {
 });
 
 /* ================= BUY ================= */
-el.buy.onclick = async () => {
+el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   
   if (!stars || stars < 50) {
@@ -273,38 +273,24 @@ el.buy.onclick = async () => {
     currency = "RUB";
   }
 
-  try {
-    const response = await fetch("https://paypalych-server.onrender.com/create-invoice", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        stars: stars,
-        amount: amount,
-        currency: currency,
-        username: tgUser.username || tgUser.id
-      })
-    });
+  const shopId = "c2d5e47109ad1d1bccaacdde76130c892a7b5a47";
+  const orderId = `stars-${stars}-${Date.now()}`;
+  const username = tgUser.username || tgUser.id;
 
-    const data = await response.json();
+  // Формируем прямую ссылку на Enot
+  const enotUrl = `https://enot.io/pay?shopId=${shopId}&amount=${amount}&currency=${currency}&orderId=${orderId}&hookUrl=https://paypalych-server.onrender.com/paypalych/result&successUrl=https://telegram-mini-app.vavavbabano.workers.dev/success.html&failUrl=https://telegram-mini-app.vavavbabano.workers.dev/fail.html&customFields[username]=${username}&customFields[stars]=${stars}`;
 
-    if (data.url) {
-      tg.sendData(JSON.stringify({
-        type: "order",
-        user_id: tgUser.id,
-        username: tgUser.username || "—",
-        stars,
-        amount: amount,
-        currency: currency,
-        payment_method: selectedPayment
-      }));
-      
-      window.location.href = data.url;
-    } else {
-      alert("Ошибка при создании счёта. Попробуйте позже.");
-    }
-  } catch (error) {
-    alert("Ошибка соединения с сервером.");
-  }
+  tg.sendData(JSON.stringify({
+    type: "order",
+    user_id: tgUser.id,
+    username: tgUser.username || "—",
+    stars,
+    amount: amount,
+    currency: currency,
+    payment_method: selectedPayment
+  }));
+  
+  window.location.href = enotUrl;
 };
 
 /* ================= ADMIN ================= */
