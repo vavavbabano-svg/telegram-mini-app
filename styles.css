@@ -10,7 +10,7 @@
   --blue: #2D6BFF;
 
   --r: 14px;
-  --gap: 12px;
+  --gap: 8px;                /* было 12px */
 
   --fw-regular: 500;
   --fw-medium: 600;
@@ -37,12 +37,11 @@ body {
 /* APP */
 .app {
   width: 100%;
-  padding: 12px;
+  padding: 8px 12px;          /* было 12px */
   margin: 0;
-
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;                  /* было 12px */
 }
 
 /* TOP */
@@ -50,22 +49,39 @@ body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 8px 12px;         /* было 12px */
-  font-size: 12px;           /* было 13px */
+  padding: 6px 12px;         /* было 8px 12px */
+  font-size: 12px;
   color: var(--muted);
 }
 
 .logo {
   text-align: center;
   font-weight: 600;
-  font-size: 14px;           /* компактнее */
+  font-size: 14px;
+}
+
+.tg-btn {
+  justify-self: end;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--btn);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.tg-btn img {
+  width: 15px;
+  height: 15px;
 }
 
 /* CARD */
 .card {
   background: var(--card);
   border-radius: var(--r);
-  padding: 12px;
+  padding: 10px;              /* было 12px */
   margin: 0;
 }
 
@@ -74,14 +90,14 @@ body {
   margin: 0;
   padding: 0;
   border: none;
-  border-radius: 22px;
+  border-radius: 18px;       /* было 22px */
   overflow: hidden;
   background: transparent;
 }
 
 .hero-img {
   width: 100%;
-  height: 170px;
+  height: 140px;             /* было 170px */
   margin: 0;
   padding: 0;
   line-height: 0;
@@ -100,8 +116,8 @@ body {
 /* INPUT */
 input {
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 10px;             /* было 12px */
+  border-radius: 10px;       /* было 12px */
   border: none;
   outline: none;
   background: var(--input);
@@ -112,17 +128,18 @@ input {
 .row {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 8px;
+  gap: 6px;                  /* было 8px */
   align-items: center;
 }
 
 /* BUTTONS */
 .btn.small {
-  padding: 10px 12px;
-  border-radius: 12px;
+  padding: 8px 10px;         /* было 10px 12px */
+  border-radius: 10px;       /* было 12px */
   border: none;
   background: var(--btn);
   color: var(--muted);
+  font-size: 13px;           /* добавил */
 }
 
 .btn.small.active {
@@ -136,7 +153,7 @@ input {
   grid-template-columns: 1fr auto;
   gap: var(--gap);
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;        /* было 10px */
 }
 
 #rubOut {
@@ -148,15 +165,16 @@ input {
 .packs {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: 6px;                  /* было 8px */
 }
 
 .packs button {
-  padding: 10px;
-  border-radius: 12px;
+  padding: 8px;              /* было 10px */
+  border-radius: 10px;       /* было 12px */
   border: none;
   background: var(--btn);
   color: var(--muted);
+  font-size: 13px;           /* добавил */
 }
 
 .packs button.active {
@@ -164,17 +182,17 @@ input {
   color: #fff;
 }
 
-/* ----- НОВЫЕ СТИЛИ ДЛЯ ВЫБОРА ОПЛАТЫ ----- */
+/* ----- ПЛАТЁЖКИ ----- */
 .payment-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;                 /* было 16px */
   width: 100%;
 }
 
 .pay-card {
   background: #1c1c1e;
-  border-radius: 22px;
+  border-radius: 18px;       /* было 22px */
   aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
@@ -194,36 +212,36 @@ input {
 
 .currency-tag {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 10px;                 /* было 14px */
+  right: 10px;               /* было 14px */
   color: #5ef57c;
-  font-size: 12px;
+  font-size: 11px;           /* было 12px */
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 5px 14px;
-  border-radius: 20px;
+  padding: 4px 10px;         /* было 5px 14px */
+  border-radius: 16px;       /* было 20px */
   background: rgba(20, 30, 20, 0.8);
   backdrop-filter: blur(6px);
   border: 0.5px solid rgba(94, 245, 124, 0.35);
-  box-shadow: 0 0 12px rgba(94, 245, 124, 0.3);
+  box-shadow: 0 0 10px rgba(94, 245, 124, 0.3);
   text-transform: uppercase;
   line-height: 1;
   z-index: 2;
 }
 
 .payment-logo {
-  width: 90px;
-  height: 90px;
+  width: 75px;               /* было 90px */
+  height: 75px;              /* было 90px */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 22px;
+  border-radius: 18px;       /* было 22px */
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 70%);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
-  margin-bottom: 14px;
+  margin-bottom: 10px;       /* было 14px */
   backdrop-filter: blur(4px);
   overflow: hidden;
-  padding: 10px;
+  padding: 8px;              /* было 10px */
 }
 
 .payment-logo img {
@@ -238,28 +256,28 @@ input {
 }
 
 .pay-card[data-method="ton"] .payment-logo img {
-  transform: scale(1.2);
+  transform: scale(1.15);
 }
 
 .payment-name {
   color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;           /* было 16px */
   font-weight: 600;
   letter-spacing: 0.4px;
   text-align: center;
   opacity: 0.95;
-  margin-top: 6px;
+  margin-top: 4px;           /* было 6px */
 }
 
 .pay-card.selected {
   border: 2px solid #5ef57c;
-  box-shadow: 0 0 24px rgba(94, 245, 124, 0.5), 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px rgba(94, 245, 124, 0.5), 0 4px 12px rgba(0,0,0,0.5);
   background: #1e2a1e;
 }
 
 /* TERMS */
 .terms {
-  font-size: 12px;
+  font-size: 11px;           /* было 12px */
   color: var(--muted);
   text-align: center;
 }
@@ -267,31 +285,31 @@ input {
 /* BUY */
 .buy {
   position: fixed;
-  bottom: 14px;
+  bottom: 12px;              /* было 14px */
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 24px);
   max-width: 420px;
-
-  padding: 14px;
-  border-radius: 14px;
+  padding: 12px;             /* было 14px */
+  border-radius: 12px;       /* было 14px */
   border: none;
-
   background: var(--blue);
   color: #fff;
   font-weight: var(--fw-bold);
+  font-size: 15px;           /* добавил */
 }
 
 /* ADMIN */
 .admin-btn {
   position: fixed;
-  top: 10px;
-  right: 10px;
+  top: 8px;                  /* было 10px */
+  right: 8px;                /* было 10px */
   background: var(--btn);
   border: none;
   color: var(--text);
-  padding: 8px 10px;
-  border-radius: 10px;
+  padding: 6px 8px;          /* было 8px 10px */
+  border-radius: 8px;        /* было 10px */
+  font-size: 12px;           /* добавил */
 }
 
 /* CLICK */
@@ -300,19 +318,3 @@ button:active {
   filter: brightness(1.15);
 }
 
-.tg-btn {
-  justify-self: end;
-  width: 28px;               /* было 34px */
-  height: 28px;              /* было 34px */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--btn);
-  border-radius: 8px;        /* было 10px */
-  text-decoration: none;
-}
-
-.tg-btn img {
-  width: 15px;               /* было 18px */
-  height: 15px;              /* было 18px */
-}
