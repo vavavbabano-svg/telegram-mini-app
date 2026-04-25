@@ -8,11 +8,9 @@ const supabase = createClient(
 );
 
 const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-setupAdmin();
 
-/* DOM */
+
+/* ================= DOM ================= */
 const el = {
   userId: document.getElementById("userId"),
   stars: document.getElementById("stars"),
@@ -24,7 +22,11 @@ const el = {
   admin: document.getElementById("adminBtn")
 };
 
-/* USER ID */
+/* ================= INIT TELEGRAM ================= */
+tg.ready();
+tg.expand();
+
+/* ================= COUNTER ================= */
 async function getNextNumber() {
   const { data } = await supabase
     .from("counters")
@@ -42,9 +44,10 @@ async function getNextNumber() {
   return next;
 }
 
+/* ================= USER ================= */
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
-  if (!tgUser) return;
+  if (!tgUser) return null;
 
   const tgId = String(tgUser.id);
 
@@ -71,16 +74,20 @@ async function initUser() {
     user = data;
   }
 
-  el.userId.textContent = "#" + String(user.number).padStart(4, "0");
+  if (el.userId && user) {
+    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
+  }
+
+  return tgUser;
 }
 
-/* PRICE */
+/* ================= PRICE ================= */
 function update(val) {
   const s = Number(val) || 0;
   el.rub.textContent = (s * RATE).toFixed(2) + " ₽";
 }
 
-/* PACKS FIX 🔥 */
+/* ================= PACKS ================= */
 document.querySelectorAll(".packs button").forEach(btn => {
   btn.addEventListener("click", () => {
     const val = btn.dataset.stars;
@@ -89,18 +96,18 @@ document.querySelectorAll(".packs button").forEach(btn => {
     update(val);
 
     document.querySelectorAll(".packs button")
-      .forEach(b => b.style.opacity = "0.5");
+      .forEach(b => b.classList.remove("active"));
 
-    btn.style.opacity = "1";
+    btn.classList.add("active");
   });
 });
 
-/* INPUT */
+/* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
   update(e.target.value);
 });
 
-/* TOGGLE */
+/* ================= TOGGLE ================= */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
@@ -115,7 +122,7 @@ el.other.onclick = () => {
   el.username.value = "";
 };
 
-/* BUY */
+/* ================= BUY ================= */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   if (!stars) return;
@@ -139,26 +146,26 @@ el.buy.onclick = () => {
   update(0);
 };
 
-/* ADMIN */
+/* ================= ADMIN FIX ================= */
 const ADMIN_ID = 1444520038;
 
 function setupAdmin() {
-  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const user = tg.initDataUnsafe?.user;
+  const btn = el.admin;
 
-  if (!user) return;
+  if (!btn || !user) return;
 
   const myId = Number(user.id);
-  const adminId = Number(ADMIN_ID);
 
-  const btn = document.getElementById("adminBtn");
-  if (!btn) return;
-
-  if (myId === adminId) {
-    btn.classList.remove("hidden");
+  if (myId === ADMIN_ID) {
+    btn.style.display = "block";
   } else {
-    btn.remove(); // 🔥 полностью убираем у всех остальных
+    btn.remove();
   }
 }
 
-/* START */
-initUser();
+/* ================= START ================= */
+(async () => {
+  const user = await initUser();
+  setupAdmin();
+})();
