@@ -1,331 +1,153 @@
-/* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Helvetica, Arial;
-  -webkit-tap-highlight-color: transparent;
-  font-weight: 600;
-}
-
 body {
-  background: #1a1d22;
-  color: #f5f7fa;
-  overflow-x: hidden;
-}
-
-/* ===== APP WIDTH ===== */
-.topbar,
-.screen,
-.bottom-nav {
-  max-width: 420px;
-  margin: 0 auto;
-}
-
-/* ===== TOP BAR ===== */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 14px 16px;
-
-  background: #1a1d22;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.tg-icon {
-  width: 26px;
-  height: 26px;
-  display: block;
-}
-
-/* ===== SCREEN ===== */
-.screen {
-  display: none;
-  padding: 16px;
-
-  /* чтобы контент не уезжал под меню */
-  padding-bottom: 120px;
-}
-
-.screen.active {
-  display: block;
-}
-
-/* ===== IMAGE ===== */
-.title-image {
-  margin-bottom: 18px;
-}
-
-.title-image img {
-  width: 100%;
-  display: block;
-  border-radius: 14px;
-}
-
-/* ===== CARDS ===== */
-.card,
-.stars-block {
-  margin-top: 12px;
-  background: #22262c;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-/* ===== INPUT ===== */
-input {
-  width: 100%;
-  padding: 14px;
-
-  border: none;
-  outline: none;
-
-  background: transparent;
-  color: #f5f7fa;
-}
-
-/* ===== TOGGLE ===== */
-.toggle {
-  display: flex;
-}
-
-.toggle button {
-  flex: 1;
-  padding: 12px;
-
-  border: none;
-  background: #1b1f26;
-  color: #aaa;
-
-  cursor: pointer;
-
-  border-radius: 0;
-}
-
-.toggle .active {
-  background: #2a2f38;
+  margin: 0;
+  background: #0f1115;
+  font-family: Arial;
   color: #fff;
 }
 
-/* ===== STARS INPUT ===== */
-.stars-input-wrap {
-  position: relative;
+.app {
+  padding: 12px;
+  max-width: 420px;
+  margin: auto;
+}
+
+/* TOP */
+.topbar {
   display: flex;
-  align-items: center;
-}
-
-.stars-input-wrap input {
-  width: 100%;
-  padding: 14px 90px 14px 14px;
-
-  background: #232830; /* чуть светлее чем было */
-  color: #f5f7fa;
-
-  border: none;
-
-  border-radius: 14px 14px 0 0;
-}
-
-.price-indicator {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-
+  justify-content: space-between;
+  padding: 10px 4px;
   font-weight: 700;
-  color: #ffd36a;
+  color: #aaa;
 }
 
-/* ===== PACKS ===== */
+/* CARD */
+.card {
+  background: #1a1d24;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* HERO */
+.hero-img {
+  height: 120px;
+  border-radius: 12px;
+  background: #222;
+}
+
+/* ROW */
+.row {
+  display: flex;
+  gap: 6px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #11141a;
+  color: #fff;
+}
+
+/* BUTTON */
+.btn {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #11141a;
+  color: #aaa;
+}
+
+.btn.active {
+  background: #2d6bff;
+  color: #fff;
+}
+
+/* PRICE */
+.price-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#rubOut {
+  color: #ffd36a;
+  font-weight: 700;
+}
+
+/* PACKS */
 .packs {
   display: flex;
-  width: 100%;
+  gap: 6px;
 }
 
 .packs button {
   flex: 1;
-  height: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
+  padding: 10px;
+  border-radius: 10px;
   border: none;
-  background: #1b1f26;
+  background: #11141a;
   color: #ffd36a;
-
-  cursor: pointer;
-
-  border-radius: 0;
 }
 
-.packs button img {
-  width: 14px;
-  height: 14px;
+/* GRID PAY */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
-/* ===== BUY BUTTON ===== */
-.buy {
-  width: 100%;
+.pay {
+  background: #11141a;
   padding: 14px;
-  margin-top: 16px;
-
-  border: none;
-  border-radius: 14px;
-
-  background: #3a1418; /* темнее */
-  color: #f5f7fa;
-
-  font-weight: 700;
-
-  cursor: pointer;
-  transition: 0.2s;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
 }
 
-.buy:active {
-  transform: scale(0.98);
-  background: #4a1a1f;
+/* TERMS */
+.terms {
+  font-size: 12px;
+  color: #888;
+  text-align: center;
 }
 
-/* ===== 🔥 BOTTOM NAV (GLASS) ===== */
-.bottom-nav {
+.terms span {
+  color: #2d6bff;
+}
+
+/* BUY */
+.buy {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  margin: 0 auto;
-  width: 100%;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
   max-width: 420px;
 
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
 
-  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  background: linear-gradient(
-    to top,
-    rgba(20, 22, 26, 0.95),
-    rgba(30, 32, 36, 0.75)
-  );
-
-  border-top: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 -10px 25px rgba(0,0,0,0.4);
-
-  border-radius: 30px 30px 0 0;
-
-  opacity: 0;
-  transform: translateY(40px);
-  animation: navIn 0.4s ease forwards;
+  background: #2d6bff;
+  color: white;
+  font-weight: 700;
 }
 
-@keyframes navIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===== NAV ITEM ===== */
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  color: #9aa0a6;
-  font-size: 12px;
-
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.nav-item .icon {
-  font-size: 22px;
-  margin-bottom: 4px;
-}
-
-/* клик эффект */
-.nav-item:active {
-  transform: scale(0.95);
-}
+/* ADMIN */
 .admin-btn {
   position: fixed;
   top: 10px;
   right: 10px;
-
-  padding: 8px 12px;
-  border-radius: 10px;
-
-  background: #3a1418;
-  color: white;
+  background: #ff3b3b;
   border: none;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  opacity: 0.8;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: #fff;
 }
 
 .hidden {
   display: none;
-}
-/* =========================
-   FIX BUTTONS (PACKS)
-========================= */
-
-.packs button {
-  transition: 0.15s ease;
-  user-select: none;
-}
-
-.packs button:active {
-  transform: scale(0.96);
-  background: #2a2f38;
-}
-
-/* =========================
-   ACTIVE STATE (если захочешь подсветку)
-========================= */
-
-.packs button.active {
-  background: #2f3642;
-  color: #fff;
-  box-shadow: 0 0 0 1px rgba(255, 211, 106, 0.3);
-}
-
-/* =========================
-   BUY BUTTON FIX FEEL
-========================= */
-
-.buy {
-  transition: 0.2s ease;
-}
-
-.buy:hover {
-  transform: scale(1.01);
-}
-
-.buy:active {
-  transform: scale(0.98);
-}
-
-/* =========================
-   ADMIN BUTTON FIX
-========================= */
-
-.admin-btn {
-  z-index: 999;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.admin-btn:active {
-  transform: scale(0.95);
 }

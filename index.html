@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stars App</title>
+  <title>Stars</title>
 
   <link rel="stylesheet" href="styles.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -11,55 +11,73 @@
 
 <body>
 
-<div class="topbar">
-  <div id="userId">#</div>
+<div class="app">
 
-  <a href="https://t.me/your_bot" target="_blank">
-    <img class="tg-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg">
-  </a>
-</div>
-
-<div class="screen active">
-
-  <div class="title-image">
-    <img src="img/звезда12.jpg">
+  <!-- TOP -->
+  <div class="topbar">
+    <div class="user-id" id="userId">#----</div>
+    <div class="logo">⭐ Stars</div>
   </div>
 
+  <!-- HERO -->
+  <div class="hero card">
+    <div class="hero-img"></div>
+  </div>
+
+  <!-- USER -->
   <div class="card">
 
-    <input id="username" placeholder="Username">
-
-    <div class="toggle">
-      <button id="selfBtn" class="active">Себе</button>
-      <button id="otherBtn">Другому</button>
+    <div class="row">
+      <input id="username" placeholder="@username">
+      <button id="selfBtn" class="btn small active">Себе</button>
+      <button id="otherBtn" class="btn small">Другому</button>
     </div>
 
   </div>
 
-  <div class="stars-block">
+  <!-- STARS -->
+  <div class="card">
 
-    <div class="stars-input-wrap">
-      <input id="stars" type="number" placeholder="Количество звёзд">
-      <div class="price-indicator">
-        <span id="rubOut">0 ₽</span>
-      </div>
+    <div class="price-line">
+      <input id="stars" type="number" placeholder="Stars">
+      <div id="rubOut">0 ₽</div>
     </div>
 
     <div class="packs">
       <button data-stars="50">50</button>
       <button data-stars="100">100</button>
       <button data-stars="500">500</button>
-      <button data-stars="1000">1000</button>
-      <button data-stars="5000">5000</button>
+      <button data-stars="1000">1K</button>
+      <button data-stars="5000">5K</button>
     </div>
 
   </div>
 
-  <button class="buy">Купить</button>
+  <!-- PAYMENTS -->
+  <div class="card">
 
-  <button id="adminBtn" class="admin-btn hidden">Админка</button>
+    <div class="grid">
+      <div class="pay">TON</div>
+      <div class="pay">SBP</div>
+      <div class="pay">VISA</div>
+      <div class="pay">MC</div>
+      <div class="pay">Crypto</div>
+      <div class="pay">CS2</div>
+    </div>
+
+  </div>
+
+  <!-- TERMS -->
+  <div class="terms">
+    Покупая, вы соглашаетесь с <span>правилами</span>
+  </div>
 
 </div>
+
+<!-- BUY BTN -->
+<button class="buy">Купить звёзды</button>
+
+<button id="adminBtn" class="admin-btn hidden">Admin</button>
 
 <script type="module" src="app.js"></script>
 </body>
