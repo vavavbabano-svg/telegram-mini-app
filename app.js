@@ -274,11 +274,19 @@ el.buy.onclick = () => {
   }
 
   const shopId = "c2d5e47109ad1d1bccaacdde76130c892a7b5a47";
-  const orderId = `stars-${stars}-${Date.now()}`;
+  const orderId = `stars${stars}_${Date.now()}`;
   const username = tgUser.username || tgUser.id;
 
-  // Формируем прямую ссылку на Enot
-  const enotUrl = `https://enot.io/pay?shopId=${shopId}&amount=${amount}&currency=${currency}&orderId=${orderId}&hookUrl=https://paypalych-server.onrender.com/paypalych/result&successUrl=https://telegram-mini-app.vavavbabano.workers.dev/success.html&failUrl=https://telegram-mini-app.vavavbabano.workers.dev/fail.html&customFields[username]=${username}&customFields[stars]=${stars}`;
+  const enotUrl = `https://enot.io/pay?` +
+    `shop_id=${shopId}` +
+    `&amount=${amount}` +
+    `&currency=${currency}` +
+    `&order_id=${orderId}` +
+    `&hook_url=https://paypalych-server.onrender.com/paypalych/result` +
+    `&success_url=https://telegram-mini-app.vavavbabano.workers.dev/success.html` +
+    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html` +
+    `&custom_username=${username}` +
+    `&custom_stars=${stars}`;
 
   tg.sendData(JSON.stringify({
     type: "order",
