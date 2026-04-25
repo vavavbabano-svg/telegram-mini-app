@@ -68,16 +68,20 @@ body {
 
 .hero-img {
   width: 100%;
-  height: 120px;        /* ниже по высоте */
-  border-radius: var(--r);
+  height: 110px;
+  border-radius: 20px;   /* более мягкие края */
   overflow: hidden;
 }
 
+/* картинка внутри */
 .hero-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;    /* сохраняет пропорции */
-  object-position: center;
+  object-fit: cover;
+
+  object-position: center 70%; 
+  /* ↓ опускаем фокус вниз, чтобы звезда не резалась сверху */
+  
   display: block;
 }
 
