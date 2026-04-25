@@ -198,6 +198,19 @@ async function initApp() {
   currentUser = await loadOrCreateUser();
   renderUser(currentUser);
 
+  // 🔥 ПАКЕТЫ ЗДЕСЬ
+  document.querySelectorAll(".packs button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const val = btn.dataset.stars;
+      const input = document.getElementById("stars");
+
+      if (!input) return;
+
+      input.value = val;
+      input.dispatchEvent(new Event("input"));
+    });
+  });
+
   console.log("APP READY:", currentUser);
 }
 
