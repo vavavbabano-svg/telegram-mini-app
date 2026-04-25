@@ -31,16 +31,14 @@ body {
   font-family: Arial, sans-serif;
   font-weight: var(--fw-regular);
   touch-action: manipulation;
+  overflow-x: hidden;
 }
 
 /* APP */
 .app {
   width: 100%;
-  min-height: 100vh;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
+  padding: 0;   /* ← ВОТ ЭТО УБИРАЕТ ВСЕ БОКОВЫЕ “ПОЛОСЫ” */
+  margin: 0;
 }
 
 /* TOP */
@@ -54,6 +52,7 @@ body {
 
 /* CARD */
 .card {
+  margin: 12px;
   background: var(--card);
   border-radius: var(--r);
   padding: var(--gap);
@@ -61,10 +60,12 @@ body {
 
 /* HERO */
 .hero {
+  margin: 12px;
   padding: 0;
   border-radius: 22px;
   overflow: hidden;
 }
+
 
 /* сам блок изображения делаем выше */
 .hero-img {
