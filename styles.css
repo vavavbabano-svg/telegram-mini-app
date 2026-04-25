@@ -181,8 +181,8 @@ input {
 
 
 .arrow-icon {
-  width: 28px;
-  height: 28px;
+  width: 36px;       /* было 28px */
+  height: 36px;      /* было 28px */
   opacity: 0.8;
   flex-shrink: 0;
 }
