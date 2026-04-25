@@ -50,15 +50,15 @@ body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-
-  padding: 12px;
-  font-size: 13px;
+  padding: 8px 12px;         /* было 12px */
+  font-size: 12px;           /* было 13px */
   color: var(--muted);
 }
 
 .logo {
   text-align: center;
   font-weight: 600;
+  font-size: 14px;           /* компактнее */
 }
 
 /* CARD */
@@ -302,21 +302,17 @@ button:active {
 
 .tg-btn {
   justify-self: end;
-
-  width: 34px;
-  height: 34px;
-
+  width: 28px;               /* было 34px */
+  height: 28px;              /* было 34px */
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: var(--btn);
-  border-radius: 10px;
-
+  border-radius: 8px;        /* было 10px */
   text-decoration: none;
 }
 
 .tg-btn img {
-  width: 18px;
-  height: 18px;
+  width: 15px;               /* было 18px */
+  height: 15px;              /* было 18px */
 }
