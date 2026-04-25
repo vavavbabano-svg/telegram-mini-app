@@ -323,18 +323,20 @@ input {
 /* BUY */
 .buy {
   position: fixed;
-  bottom: 12px;              /* было 14px */
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 24px);
   max-width: 420px;
-  padding: 12px;             /* было 14px */
-  border-radius: 12px;       /* было 14px */
+  padding: 12px;
+  border-radius: 12px;
   border: none;
   background: var(--blue);
   color: #fff;
   font-weight: var(--fw-bold);
-  font-size: 15px;           /* добавил */
+  font-size: 15px;
+  transition: all 0.2s ease;   /* добавить эту строку */
+  z-index: 10;                 /* добавить эту строку */
 }
 
 /* ADMIN */
