@@ -276,14 +276,13 @@ el.buy.onclick = () => {
   const orderId = `stars${stars}_${Date.now()}`;
   const username = tgUser.username || tgUser.id;
 
-  // Правильная ссылка для редиректа пользователя на платёжную страницу
+  // Ссылка на платежную страницу для пользователя (для GET-запроса)
   const enotUrl = `https://enot.io/pay?` +
     `order_id=${orderId}` +
     `&amount=${amount}` +
     `&currency=${currency}` +
     `&success_url=https://telegram-mini-app.vavavbabano.workers.dev/success.html` +
-    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html` +
-    `&custom_fields=${encodeURIComponent(JSON.stringify({ username: username, stars: stars }))}`;
+    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html`;
 
   tg.sendData(JSON.stringify({
     type: "order",
