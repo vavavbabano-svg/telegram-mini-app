@@ -273,21 +273,27 @@ el.buy.onclick = () => {
     currency = "RUB";
   }
 
-  const shopId = "c2d5e47109ad1d1bccaacdde76130c892a7b5a47";
+  // Формируем order_id: только латиница и цифры
   const orderId = `stars${stars}_${Date.now()}`;
   const username = tgUser.username || tgUser.id;
 
-  const enotUrl = `https://enot.io/pay?` +
-    `shop_id=${shopId}` +
-    `&amount=${amount}` +
-    `&currency=${currency}` +
+  // Создаем JSON для custom_fields (как требует API)
+  const customFields = JSON.stringify({
+    username: username,
+    stars: stars
+  });
+
+  // Собираем правильную ссылку на оплату Enot
+  const enotUrl = `https://api.enot.io/invoice/create?` +
+    `amount=${amount}` +
     `&order_id=${orderId}` +
+    `&currency=${currency}` +
     `&hook_url=https://paypalych-server.onrender.com/paypalych/result` +
     `&success_url=https://telegram-mini-app.vavavbabano.workers.dev/success.html` +
     `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html` +
-    `&custom_username=${username}` +
-    `&custom_stars=${stars}`;
+    `&custom_fields=${encodeURIComponent(customFields)}`;
 
+  // Не забываем отправить данные боту
   tg.sendData(JSON.stringify({
     type: "order",
     user_id: tgUser.id,
@@ -298,6 +304,7 @@ el.buy.onclick = () => {
     payment_method: selectedPayment
   }));
   
+  // Отправляем пользователя на форму оплаты
   window.location.href = enotUrl;
 };
 
