@@ -37,54 +37,35 @@ const username = document.getElementById("username");
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
 
-  console.log("TG USER:", tgUser);
+  if (!tgUser) return;
 
-  if (!tgUser) {
-    userIdEl.textContent = "#guest";
-    return;
-  }
+  const tgId = String(tgUser.id);
 
-  const userId = String(tgUser.id);
-
-  let { data, error } = await supabase
+  let { data } = await supabase
     .from("users")
     .select("*")
-    .eq("id", userId)
+    .eq("tg_id", tgId)
     .maybeSingle();
 
-  if (error) {
-    console.log("SELECT ERROR:", error);
-    return;
-  }
-
-  // 👇 ЕСЛИ НЕТ ПОЛЬЗОВАТЕЛЯ
+  // если нет — создаём
   if (!data) {
-
-    const number = await getNextNumber();
-
-    const { data: newUser, error: insertError } = await supabase
+    const { data: newUser } = await supabase
       .from("users")
       .insert({
-        id: userId,
+        tg_id: tgId,
         username: tgUser.username || null,
-        stars: 0,
-        number: number
+        stars: 0
       })
       .select()
       .single();
 
-    if (insertError) {
-      console.log("INSERT ERROR:", insertError);
-      return;
-    }
-
     data = newUser;
   }
 
-  console.log("USER FINAL:", data);
+  // 🔥 ВОТ КРАСИВЫЙ НОМЕР КАК В ИГРАХ
+  const gameId = String(data.id).padStart(4, "0");
 
-  // 🔥 ВЫВОД НОМЕРА
-  userIdEl.textContent = "#" + data.number;
+  userIdEl.textContent = `#${gameId}`;
 }
 
 // =====================
