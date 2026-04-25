@@ -316,6 +316,31 @@ function setupAdmin() {
   }
 }
 
+/* ================= ADMIN CLICK ================= */
+el.admin.addEventListener("click", async () => {
+  try {
+    const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
+    const stats = await response.json();
+    
+    const msg = 
+      `📊 СТАТИСТИКА\n\n` +
+      `Сегодня:\n` +
+      `⭐ Звёзд: ${stats.today.stars}\n` +
+      `💰 Сумма: ${stats.today.amount} ₽\n` +
+      `📦 Заказов: ${stats.today.count}\n\n` +
+      `Всего:\n` +
+      `⭐ Звёзд: ${stats.all.stars}\n` +
+      `💰 Сумма: ${stats.all.amount} ₽\n` +
+      `📦 Заказов: ${stats.all.count}\n\n` +
+      `🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n` +
+      `🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`;
+    
+    alert(msg);
+  } catch (e) {
+    alert("Ошибка загрузки статистики");
+  }
+});
+
 (async () => {
   await initUser();
   setupAdmin();
