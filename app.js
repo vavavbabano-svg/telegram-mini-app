@@ -240,4 +240,32 @@ async function getNextNumber() {
 }
 
 // 🔥 ЗАПУСК
+const ADMIN_ID = 1444520038;
+
+const tg = window.Telegram?.WebApp;
+
+if (tg) {
+  tg.ready();
+}
+
+const user = tg?.initDataUnsafe?.user;
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  const adminBtn = document.getElementById("adminBtn");
+
+  if (!adminBtn) return;
+
+  // 👇 показываем кнопку только админу
+  if (user && user.id === ADMIN_ID) {
+    adminBtn.classList.remove("hidden");
+  }
+
+  // 👇 открытие админки
+  adminBtn.onclick = () => {
+    window.open("https://your-site.com/admin.html", "_blank");
+  };
+
+});
+
 initUser();
