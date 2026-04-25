@@ -90,7 +90,7 @@ body {
   margin: 0;
   padding: 0;
   border: none;
-  border-radius: 18px;       /* было 22px */
+  border-radius: 22px;       /* было 18px */
   overflow: hidden;
   background: transparent;
 }
