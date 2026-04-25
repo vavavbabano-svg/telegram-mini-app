@@ -30,34 +30,28 @@ function syncTelegramTheme() {
   const theme = tg.themeParams;
 
   if (theme) {
-    // Сохраняем оригинальные цвета Telegram
-    const tgBg = theme.bg_color || "#1E1E1E";
-    const tgSecondaryBg = theme.secondary_bg_color || "#242424";
+    const tgBg = theme.bg_color || "#16161a";
+    const tgSecondaryBg = theme.secondary_bg_color || "#1e1e24";
     const tgText = theme.text_color || "#E6E6E6";
     const tgHint = theme.hint_color || "#A0A0A0";
     const tgButton = theme.button_color || "#2D6BFF";
 
-    // Применяем к CSS-переменным
     document.documentElement.style.setProperty("--bg", tgBg);
     document.documentElement.style.setProperty("--card", tgSecondaryBg);
     document.documentElement.style.setProperty("--text", tgText);
     document.documentElement.style.setProperty("--muted", tgHint);
     document.documentElement.style.setProperty("--blue", tgButton);
     
-    // Автоматически подстраиваем input и button под тему
     document.documentElement.style.setProperty("--input", tgSecondaryBg);
     document.documentElement.style.setProperty("--btn", tgSecondaryBg);
-  }
 
-  // Устанавливаем цвет верхней плашки (header) в Telegram
-  tg.setHeaderColor(tg.themeParams.bg_color || "#1E1E1E");
-  // И цвет фона всего WebApp
-  tg.setBackgroundColor(tg.themeParams.bg_color || "#1E1E1E");
+    tg.setHeaderColor(tgBg);
+    tg.setBackgroundColor(tgBg);
+  }
 }
 
 syncTelegramTheme();
 
-// Слушаем изменения темы (если пользователь переключит тёмную/светлую)
 tg.onEvent("themeChanged", syncTelegramTheme);
 
 /* ================= COUNTER ================= */
