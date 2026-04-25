@@ -233,15 +233,25 @@ input {
 .packs button {
   padding: 8px;
   border-radius: 10px;
-  border: none;
+  border: 1px solid rgba(94, 245, 124, 0.3);
   background: var(--btn);
   color: var(--muted);
   font-size: 13px;
+  box-shadow: 0 0 8px rgba(94, 245, 124, 0.2);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.packs button:hover {
+  box-shadow: 0 0 14px rgba(94, 245, 124, 0.4);
+  border-color: rgba(94, 245, 124, 0.5);
 }
 
 .packs button.active {
-  background: var(--blue);
-  color: #fff;
+  background: rgba(94, 245, 124, 0.15);
+  color: #5ef57c;
+  border-color: #5ef57c;
+  box-shadow: 0 0 16px rgba(94, 245, 124, 0.5);
 }
 
 /* ----- ПЛАТЁЖКИ ----- */
