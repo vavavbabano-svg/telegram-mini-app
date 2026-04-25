@@ -66,21 +66,22 @@ body {
   overflow: hidden;
 }
 
-/* контейнер картинки */
+/* сам блок изображения делаем выше */
 .hero-img {
   width: 100%;
-  height: 130px;
+  height: 170px;   /* ↑ выше стало */
+  line-height: 0;  /* убирает лишние зазоры */
 }
 
-/* сама картинка */
+/* картинка */
 .hero-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-
-  /* ключевой фикс — нормальное позиционирование */
-  object-position: center;
   display: block;
+
+  object-fit: cover;
+  object-position: center 55%; 
+  /* чуть смещаем вниз, чтобы звезда не резалась */
 }
 
 /* INPUT */
