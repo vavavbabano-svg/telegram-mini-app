@@ -276,3 +276,56 @@ input {
 .hidden {
   display: none;
 }
+/* =========================
+   FIX BUTTONS (PACKS)
+========================= */
+
+.packs button {
+  transition: 0.15s ease;
+  user-select: none;
+}
+
+.packs button:active {
+  transform: scale(0.96);
+  background: #2a2f38;
+}
+
+/* =========================
+   ACTIVE STATE (если захочешь подсветку)
+========================= */
+
+.packs button.active {
+  background: #2f3642;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 211, 106, 0.3);
+}
+
+/* =========================
+   BUY BUTTON FIX FEEL
+========================= */
+
+.buy {
+  transition: 0.2s ease;
+}
+
+.buy:hover {
+  transform: scale(1.01);
+}
+
+.buy:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   ADMIN BUTTON FIX
+========================= */
+
+.admin-btn {
+  z-index: 999;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-btn:active {
+  transform: scale(0.95);
+}

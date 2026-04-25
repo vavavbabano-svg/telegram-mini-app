@@ -1,8 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* =========================
-   CONFIG
-========================= */
 const RATE = 1.64;
 
 const supabase = createClient(
@@ -10,11 +7,10 @@ const supabase = createClient(
   "sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF"
 );
 
-const tg = window.Telegram?.WebApp;
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-/* =========================
-   DOM CACHE
-========================= */
 const el = {
   userId: document.getElementById("userId"),
   stars: document.getElementById("stars"),
@@ -26,22 +22,7 @@ const el = {
   admin: document.getElementById("adminBtn")
 };
 
-/* =========================
-   STATE
-========================= */
-let currentUser = null;
-
-/* =========================
-   INIT TELEGRAM
-========================= */
-function initTelegram() {
-  tg.ready();
-  tg.expand();
-}
-
-/* =========================
-   COUNTER SERVICE
-========================= */
+// ===================== USER =====================
 async function getNextNumber() {
   const { data } = await supabase
     .from("counters")
@@ -59,12 +40,9 @@ async function getNextNumber() {
   return next;
 }
 
-/* =========================
-   USER SERVICE
-========================= */
-async function loadOrCreateUser() {
+async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
-  if (!tgUser) return null;
+  if (!tgUser) return;
 
   const tgId = String(tgUser.id);
 
@@ -77,7 +55,7 @@ async function loadOrCreateUser() {
   if (!user) {
     const number = await getNextNumber();
 
-    const { data: created } = await supabase
+    const { data } = await supabase
       .from("users")
       .insert({
         tg_id: tgId,
@@ -88,130 +66,85 @@ async function loadOrCreateUser() {
       .select()
       .single();
 
-    user = created;
+    user = data;
   }
 
-  return user;
-}
-
-/* =========================
-   UI RENDER
-========================= */
-function renderUser(user) {
-  if (!user) return;
-
-  el.userId.textContent = "#" + String(user.number).padStart(4, "0");
-}
-
-/* =========================
-   CALCULATOR
-========================= */
-function updatePrice(value) {
-  const stars = Math.max(0, Number(value) || 0);
-  el.rub.textContent = (stars * RATE).toFixed(2) + " ₽";
-}
-
-/* =========================
-   BUY FLOW
-========================= */
-function setupBuy() {
-  el.buy?.addEventListener("click", () => {
-    const stars = Number(el.stars.value);
-    if (!stars) return;
-
-    const tgUser = tg.initDataUnsafe?.user;
-    if (!tgUser) return;
-
-    const amount = (stars * RATE).toFixed(2);
-
-    const ok = confirm(`⭐ ${stars} → ${amount}₽`);
-    if (!ok) return;
-
-    tg.sendData(JSON.stringify({
-      type: "order",
-      user_id: tgUser.id,
-      username: tgUser.username || "—",
-      stars,
-      amount_rub: amount
-    }));
-
-    el.stars.value = "";
-    updatePrice(0);
-  });
-}
-
-/* =========================
-   TOGGLES
-========================= */
-function setupToggle() {
-  el.self?.addEventListener("click", () => {
-    el.self.classList.add("active");
-    el.other.classList.remove("active");
-
-    const u = tg.initDataUnsafe?.user;
-    el.username.value = u?.username ? "@" + u.username : "@" + u?.id;
-  });
-
-  el.other?.addEventListener("click", () => {
-    el.other.classList.add("active");
-    el.self.classList.remove("active");
-    el.username.value = "";
-  });
-}
-
-/* =========================
-   ADMIN BUTTON
-========================= */
-function setupAdmin() {
-  const ADMIN_ID = 1444520038;
-  const user = tg.initDataUnsafe?.user;
-
-  if (user?.id === ADMIN_ID && el.admin) {
-    el.admin.classList.remove("hidden");
-
-    el.admin.onclick = () => {
-      window.location.href = "/admin.html";
-    };
+  if (el.userId && user) {
+    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
   }
 }
 
-/* =========================
-   INPUTS
-========================= */
-function setupInputs() {
-  el.stars?.addEventListener("input", e => {
-    updatePrice(e.target.value);
-  });
+// ===================== PRICE =====================
+function updatePrice(val) {
+  const s = Number(val) || 0;
+  el.rub.textContent = (s * RATE).toFixed(2) + " ₽";
 }
 
-/* =========================
-   INIT APP
-========================= */
-async function initApp() {
-  initTelegram();
-
-  setupInputs();
-  setupToggle();
-  setupBuy();
-  setupAdmin();
-
-  currentUser = await loadOrCreateUser();
-  renderUser(currentUser);
-
-  // 🔥 ПАКЕТЫ ЗДЕСЬ
-  document.querySelectorAll(".packs button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const val = btn.dataset.stars;
-      const input = document.getElementById("stars");
-
-      if (!input) return;
-
-      input.value = val;
-      input.dispatchEvent(new Event("input"));
-    });
+// ===================== PACKS (FIX) =====================
+document.querySelectorAll(".packs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const val = btn.dataset.stars;
+    el.stars.value = val;
+    updatePrice(val);
   });
+});
 
-  console.log("APP READY:", currentUser);
+// ===================== INPUT =====================
+el.stars.addEventListener("input", e => {
+  updatePrice(e.target.value);
+});
+
+// ===================== TOGGLE =====================
+el.self.onclick = () => {
+  el.self.classList.add("active");
+  el.other.classList.remove("active");
+
+  const u = tg.initDataUnsafe?.user;
+  el.username.value = u?.username ? "@" + u.username : "@" + u?.id;
+};
+
+el.other.onclick = () => {
+  el.other.classList.add("active");
+  el.self.classList.remove("active");
+  el.username.value = "";
+};
+
+// ===================== BUY =====================
+el.buy.onclick = () => {
+  const stars = Number(el.stars.value);
+  if (!stars) return;
+
+  const tgUser = tg.initDataUnsafe?.user;
+  if (!tgUser) return;
+
+  const amount = (stars * RATE).toFixed(2);
+
+  if (!confirm(`⭐ ${stars} → ${amount}₽`)) return;
+
+  tg.sendData(JSON.stringify({
+    type: "order",
+    user_id: tgUser.id,
+    username: tgUser.username || "—",
+    stars,
+    amount_rub: amount
+  }));
+
+  el.stars.value = "";
+  updatePrice(0);
+};
+
+// ===================== ADMIN =====================
+const ADMIN_ID = 1444520038;
+
+const user = tg.initDataUnsafe?.user;
+
+if (user?.id === ADMIN_ID && el.admin) {
+  el.admin.classList.remove("hidden");
+
+  el.admin.onclick = () => {
+    window.location.href = "/admin.html";
+  };
 }
 
-initApp();
+// ===================== START =====================
+initUser();

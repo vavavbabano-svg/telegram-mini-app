@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stars App</title>
 
   <link rel="stylesheet" href="styles.css">
@@ -11,20 +11,18 @@
 
 <body>
 
-<!-- TOP -->
 <div class="topbar">
   <div id="userId">#</div>
 
-  <a class="support" href="https://t.me/your_bot" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" class="tg-icon">
+  <a href="https://t.me/your_bot" target="_blank">
+    <img class="tg-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg">
   </a>
 </div>
 
-<!-- BUY -->
-<div id="screenBuy" class="screen active">
+<div class="screen active">
 
   <div class="title-image">
-    <img src="img/звезда12.jpg" alt="">
+    <img src="img/звезда12.jpg">
   </div>
 
   <div class="card">
@@ -48,11 +46,11 @@
     </div>
 
     <div class="packs">
-      <button onclick="setStars(50)"><img src="img/тгзвезда21.png">50</button>
-      <button onclick="setStars(100)"><img src="img/тгзвезда21.png">100</button>
-      <button onclick="setStars(500)"><img src="img/тгзвезда21.png">500</button>
-      <button onclick="setStars(1000)"><img src="img/тгзвезда21.png">1000</button>
-      <button onclick="setStars(5000)"><img src="img/тгзвезда21.png">5000</button>
+      <button data-stars="50">50</button>
+      <button data-stars="100">100</button>
+      <button data-stars="500">500</button>
+      <button data-stars="1000">1000</button>
+      <button data-stars="5000">5000</button>
     </div>
 
   </div>
@@ -63,37 +61,6 @@
 
 </div>
 
-<!-- SELL -->
-<div id="screenSell" class="screen">
-  <h1>Продажа</h1>
-</div>
-
-<!-- REF -->
-<div id="screenRef" class="screen">
-  <h1>Рефералы</h1>
-</div>
-
-<!-- 🔥 НОВЫЙ BOTTOM NAV -->
-<div class="bottom-nav" id="bottomNav">
-
-  <div class="nav-item" data-tab="tabBuy">
-    <div class="icon">🛒</div>
-    <span>Покупка</span>
-  </div>
-
-  <div class="nav-item" data-tab="tabSell">
-    <div class="icon">💸</div>
-    <span>Продажа</span>
-  </div>
-
-  <div class="nav-item" data-tab="tabRef">
-    <div class="icon">👥</div>
-    <span>Рефка</span>
-  </div>
-
-</div>
-
 <script type="module" src="app.js"></script>
-
 </body>
 </html>
