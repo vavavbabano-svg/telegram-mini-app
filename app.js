@@ -148,7 +148,7 @@ el.stars.addEventListener("input", e => {
 el.stars.value = 50;
 update(50);
 
-/* ================= TOGGLE СЕБЕ / ДРУГОМУ ================= */
+/* ================= TOGGLE СЕЕ / ДРУГОМУ ================= */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
