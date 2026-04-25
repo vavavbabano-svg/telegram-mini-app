@@ -24,18 +24,41 @@ const el = {
 /* ================= INIT TELEGRAM ================= */
 tg.ready();
 tg.expand();
-const theme = tg.themeParams;
 
-function applyTelegramTheme() {
-  if (!theme) return;
+/* ================= СИНХРОНИЗАЦИЯ ЦВЕТОВ С TELEGRAM ================= */
+function syncTelegramTheme() {
+  const theme = tg.themeParams;
 
-  document.documentElement.style.setProperty("--tg-bg", theme.bg_color || "#0f1115");
-  document.documentElement.style.setProperty("--tg-text", theme.text_color || "#ffffff");
-  document.documentElement.style.setProperty("--tg-hint", theme.hint_color || "#8b93a3");
-  document.documentElement.style.setProperty("--tg-accent", theme.button_color || "#2d6bff");
+  if (theme) {
+    // Сохраняем оригинальные цвета Telegram
+    const tgBg = theme.bg_color || "#1E1E1E";
+    const tgSecondaryBg = theme.secondary_bg_color || "#242424";
+    const tgText = theme.text_color || "#E6E6E6";
+    const tgHint = theme.hint_color || "#A0A0A0";
+    const tgButton = theme.button_color || "#2D6BFF";
+
+    // Применяем к CSS-переменным
+    document.documentElement.style.setProperty("--bg", tgBg);
+    document.documentElement.style.setProperty("--card", tgSecondaryBg);
+    document.documentElement.style.setProperty("--text", tgText);
+    document.documentElement.style.setProperty("--muted", tgHint);
+    document.documentElement.style.setProperty("--blue", tgButton);
+    
+    // Автоматически подстраиваем input и button под тему
+    document.documentElement.style.setProperty("--input", tgSecondaryBg);
+    document.documentElement.style.setProperty("--btn", tgSecondaryBg);
+  }
+
+  // Устанавливаем цвет верхней плашки (header) в Telegram
+  tg.setHeaderColor(tg.themeParams.bg_color || "#1E1E1E");
+  // И цвет фона всего WebApp
+  tg.setBackgroundColor(tg.themeParams.bg_color || "#1E1E1E");
 }
 
-applyTelegramTheme();
+syncTelegramTheme();
+
+// Слушаем изменения темы (если пользователь переключит тёмную/светлую)
+tg.onEvent("themeChanged", syncTelegramTheme);
 
 /* ================= COUNTER ================= */
 async function getNextNumber() {
@@ -138,9 +161,7 @@ let selectedPayment = null;
 
 document.querySelectorAll(".pay-card").forEach(card => {
   card.addEventListener("click", () => {
-    // Снимаем выделение со всех
     document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
-    // Выделяем текущую
     card.classList.add("selected");
     selectedPayment = card.dataset.method;
   });
@@ -174,7 +195,6 @@ el.buy.onclick = () => {
 
   el.stars.value = "";
   update(0);
-  // Сбрасываем выделение
   document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
   selectedPayment = null;
 };
