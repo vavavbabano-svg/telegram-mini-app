@@ -1,7 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const RATE_RUB = 1.64;        // курс: 1 звезда = 1.64 рубля
-const RATE_TON = 0.015;       // курс: 1 звезда = 0.015 TON
+const RATE_RUB = 1.64;
+const RATE_TON = 0.015;
 
 const supabase = createClient(
   "https://naxxslgxyelefzdxjhze.supabase.co",
@@ -10,7 +10,6 @@ const supabase = createClient(
 
 const tg = window.Telegram.WebApp;
 
-/* ================= DOM ================= */
 const el = {
   userId: document.getElementById("userId"),
   stars: document.getElementById("stars"),
@@ -22,11 +21,9 @@ const el = {
   admin: document.getElementById("adminBtn")
 };
 
-/* ================= INIT TELEGRAM ================= */
 tg.ready();
 tg.expand();
 
-/* ================= ФИКСИРОВАННЫЕ ЦВЕТА ================= */
 function applyFixedTheme() {
   const bg = "#16161a";
   const card = "#1e1e24";
@@ -48,7 +45,6 @@ function applyFixedTheme() {
 
 applyFixedTheme();
 
-/* ================= COUNTER ================= */
 async function getNextNumber() {
   const { data } = await supabase
     .from("counters")
@@ -66,7 +62,6 @@ async function getNextNumber() {
   return next;
 }
 
-/* ================= USER ================= */
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
   if (!tgUser) return null;
@@ -103,8 +98,7 @@ async function initUser() {
   return tgUser;
 }
 
-/* ================= ВАЛЮТА И КУРС ================= */
-let currentCurrency = "RUB";   // RUB или TON
+let currentCurrency = "RUB";
 
 function update(val) {
   const s = Number(val) || 0;
@@ -120,35 +114,35 @@ function update(val) {
   }
 }
 
-/* ================= PACKS ================= */
 document.querySelectorAll(".packs button").forEach(btn => {
   btn.addEventListener("click", () => {
     const val = btn.dataset.stars;
-
     el.stars.value = val;
     update(val);
 
     document.querySelectorAll(".packs button")
       .forEach(b => b.classList.remove("active"));
-
     btn.classList.add("active");
   });
 });
 
-/* ================= INPUT ================= */
+/* ================= INPUT (можно стирать 50) ================= */
 el.stars.addEventListener("input", e => {
   let val = e.target.value;
+  
   if (val === "") {
     update(0);
     return;
   }
+  
   update(Number(val));
 });
 
+// Ставим 50 только если поле ещё не трогали
 el.stars.value = 50;
 update(50);
 
-/* ================= TOGGLE СЕЕ / ДРУГОМУ ================= */
+/* ================= TOGGLE ================= */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
@@ -163,7 +157,6 @@ el.other.onclick = () => {
   el.username.value = "";
 };
 
-// Сразу ставим юзернейм при загрузке
 (function setDefaultUsername() {
   const u = tg.initDataUnsafe?.user;
   if (u) {
@@ -173,7 +166,7 @@ el.other.onclick = () => {
   }
 })();
 
-/* ================= PAYMENT SELECTION ================= */
+/* ================= PAYMENT ================= */
 let selectedPayment = null;
 
 document.querySelectorAll(".pay-card").forEach(card => {
@@ -182,14 +175,12 @@ document.querySelectorAll(".pay-card").forEach(card => {
     card.classList.add("selected");
     selectedPayment = card.dataset.method;
 
-    // Меняем валюту в зависимости от выбора
     if (selectedPayment === "ton") {
       currentCurrency = "TON";
     } else {
       currentCurrency = "RUB";
     }
     
-    // Обновляем отображение цены
     update(Number(el.stars.value));
   });
 });
@@ -198,7 +189,6 @@ document.querySelectorAll(".pay-card").forEach(card => {
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   
-  // Проверка: пусто или меньше 50
   if (!stars || stars < 50) {
     alert("Минимальное количество звёзд: 50");
     return;
@@ -233,7 +223,6 @@ el.buy.onclick = () => {
     payment_method: selectedPayment
   }));
 
-  // Сброс
   el.stars.value = 50;
   update(50);
   document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
@@ -241,7 +230,7 @@ el.buy.onclick = () => {
   currentCurrency = "RUB";
 };
 
-/* ================= ADMIN FIX ================= */
+/* ================= ADMIN ================= */
 const ADMIN_ID = 1444520038;
 
 function setupAdmin() {
@@ -250,17 +239,14 @@ function setupAdmin() {
 
   if (!btn || !user) return;
 
-  const myId = Number(user.id);
-
-  if (myId === ADMIN_ID) {
+  if (Number(user.id) === ADMIN_ID) {
     btn.style.display = "block";
   } else {
     btn.remove();
   }
 }
 
-/* ================= START ================= */
 (async () => {
-  const user = await initUser();
+  await initUser();
   setupAdmin();
 })();
