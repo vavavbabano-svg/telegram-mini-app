@@ -52,8 +52,15 @@ body {
 /* HERO */
 .hero-img {
   height: 120px;
-  border-radius: var(--r);
-  background: #1a1d24;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* INPUT */
