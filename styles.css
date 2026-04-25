@@ -1,11 +1,11 @@
 :root {
-  --bg: #f3f5f8;        /* светлый фон */
-  --card: #ffffff;      /* карточки */
-  --input: #eef1f6;     /* инпуты */
-  --btn: #e7ebf3;       /* кнопки */
+  --bg: #515151;        /* фон */
+  --card: #5a5a5a;      /* карточки */
+  --input: #6a6a6a;     /* инпуты */
+  --btn: #737373;       /* кнопки */
 
-  --text: #1f2937;
-  --muted: #6b7280;
+  --text: #f1f1f1;
+  --muted: #d0d0d0;
 
   --blue: #2d6bff;
 
@@ -25,16 +25,13 @@
 
 html, body {
   margin: 0;
-  padding: 0;
-  min-height: 100vh;
-
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
-
   font-family: Arial, sans-serif;
   font-weight: var(--fw-regular);
 
-  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
   touch-action: manipulation;
 }
 
@@ -53,10 +50,8 @@ html, body {
 .topbar {
   display: flex;
   justify-content: space-between;
-
   font-size: 13px;
   font-weight: var(--fw-medium);
-
   color: var(--muted);
 }
 
@@ -65,8 +60,6 @@ html, body {
   background: var(--card);
   border-radius: var(--r);
   padding: var(--gap);
-
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
 }
 
 /* HERO */
@@ -77,8 +70,7 @@ html, body {
 
 .hero-img {
   width: 100%;
-  height: 160px;
-
+  height: 150px;
   border-radius: var(--r);
   overflow: hidden;
 }
@@ -94,14 +86,12 @@ html, body {
 input {
   width: 100%;
   padding: 12px;
-
   border-radius: 12px;
   border: none;
   outline: none;
 
   background: var(--input);
   color: var(--text);
-
   font-weight: var(--fw-medium);
 }
 
@@ -121,9 +111,7 @@ input {
 
   background: var(--btn);
   color: var(--muted);
-
   font-weight: var(--fw-medium);
-  cursor: pointer;
 }
 
 .btn.small.active {
@@ -135,9 +123,8 @@ input {
 .price-line {
   display: grid;
   grid-template-columns: 1fr auto;
-  align-items: center;
-
   gap: var(--gap);
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -160,10 +147,7 @@ input {
 
   background: var(--btn);
   color: var(--muted);
-
   font-size: 12px;
-  font-weight: var(--fw-medium);
-  cursor: pointer;
 }
 
 .packs button.active {
@@ -186,10 +170,7 @@ input {
   text-align: center;
 
   font-size: 12px;
-  font-weight: var(--fw-medium);
-
   color: var(--muted);
-  cursor: pointer;
 }
 
 .pay.active {
@@ -220,10 +201,7 @@ input {
 
   background: var(--blue);
   color: #fff;
-
   font-weight: var(--fw-bold);
-
-  box-shadow: 0 10px 25px rgba(45,107,255,0.25);
 }
 
 /* ADMIN */
@@ -243,10 +221,5 @@ input {
 /* CLICK FX */
 button:active {
   transform: scale(0.98);
-  filter: brightness(0.95);
-}
-
-/* DISABLE ZOOM FEEL */
-body {
-  user-select: none;
+  filter: brightness(1.1);
 }
