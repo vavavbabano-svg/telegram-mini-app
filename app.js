@@ -25,6 +25,18 @@ const el = {
 /* ================= INIT TELEGRAM ================= */
 tg.ready();
 tg.expand();
+const theme = tg.themeParams;
+
+function applyTelegramTheme() {
+  if (!theme) return;
+
+  document.documentElement.style.setProperty("--tg-bg", theme.bg_color || "#0f1115");
+  document.documentElement.style.setProperty("--tg-text", theme.text_color || "#ffffff");
+  document.documentElement.style.setProperty("--tg-hint", theme.hint_color || "#8b93a3");
+  document.documentElement.style.setProperty("--tg-accent", theme.button_color || "#2d6bff");
+}
+
+applyTelegramTheme();
 
 /* ================= COUNTER ================= */
 async function getNextNumber() {

@@ -63,11 +63,8 @@ body {
 
 /* CARD */
 .card {
-  background: var(--card);
-  border-radius: var(--r);
-  padding: var(--gap);
-
-  border: 1px solid rgba(255,255,255,0.03);
+  background: color-mix(in srgb, var(--tg-bg) 85%, #000);
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
 /* HERO */
@@ -204,22 +201,7 @@ input {
 
 /* BUY */
 .buy {
-  position: fixed;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: calc(100% - 24px);
-  max-width: 420px;
-
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-
-  background: var(--blue);
-  color: #fff;
-
-  font-weight: var(--fw-bold);
+  background: var(--tg-accent);
 }
 
 /* ADMIN */
