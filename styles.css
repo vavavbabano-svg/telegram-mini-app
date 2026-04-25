@@ -152,21 +152,15 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 10px;
+  flex-wrap: nowrap;
 }
 
-.price-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.price-item input {
-  width: 80px;
+.price-line input {
+  width: 70px;
   text-align: center;
-  padding: 10px;
+  padding: 10px 6px;
   border-radius: 10px;
   border: none;
   outline: none;
@@ -181,24 +175,29 @@ input {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 
 
 .arrow-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   opacity: 0.8;
-  margin-top: -8px; /* компенсация высоты лейбла */
+  flex-shrink: 0;
 }
 
 #rubOut {
   color: var(--muted);
   font-weight: var(--fw-bold);
   font-size: 16px;
-  text-align: center;
+  white-space: nowrap;
   min-width: 80px;
+  text-align: center;
+
 }
+
+
 
 /* PACKS */
 .packs {
