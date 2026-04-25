@@ -250,6 +250,12 @@ document.querySelectorAll(".pay-card").forEach(card => {
 /* ================= BUY ================= */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
+  const username = el.username.value.trim();
+  
+  if (!username) {
+    alert("Введите username получателя");
+    return;
+  }
   
   if (!stars || stars < 50) {
     alert("Минимальное количество звёзд: 50");
@@ -273,16 +279,19 @@ el.buy.onclick = () => {
     currency = "RUB";
   }
 
+  const shopId = "c2d5e47109ad1d1bccaacdde76130c892a7b5a47";
   const orderId = `stars${stars}_${Date.now()}`;
-  const username = tgUser.username || tgUser.id;
 
-  // Ссылка на платежную страницу для пользователя (для GET-запроса)
   const enotUrl = `https://enot.io/pay?` +
-    `order_id=${orderId}` +
+    `shop_id=${shopId}` +
     `&amount=${amount}` +
     `&currency=${currency}` +
+    `&order_id=${orderId}` +
+    `&hook_url=https://paypalych-server.onrender.com/paypalych/result` +
     `&success_url=https://telegram-mini-app.vavavbabano.workers.dev/success.html` +
-    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html`;
+    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html` +
+    `&custom_username=${encodeURIComponent(username)}` +
+    `&custom_stars=${stars}`;
 
   tg.sendData(JSON.stringify({
     type: "order",
