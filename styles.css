@@ -1,33 +1,39 @@
 :root {
-  --bg: #0f1115;        /* основной фон */
-  --card: #171a21;      /* блоки */
-  --input: #1d2028;     /* поля */
-  --btn: #1a1d24;       /* кнопки */
-  --muted: #8a93a3;     /* вторичный текст */
-  --text: #cfd6e4;      /* основной текст */
+  --bg: #0c0f14;
+  --card: #151a22;
+  --input: #1a202a;
+  --btn: #1a1f29;
 
-  --blue: #2d6bff;      /* единственный акцент */
+  --text: #cfd6e4;
+  --muted: #8b93a3;
+
+  --blue: #2d6bff;
 
   --r: 14px;
   --gap: 12px;
 }
 
+/* RESET */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
   background: var(--bg);
   font-family: Arial, sans-serif;
   color: var(--text);
+  overflow-x: hidden;
 }
 
-/* APP */
+/* APP — УБРАЛ max-width чтобы не было полос */
 .app {
+  width: 100%;
   max-width: 420px;
-  margin: auto;
+  margin: 0 auto;
   padding: var(--gap);
   display: flex;
   flex-direction: column;
@@ -42,31 +48,24 @@ body {
   color: var(--muted);
 }
 
-/* CARDS — БЕЗ РАМКИ */
+/* CARD */
 .card {
   background: var(--card);
   border-radius: var(--r);
   padding: var(--gap);
 }
 
-/* HERO */
-.hero.card {
+/* HERO — БЕЗ ОТСТУПОВ ВООБЩЕ */
+.hero {
   padding: 0;
   background: transparent;
-  border: none;
-  border-radius: 0;
 }
+
 .hero-img {
   width: 100%;
-  height: 140px;
-
-  margin: 0;
-
-  border-radius: 16px;
-
+  height: 150px;
+  border-radius: var(--r);
   overflow: hidden;
-
-  display: block;
 }
 
 .hero-img img {
@@ -74,14 +73,6 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.app {
-  gap: 12px;
-}
-
-.card,
-.hero {
-  margin: 0;
 }
 
 /* INPUT */
@@ -103,7 +94,7 @@ input {
   align-items: center;
 }
 
-/* SMALL BUTTONS */
+/* BUTTONS */
 .btn.small {
   padding: 10px 12px;
   border-radius: 12px;
@@ -181,17 +172,14 @@ input {
   text-align: center;
 }
 
-/* ===================== */
-/* BUY BUTTON FIXED UNDER PAYMENTS */
-/* ===================== */
-
+/* BUY BUTTON */
 .buy {
   position: fixed;
   bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
 
-  width: 92%;
+  width: calc(100% - 24px);
   max-width: 420px;
 
   padding: 14px;
@@ -215,8 +203,8 @@ input {
   border-radius: 10px;
 }
 
-/* CLICK FEEDBACK (любая кнопка) */
+/* GLOBAL CLICK FX */
 button:active {
-  filter: brightness(1.2);
   transform: scale(0.98);
+  filter: brightness(1.2);
 }
