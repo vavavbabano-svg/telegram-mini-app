@@ -10,6 +10,7 @@ const supabase = createClient(
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
+setupAdmin();
 
 /* DOM */
 const el = {
@@ -140,14 +141,23 @@ el.buy.onclick = () => {
 
 /* ADMIN */
 const ADMIN_ID = 1444520038;
-const user = tg.initDataUnsafe?.user;
 
-if (user?.id === ADMIN_ID) {
-  el.admin.classList.remove("hidden");
+function setupAdmin() {
+  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-  el.admin.onclick = () => {
-    window.location.href = "/admin.html";
-  };
+  if (!user) return;
+
+  const myId = Number(user.id);
+  const adminId = Number(ADMIN_ID);
+
+  const btn = document.getElementById("adminBtn");
+  if (!btn) return;
+
+  if (myId === adminId) {
+    btn.classList.remove("hidden");
+  } else {
+    btn.remove(); // 🔥 полностью убираем у всех остальных
+  }
 }
 
 /* START */
