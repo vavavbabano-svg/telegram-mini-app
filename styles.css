@@ -255,3 +255,24 @@ input {
 .nav-item:active {
   transform: scale(0.95);
 }
+.admin-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+
+  padding: 8px 12px;
+  border-radius: 10px;
+
+  background: #3a1418;
+  color: white;
+  border: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  opacity: 0.8;
+}
+
+.hidden {
+  display: none;
+}
