@@ -25,34 +25,29 @@ const el = {
 tg.ready();
 tg.expand();
 
-/* ================= СИНХРОНИЗАЦИЯ ЦВЕТОВ С TELEGRAM ================= */
-function syncTelegramTheme() {
-  const theme = tg.themeParams;
+/* ================= ФИКСИРОВАННЫЕ ЦВЕТА ================= */
+function applyFixedTheme() {
+  // Наши фиксированные цвета
+  const bg = "#16161a";
+  const card = "#1e1e24";
+  const text = "#E6E6E6";
+  const muted = "#A0A0A0";
+  const blue = "#2D6BFF";
 
-  if (theme) {
-    const tgBg = theme.bg_color || "#16161a";
-    const tgSecondaryBg = theme.secondary_bg_color || "#1e1e24";
-    const tgText = theme.text_color || "#E6E6E6";
-    const tgHint = theme.hint_color || "#A0A0A0";
-    const tgButton = theme.button_color || "#2D6BFF";
+  document.documentElement.style.setProperty("--bg", bg);
+  document.documentElement.style.setProperty("--card", card);
+  document.documentElement.style.setProperty("--text", text);
+  document.documentElement.style.setProperty("--muted", muted);
+  document.documentElement.style.setProperty("--blue", blue);
+  document.documentElement.style.setProperty("--input", card);
+  document.documentElement.style.setProperty("--btn", card);
 
-    document.documentElement.style.setProperty("--bg", tgBg);
-    document.documentElement.style.setProperty("--card", tgSecondaryBg);
-    document.documentElement.style.setProperty("--text", tgText);
-    document.documentElement.style.setProperty("--muted", tgHint);
-    document.documentElement.style.setProperty("--blue", tgButton);
-    
-    document.documentElement.style.setProperty("--input", tgSecondaryBg);
-    document.documentElement.style.setProperty("--btn", tgSecondaryBg);
-
-    tg.setHeaderColor(tgBg);
-    tg.setBackgroundColor(tgBg);
-  }
+  // Красим верхнюю плашку Telegram в наш цвет
+  tg.setHeaderColor(bg);
+  tg.setBackgroundColor(bg);
 }
 
-syncTelegramTheme();
-
-tg.onEvent("themeChanged", syncTelegramTheme);
+applyFixedTheme();
 
 /* ================= COUNTER ================= */
 async function getNextNumber() {
