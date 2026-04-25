@@ -248,13 +248,7 @@ document.querySelectorAll(".pay-card").forEach(card => {
 });
 
 /* ================= BUY ================= */
-const modal = document.getElementById("paymentModal");
-const modalClose = document.getElementById("modalClose");
-const modalAmount = document.getElementById("modalAmount");
-const modalTimer = document.getElementById("modalTimer");
-let modalTimeout;
-
-el.buy.onclick = () => {
+el.buy.onclick = async () => {
   const stars = Number(el.stars.value);
   
   if (!stars || stars < 50) {
@@ -279,58 +273,39 @@ el.buy.onclick = () => {
     currency = "RUB";
   }
 
-  // Показываем модальное окно
-  modalAmount.textContent = `⭐ ${stars} → ${amount} ${currency}`;
-  modal.classList.add("active");
-  
-  let sec = 5;
-  modalTimer.textContent = `Ожидание оплаты... (автопереход через ${sec} сек)`;
-  
-  modalTimeout = setInterval(() => {
-    sec--;
-    if (sec <= 0) {
-      clearInterval(modalTimeout);
-      window.location.href = "success.html";
+  try {
+    const response = await fetch("https://paypalych-server.onrender.com/create-invoice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stars: stars,
+        amount: amount,
+        currency: currency,
+        username: tgUser.username || tgUser.id
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.url) {
+      tg.sendData(JSON.stringify({
+        type: "order",
+        user_id: tgUser.id,
+        username: tgUser.username || "—",
+        stars,
+        amount: amount,
+        currency: currency,
+        payment_method: selectedPayment
+      }));
+      
+      window.location.href = data.url;
     } else {
-      modalTimer.textContent = `Ожидание оплаты... (автопереход через ${sec} сек)`;
+      alert("Ошибка при создании счёта. Попробуйте позже.");
     }
-  }, 1000);
-
-  // Отправляем данные боту
-  tg.sendData(JSON.stringify({
-    type: "order",
-    user_id: tgUser.id,
-    username: tgUser.username || "—",
-    stars,
-    amount: amount,
-    currency: currency,
-    payment_method: selectedPayment
-  }));
-};
-
-// Закрытие модалки
-modalClose.onclick = () => {
-  clearInterval(modalTimeout);
-  modal.classList.remove("active");
-  el.stars.value = 50;
-  update(50);
-  document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
-  selectedPayment = null;
-  currentCurrency = "RUB";
-};
-
-// Клик вне модалки
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    clearInterval(modalTimeout);
-    modal.classList.remove("active");
-    el.stars.value = 50;
-    update(50);
-    document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
-    selectedPayment = null;
-    currentCurrency = "RUB";
+  } catch (error) {
+    alert("Ошибка соединения с сервером.");
   }
-});
+};
 
 /* ================= ADMIN ================= */
 const ADMIN_ID = 1444520038;
