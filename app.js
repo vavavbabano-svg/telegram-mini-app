@@ -1,6 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const RATE = 1.64;
+const RATE_RUB = 1.64;        // курс: 1 звезда = 1.64 рубля
+const RATE_TON = 0.015;       // курс: 1 звезда = 0.015 TON
 
 const supabase = createClient(
   "https://naxxslgxyelefzdxjhze.supabase.co",
@@ -27,7 +28,6 @@ tg.expand();
 
 /* ================= ФИКСИРОВАННЫЕ ЦВЕТА ================= */
 function applyFixedTheme() {
-  // Наши фиксированные цвета
   const bg = "#16161a";
   const card = "#1e1e24";
   const text = "#E6E6E6";
@@ -42,7 +42,6 @@ function applyFixedTheme() {
   document.documentElement.style.setProperty("--input", card);
   document.documentElement.style.setProperty("--btn", card);
 
-  // Красим верхнюю плашку Telegram в наш цвет
   tg.setHeaderColor(bg);
   tg.setBackgroundColor(bg);
 }
@@ -104,10 +103,18 @@ async function initUser() {
   return tgUser;
 }
 
-/* ================= PRICE ================= */
+/* ================= ВАЛЮТА И КУРС ================= */
+let currentCurrency = "RUB";   // RUB или TON
+
 function update(val) {
   const s = Number(val) || 0;
-  el.rub.textContent = (s * RATE).toFixed(2) + " ₽";
+  
+  if (currentCurrency === "TON") {
+    const tonAmount = (s * RATE_TON).toFixed(3);
+    el.rub.textContent = tonAmount + " TON";
+  } else {
+    el.rub.textContent = (s * RATE_RUB).toFixed(2) + " ₽";
+  }
 }
 
 /* ================= PACKS ================= */
@@ -127,10 +134,23 @@ document.querySelectorAll(".packs button").forEach(btn => {
 
 /* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
-  update(e.target.value);
+  let val = Number(e.target.value);
+  
+  // Минимум 50 звёзд
+  if (val < 50) {
+    val = 50;
+    e.target.value = 50;
+  }
+  
+  update(val);
 });
 
-/* ================= TOGGLE ================= */
+// Устанавливаем минимум при загрузке
+el.stars.setAttribute("min", "50");
+el.stars.value = 50;
+update(50);
+
+/* ================= TOGGLE СЕБЕ / ДРУГОМУ ================= */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
@@ -145,6 +165,16 @@ el.other.onclick = () => {
   el.username.value = "";
 };
 
+// Сразу ставим юзернейм при загрузке
+(function setDefaultUsername() {
+  const u = tg.initDataUnsafe?.user;
+  if (u) {
+    el.username.value = u.username ? "@" + u.username : "@" + u.id;
+    el.self.classList.add("active");
+    el.other.classList.remove("active");
+  }
+})();
+
 /* ================= PAYMENT SELECTION ================= */
 let selectedPayment = null;
 
@@ -153,13 +183,26 @@ document.querySelectorAll(".pay-card").forEach(card => {
     document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
     card.classList.add("selected");
     selectedPayment = card.dataset.method;
+
+    // Меняем валюту в зависимости от выбора
+    if (selectedPayment === "ton") {
+      currentCurrency = "TON";
+    } else {
+      currentCurrency = "RUB";
+    }
+    
+    // Обновляем отображение цены
+    update(Number(el.stars.value));
   });
 });
 
 /* ================= BUY ================= */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
-  if (!stars) return;
+  if (!stars || stars < 50) {
+    alert("Минимальное количество звёзд: 50");
+    return;
+  }
 
   if (!selectedPayment) {
     alert("Пожалуйста, выберите способ оплаты");
@@ -169,23 +212,33 @@ el.buy.onclick = () => {
   const tgUser = tg.initDataUnsafe?.user;
   if (!tgUser) return;
 
-  const amount = (stars * RATE).toFixed(2);
+  let amount, currency;
+  if (selectedPayment === "ton") {
+    amount = (stars * RATE_TON).toFixed(3);
+    currency = "TON";
+  } else {
+    amount = (stars * RATE_RUB).toFixed(2);
+    currency = "RUB";
+  }
 
-  if (!confirm(`⭐ ${stars} → ${amount}₽`)) return;
+  if (!confirm(`⭐ ${stars} → ${amount} ${currency}`)) return;
 
   tg.sendData(JSON.stringify({
     type: "order",
     user_id: tgUser.id,
     username: tgUser.username || "—",
     stars,
-    amount_rub: amount,
+    amount: amount,
+    currency: currency,
     payment_method: selectedPayment
   }));
 
-  el.stars.value = "";
-  update(0);
+  // Сброс
+  el.stars.value = 50;
+  update(50);
   document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
   selectedPayment = null;
+  currentCurrency = "RUB";
 };
 
 /* ================= ADMIN FIX ================= */
