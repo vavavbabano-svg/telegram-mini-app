@@ -11,6 +11,7 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
+/* DOM */
 const el = {
   userId: document.getElementById("userId"),
   stars: document.getElementById("stars"),
@@ -22,7 +23,7 @@ const el = {
   admin: document.getElementById("adminBtn")
 };
 
-// ===================== USER =====================
+/* USER ID */
 async function getNextNumber() {
   const { data } = await supabase
     .from("counters")
@@ -69,32 +70,36 @@ async function initUser() {
     user = data;
   }
 
-  if (el.userId && user) {
-    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
-  }
+  el.userId.textContent = "#" + String(user.number).padStart(4, "0");
 }
 
-// ===================== PRICE =====================
-function updatePrice(val) {
+/* PRICE */
+function update(val) {
   const s = Number(val) || 0;
   el.rub.textContent = (s * RATE).toFixed(2) + " ₽";
 }
 
-// ===================== PACKS (FIX) =====================
+/* PACKS FIX 🔥 */
 document.querySelectorAll(".packs button").forEach(btn => {
   btn.addEventListener("click", () => {
     const val = btn.dataset.stars;
+
     el.stars.value = val;
-    updatePrice(val);
+    update(val);
+
+    document.querySelectorAll(".packs button")
+      .forEach(b => b.style.opacity = "0.5");
+
+    btn.style.opacity = "1";
   });
 });
 
-// ===================== INPUT =====================
+/* INPUT */
 el.stars.addEventListener("input", e => {
-  updatePrice(e.target.value);
+  update(e.target.value);
 });
 
-// ===================== TOGGLE =====================
+/* TOGGLE */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
@@ -109,7 +114,7 @@ el.other.onclick = () => {
   el.username.value = "";
 };
 
-// ===================== BUY =====================
+/* BUY */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   if (!stars) return;
@@ -130,15 +135,14 @@ el.buy.onclick = () => {
   }));
 
   el.stars.value = "";
-  updatePrice(0);
+  update(0);
 };
 
-// ===================== ADMIN =====================
+/* ADMIN */
 const ADMIN_ID = 1444520038;
-
 const user = tg.initDataUnsafe?.user;
 
-if (user?.id === ADMIN_ID && el.admin) {
+if (user?.id === ADMIN_ID) {
   el.admin.classList.remove("hidden");
 
   el.admin.onclick = () => {
@@ -146,5 +150,5 @@ if (user?.id === ADMIN_ID && el.admin) {
   };
 }
 
-// ===================== START =====================
+/* START */
 initUser();

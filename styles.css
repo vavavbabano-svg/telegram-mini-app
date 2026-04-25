@@ -90,6 +90,7 @@ input {
   border: none;
   background: #11141a;
   color: #ffd36a;
+  cursor: pointer;
 }
 
 /* GRID PAY */
