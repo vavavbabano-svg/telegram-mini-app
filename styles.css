@@ -404,21 +404,20 @@ input:focus {
   max-width: 420px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: var(--blue);
-  color: #fff;
+  border: 1px solid #5ef57c;
+  background: #5ef57c;
+  color: #000;
   font-weight: var(--fw-bold);
   font-size: 15px;
   transition: all 0.2s ease;
   z-index: 10;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 16px rgba(94, 245, 124, 0.4);
 }
 
 .buy:hover {
-  border-color: rgba(94, 245, 124, 0.5);
-  box-shadow: 0 0 20px rgba(94, 245, 124, 0.3);
-  background: #2560e0;
+  box-shadow: 0 0 24px rgba(94, 245, 124, 0.6);
+  background: #6ffa8c;
 }
 
 /* CLICK */
