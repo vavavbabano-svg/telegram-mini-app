@@ -62,26 +62,24 @@ body {
 /* HERO */
 .hero {
   padding: 0;
-  background: transparent;
-  border: none;
-}
-
-.hero-img {
-  width: 100%;
-  height: 110px;
-  border-radius: 20px;   /* более мягкие края */
+  border-radius: 22px;
   overflow: hidden;
 }
 
-/* картинка внутри */
+/* контейнер картинки */
+.hero-img {
+  width: 100%;
+  height: 130px;
+}
+
+/* сама картинка */
 .hero-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 
-  object-position: center 70%; 
-  /* ↓ опускаем фокус вниз, чтобы звезда не резалась сверху */
-  
+  /* ключевой фикс — нормальное позиционирование */
+  object-position: center;
   display: block;
 }
 
