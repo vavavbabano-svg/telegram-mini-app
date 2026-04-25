@@ -9,7 +9,6 @@ const supabase = createClient(
 
 const tg = window.Telegram.WebApp;
 
-
 /* ================= DOM ================= */
 const el = {
   userId: document.getElementById("userId"),
@@ -134,10 +133,28 @@ el.other.onclick = () => {
   el.username.value = "";
 };
 
+/* ================= PAYMENT SELECTION ================= */
+let selectedPayment = null;
+
+document.querySelectorAll(".pay-card").forEach(card => {
+  card.addEventListener("click", () => {
+    // Снимаем выделение со всех
+    document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
+    // Выделяем текущую
+    card.classList.add("selected");
+    selectedPayment = card.dataset.method;
+  });
+});
+
 /* ================= BUY ================= */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   if (!stars) return;
+
+  if (!selectedPayment) {
+    alert("Пожалуйста, выберите способ оплаты");
+    return;
+  }
 
   const tgUser = tg.initDataUnsafe?.user;
   if (!tgUser) return;
@@ -151,11 +168,15 @@ el.buy.onclick = () => {
     user_id: tgUser.id,
     username: tgUser.username || "—",
     stars,
-    amount_rub: amount
+    amount_rub: amount,
+    payment_method: selectedPayment
   }));
 
   el.stars.value = "";
   update(0);
+  // Сбрасываем выделение
+  document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
+  selectedPayment = null;
 };
 
 /* ================= ADMIN FIX ================= */

@@ -1,8 +1,8 @@
 :root {
-  --bg: #1E1E1E;        /* фон */
-  --card: #242424;      /* карточки */
-  --input: #2E2E2E;     /* инпуты */
-  --btn: #383838;       /* кнопки */
+  --bg: #1E1E1E;
+  --card: #242424;
+  --input: #2E2E2E;
+  --btn: #383838;
 
   --text: #E6E6E6;
   --muted: #A0A0A0;
@@ -56,7 +56,6 @@ body {
   color: var(--muted);
 }
 
-/* центр логотип */
 .logo {
   text-align: center;
   font-weight: 600;
@@ -64,11 +63,9 @@ body {
 
 /* CARD */
 .card {
-
   background: var(--card);
   border-radius: var(--r);
   padding: 12px;
-
   margin: 0;
 }
 
@@ -94,10 +91,8 @@ body {
   width: 100%;
   height: 100%;
   display: block;
-
   object-fit: cover;
   object-position: center;
-
   border: none;
   box-shadow: none;
 }
@@ -169,24 +164,97 @@ input {
   color: #fff;
 }
 
-/* GRID */
-.grid {
+/* ----- НОВЫЕ СТИЛИ ДЛЯ ВЫБОРА ОПЛАТЫ ----- */
+.payment-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
 }
 
-.pay {
-  padding: 12px;
-  border-radius: 12px;
-  background: var(--btn);
+.pay-card {
+  background: #1c1c1e;
+  border-radius: 22px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.pay-card:active {
+  transform: scale(0.96);
+}
+
+.currency-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: #5ef57c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(20, 30, 20, 0.8);
+  backdrop-filter: blur(6px);
+  border: 0.5px solid rgba(94, 245, 124, 0.35);
+  box-shadow: 0 0 12px rgba(94, 245, 124, 0.3);
+  text-transform: uppercase;
+  line-height: 1;
+  z-index: 2;
+}
+
+.payment-logo {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 70%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+  margin-bottom: 14px;
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  padding: 10px;
+}
+
+.payment-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+
+.pay-card[data-method="sbp"] .payment-logo img {
+  transform: scale(0.95);
+}
+
+.pay-card[data-method="ton"] .payment-logo img {
+  transform: scale(1.2);
+}
+
+.payment-name {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
   text-align: center;
-  color: var(--muted);
+  opacity: 0.95;
+  margin-top: 6px;
 }
 
-.pay.active {
-  background: var(--blue);
-  color: #fff;
+.pay-card.selected {
+  border: 2px solid #5ef57c;
+  box-shadow: 0 0 24px rgba(94, 245, 124, 0.5), 0 4px 12px rgba(0,0,0,0.5);
+  background: #1e2a1e;
 }
 
 /* TERMS */
@@ -231,6 +299,7 @@ button:active {
   transform: scale(0.98);
   filter: brightness(1.15);
 }
+
 .tg-btn {
   justify-self: end;
 
