@@ -108,12 +108,15 @@ let currentCurrency = "RUB";   // RUB или TON
 
 function update(val) {
   const s = Number(val) || 0;
+  const currencyLabel = document.getElementById("currencyLabel");
   
   if (currentCurrency === "TON") {
     const tonAmount = (s * RATE_TON).toFixed(3);
     el.rub.textContent = tonAmount + " TON";
+    if (currencyLabel) currencyLabel.textContent = "TON";
   } else {
     el.rub.textContent = (s * RATE_RUB).toFixed(2) + " ₽";
+    if (currencyLabel) currencyLabel.textContent = "RUB";
   }
 }
 
