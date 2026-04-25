@@ -1,13 +1,13 @@
 :root {
-  --bg: #2b2b2b;        /* фон темнее */
-  --card: #3a3a3a;      /* блоки */
-  --input: #4a4a4a;     /* инпуты */
-  --btn: #5a5a5a;       /* кнопки */
+  --bg: #1E1E1E;        /* фон */
+  --card: #242424;      /* карточки */
+  --input: #2E2E2E;     /* инпуты */
+  --btn: #383838;       /* кнопки */
 
-  --text: #e6e6e6;
-  --muted: #b0b0b0;
+  --text: #E6E6E6;
+  --muted: #A0A0A0;
 
-  --blue: #2d6bff;
+  --blue: #2D6BFF;
 
   --r: 14px;
   --gap: 12px;
@@ -48,8 +48,8 @@ body {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  font-weight: var(--fw-medium);
   color: var(--muted);
+  font-weight: var(--fw-medium);
 }
 
 /* CARD */
@@ -89,7 +89,6 @@ input {
   outline: none;
   background: var(--input);
   color: var(--text);
-  font-weight: var(--fw-medium);
 }
 
 /* ROW */
@@ -107,7 +106,6 @@ input {
   border: none;
   background: var(--btn);
   color: var(--muted);
-  font-weight: var(--fw-medium);
 }
 
 .btn.small.active {
@@ -119,8 +117,8 @@ input {
 .price-line {
   display: grid;
   grid-template-columns: 1fr auto;
-  align-items: center;
   gap: var(--gap);
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -142,7 +140,6 @@ input {
   border: none;
   background: var(--btn);
   color: var(--muted);
-  font-size: 12px;
 }
 
 .packs button.active {
@@ -150,7 +147,7 @@ input {
   color: #fff;
 }
 
-/* PAY GRID */
+/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -162,7 +159,6 @@ input {
   border-radius: 12px;
   background: var(--btn);
   text-align: center;
-  font-size: 12px;
   color: var(--muted);
 }
 
@@ -208,7 +204,7 @@ input {
   border-radius: 10px;
 }
 
-/* CLICK FX */
+/* CLICK */
 button:active {
   transform: scale(0.98);
   filter: brightness(1.15);
