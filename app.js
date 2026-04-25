@@ -137,19 +137,19 @@ document.querySelectorAll(".packs button").forEach(btn => {
 
 /* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
-  let val = Number(e.target.value);
+  let val = e.target.value;
   
-  // Минимум 50 звёзд
-  if (val < 50) {
-    val = 50;
-    e.target.value = 50;
+  // Если пусто — показываем 0
+  if (val === "") {
+    update(0);
+    return;
   }
   
+  val = Number(val);
   update(val);
 });
 
-// Устанавливаем минимум при загрузке
-el.stars.setAttribute("min", "50");
+// Устанавливаем значение по умолчанию при загрузке
 el.stars.value = 50;
 update(50);
 
