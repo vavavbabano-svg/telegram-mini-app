@@ -1,18 +1,17 @@
 :root {
-  --bg: #0b0f14;
-  --card: #111823;
-  --card2: #0e141d;
-  --border: #1c2633;
+  --bg: #0f1115;        /* основной фон */
+  --card: #171a21;      /* блоки */
+  --input: #1d2028;     /* поля */
+  --btn: #1a1d24;       /* кнопки */
+  --muted: #8a93a3;     /* вторичный текст */
+  --text: #cfd6e4;      /* основной текст */
 
-  --text: #e6e8eb;
-  --muted: #8b93a1;
-  --accent: #7aa2ff;
+  --blue: #2d6bff;      /* единственный акцент */
 
-  --r: 16px;
+  --r: 14px;
   --gap: 12px;
 }
 
-/* RESET */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -21,11 +20,11 @@
 body {
   margin: 0;
   background: var(--bg);
-  font-family: Inter, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   color: var(--text);
 }
 
-/* APP WRAPPER */
+/* APP */
 .app {
   max-width: 420px;
   margin: auto;
@@ -39,16 +38,13 @@ body {
 .topbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 6px 2px;
   font-size: 13px;
   color: var(--muted);
 }
 
-/* CARD */
+/* CARDS — БЕЗ РАМКИ */
 .card {
   background: var(--card);
-  border: 1px solid var(--border);
   border-radius: var(--r);
   padding: var(--gap);
 }
@@ -57,8 +53,18 @@ body {
 .hero-img {
   height: 120px;
   border-radius: var(--r);
-  background: linear-gradient(135deg, #121a26, #0e141d);
-  border: 1px solid var(--border);
+  background: #1a1d24;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: var(--input);
+  color: var(--text);
 }
 
 /* ROW */
@@ -69,39 +75,21 @@ body {
   align-items: center;
 }
 
-/* INPUT */
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card2);
-  color: var(--text);
-  outline: none;
-}
-
-/* BUTTON BASE */
-button {
-  cursor: pointer;
-  transition: 0.15s ease;
-}
-
 /* SMALL BUTTONS */
 .btn.small {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card2);
+  border: none;
+  background: var(--btn);
   color: var(--muted);
 }
 
 .btn.small.active {
-  background: #182234;
-  border-color: #2b3b52;
-  color: var(--text);
+  background: var(--blue);
+  color: #fff;
 }
 
-/* PRICE LINE */
+/* PRICE */
 .price-line {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -111,11 +99,10 @@ button {
 }
 
 #rubOut {
-  color: var(--accent);
-  font-weight: 600;
+  color: var(--muted);
 }
 
-/* PACKS GRID */
+/* PACKS */
 .packs {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -125,16 +112,16 @@ button {
 .packs button {
   padding: 10px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card2);
+  border: none;
+  background: var(--btn);
   color: var(--muted);
   font-size: 12px;
 }
 
+.packs button.active,
 .packs button:active {
-  transform: scale(0.97);
-  border-color: var(--accent);
-  color: var(--text);
+  background: var(--blue);
+  color: #fff;
 }
 
 /* PAY GRID */
@@ -147,11 +134,16 @@ button {
 .pay {
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card2);
+  background: var(--btn);
   text-align: center;
   font-size: 12px;
   color: var(--muted);
+}
+
+.pay.active,
+.pay:active {
+  background: var(--blue);
+  color: #fff;
 }
 
 /* TERMS */
@@ -161,11 +153,10 @@ button {
   text-align: center;
 }
 
-.terms span {
-  color: var(--accent);
-}
+/* ===================== */
+/* BUY BUTTON FIXED UNDER PAYMENTS */
+/* ===================== */
 
-/* BUY BUTTON */
 .buy {
   position: fixed;
   bottom: 14px;
@@ -177,16 +168,11 @@ button {
 
   padding: 14px;
   border-radius: 14px;
+  border: none;
 
-  border: 1px solid #2b3b52;
-  background: #182234;
-  color: var(--text);
-
+  background: var(--blue);
+  color: #fff;
   font-weight: 600;
-}
-
-.buy:active {
-  transform: translateX(-50%) scale(0.98);
 }
 
 /* ADMIN */
@@ -194,17 +180,15 @@ button {
   position: fixed;
   top: 10px;
   right: 10px;
-
-  background: #182234;
-  border: 1px solid var(--border);
+  background: var(--btn);
+  border: none;
   color: var(--text);
-
   padding: 8px 10px;
   border-radius: 10px;
-
-  font-size: 12px;
 }
 
-.hidden {
-  display: none;
+/* CLICK FEEDBACK (любая кнопка) */
+button:active {
+  filter: brightness(1.2);
+  transform: scale(0.98);
 }
