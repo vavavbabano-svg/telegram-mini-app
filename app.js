@@ -36,36 +36,53 @@ const username = document.getElementById("username");
 // =====================
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
-
   if (!tgUser) return;
 
   const tgId = String(tgUser.id);
 
-  let { data } = await supabase
+  let { data: user, error } = await supabase
     .from("users")
     .select("*")
     .eq("tg_id", tgId)
     .maybeSingle();
 
-  // если нет — создаём
-  if (!data) {
-    const { data: newUser } = await supabase
+  if (error) {
+    console.log("SELECT ERROR:", error);
+    return;
+  }
+
+  // ➜ CREATE USER
+  if (!user) {
+
+    let number = await getNextNumber();
+    if (!number) number = 1;
+
+    const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({
         tg_id: tgId,
         username: tgUser.username || null,
-        stars: 0
+        stars: 0,
+        number: number
       })
-      .select()
+      .select("*")
       .single();
 
-    data = newUser;
+    if (insertError) {
+      console.log("INSERT ERROR:", insertError);
+      return;
+    }
+
+    user = newUser;
   }
 
-  // 🔥 ВОТ КРАСИВЫЙ НОМЕР КАК В ИГРАХ
-  const gameId = String(data.id).padStart(4, "0");
+  // ➜ SHOW NUMBER
+  if (userIdEl) {
+    userIdEl.textContent =
+      "#" + String(user.number || 1).padStart(4, "0");
+  }
 
-  userIdEl.textContent = `#${gameId}`;
+  console.log("USER READY:", user);
 }
 
 // =====================
