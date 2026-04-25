@@ -1,111 +1,171 @@
-body {
-  margin: 0;
-  background: #0b0f14;
-  font-family: Inter, Arial;
-  color: #e6e8eb;
+:root {
+  --bg: #0b0f14;
+  --card: #111823;
+  --card2: #0e141d;
+  --border: #1c2633;
+
+  --text: #e6e8eb;
+  --muted: #8b93a1;
+  --accent: #7aa2ff;
+
+  --r: 16px;
+  --gap: 12px;
 }
 
+/* RESET */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+}
+
+/* APP WRAPPER */
 .app {
   max-width: 420px;
   margin: auto;
-  padding: 14px;
-}
-
-/* CARD — главный стиль */
-.card {
-  background: #111823;
-  border: 1px solid #1c2633;
-  border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 12px;
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
 
 /* TOP */
 .topbar {
   display: flex;
   justify-content: space-between;
-  padding: 10px 2px;
-  color: #8b93a1;
+  align-items: center;
+  padding: 6px 2px;
   font-size: 13px;
+  color: var(--muted);
 }
 
-/* HERO (строго, без яркости) */
+/* CARD */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--gap);
+}
+
+/* HERO */
 .hero-img {
   height: 120px;
-  border-radius: 14px;
+  border-radius: var(--r);
   background: linear-gradient(135deg, #121a26, #0e141d);
-  border: 1px solid #1c2633;
+  border: 1px solid var(--border);
+}
+
+/* ROW */
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
 }
 
 /* INPUT */
 input {
-  flex: 1;
+  width: 100%;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #1c2633;
-  background: #0e141d;
-  color: #e6e8eb;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--text);
   outline: none;
 }
 
-/* BUTTONS */
-.btn {
+/* BUTTON BASE */
+button {
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+/* SMALL BUTTONS */
+.btn.small {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid #1c2633;
-  background: #0e141d;
-  color: #8b93a1;
-  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--muted);
 }
 
-.btn.active {
+.btn.small.active {
   background: #182234;
   border-color: #2b3b52;
-  color: #e6e8eb;
+  color: var(--text);
 }
 
-/* PRICE */
+/* PRICE LINE */
+.price-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--gap);
+  margin-bottom: 10px;
+}
+
 #rubOut {
-  color: #7aa2ff;
+  color: var(--accent);
   font-weight: 600;
 }
 
-/* PACKS */
+/* PACKS GRID */
+.packs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
 .packs button {
-  flex: 1;
   padding: 10px;
   border-radius: 12px;
-  border: 1px solid #1c2633;
-  background: #0e141d;
-  color: #8b93a1;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .packs button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 /* PAY GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
 .pay {
-  background: #0e141d;
-  border: 1px solid #1c2633;
-  border-radius: 12px;
   padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  text-align: center;
   font-size: 12px;
-  color: #8b93a1;
+  color: var(--muted);
 }
 
 /* TERMS */
 .terms {
   font-size: 12px;
-  color: #6f7a89;
+  color: var(--muted);
   text-align: center;
 }
 
 .terms span {
-  color: #7aa2ff;
+  color: var(--accent);
 }
 
-/* BUY BUTTON — строгий финтех */
+/* BUY BUTTON */
 .buy {
   position: fixed;
   bottom: 14px;
@@ -117,12 +177,16 @@ input {
 
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid #2b3b52;
 
+  border: 1px solid #2b3b52;
   background: #182234;
-  color: #e6e8eb;
+  color: var(--text);
 
   font-weight: 600;
+}
+
+.buy:active {
+  transform: translateX(-50%) scale(0.98);
 }
 
 /* ADMIN */
@@ -130,11 +194,15 @@ input {
   position: fixed;
   top: 10px;
   right: 10px;
+
+  background: #182234;
+  border: 1px solid var(--border);
+  color: var(--text);
+
   padding: 8px 10px;
   border-radius: 10px;
-  background: #182234;
-  border: 1px solid #2b3b52;
-  color: #e6e8eb;
+
+  font-size: 12px;
 }
 
 .hidden {
