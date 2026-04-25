@@ -1,11 +1,11 @@
 :root {
-  --bg: #0c0f14;
-  --card: #151a22;
-  --input: #1a202a;
-  --btn: #1a1f29;
+  --bg: #f3f5f8;        /* светлый фон */
+  --card: #ffffff;      /* карточки */
+  --input: #eef1f6;     /* инпуты */
+  --btn: #e7ebf3;       /* кнопки */
 
-  --text: #cfd6e4;
-  --muted: #8b93a3;
+  --text: #1f2937;
+  --muted: #6b7280;
 
   --blue: #2d6bff;
 
@@ -23,14 +23,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
   min-height: 100vh;
 
   background: var(--bg);
-  overflow-x: hidden;
+  color: var(--text);
 
   font-family: Arial, sans-serif;
   font-weight: var(--fw-regular);
@@ -67,19 +66,19 @@ body {
   border-radius: var(--r);
   padding: var(--gap);
 
-  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
 }
 
 /* HERO */
 .hero {
   padding: 0;
   background: transparent;
-  border: none;
 }
 
 .hero-img {
   width: 100%;
-  height: 150px;
+  height: 160px;
+
   border-radius: var(--r);
   overflow: hidden;
 }
@@ -124,6 +123,7 @@ input {
   color: var(--muted);
 
   font-weight: var(--fw-medium);
+  cursor: pointer;
 }
 
 .btn.small.active {
@@ -163,6 +163,7 @@ input {
 
   font-size: 12px;
   font-weight: var(--fw-medium);
+  cursor: pointer;
 }
 
 .packs button.active {
@@ -188,6 +189,7 @@ input {
   font-weight: var(--fw-medium);
 
   color: var(--muted);
+  cursor: pointer;
 }
 
 .pay.active {
@@ -220,6 +222,8 @@ input {
   color: #fff;
 
   font-weight: var(--fw-bold);
+
+  box-shadow: 0 10px 25px rgba(45,107,255,0.25);
 }
 
 /* ADMIN */
@@ -239,5 +243,10 @@ input {
 /* CLICK FX */
 button:active {
   transform: scale(0.98);
-  filter: brightness(1.2);
+  filter: brightness(0.95);
+}
+
+/* DISABLE ZOOM FEEL */
+body {
+  user-select: none;
 }
