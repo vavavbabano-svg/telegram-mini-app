@@ -138,18 +138,13 @@ document.querySelectorAll(".packs button").forEach(btn => {
 /* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
   let val = e.target.value;
-  
-  // Если пусто — показываем 0
   if (val === "") {
     update(0);
     return;
   }
-  
-  val = Number(val);
-  update(val);
+  update(Number(val));
 });
 
-// Устанавливаем значение по умолчанию при загрузке
 el.stars.value = 50;
 update(50);
 
@@ -202,6 +197,8 @@ document.querySelectorAll(".pay-card").forEach(card => {
 /* ================= BUY ================= */
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
+  
+  // Проверка: пусто или меньше 50
   if (!stars || stars < 50) {
     alert("Минимальное количество звёзд: 50");
     return;
