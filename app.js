@@ -168,7 +168,8 @@ el.self.onclick = () => {
 el.other.onclick = () => {
   el.other.classList.add("active");
   el.self.classList.remove("active");
-  el.username.value = "";
+  el.username.value = "@";
+  el.username.focus();
 };
 
 (function setDefaultUsername() {
