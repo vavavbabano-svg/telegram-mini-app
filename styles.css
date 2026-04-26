@@ -425,4 +425,11 @@ button:active {
   transform: scale(0.98);
   filter: brightness(1.15);
 }
+.terms a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.terms a:hover {
+  color: #5ef57c;
+}
 
