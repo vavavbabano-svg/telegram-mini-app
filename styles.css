@@ -37,7 +37,7 @@ body {
 /* APP */
 .app {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 12px 80px;   /* было 8px 12px */
   margin: 0;
   display: flex;
   flex-direction: column;
