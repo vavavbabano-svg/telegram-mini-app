@@ -432,4 +432,28 @@ button:active {
 .terms a:hover {
   color: #5ef57c;
 }
+/* Ограничение ширины для ПК */
+@media (min-width: 500px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 0;
+  }
+
+  .app {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 8px 12px 80px;
+  }
+
+  .buy {
+    left: 50% !important;
+    right: auto !important;
+    width: 100%;
+    max-width: 396px;
+    margin-left: -198px;
+  }
+}
 
