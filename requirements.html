@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Информация о магазине</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #16161a;
+      color: #E6E6E6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #1e1e24;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: #2D6BFF;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+    .title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-right: 50px;
+    }
+    .content {
+      padding: 20px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #5ef57c;
+      font-size: 18px;
+      margin: 20px 0 10px;
+      border-bottom: 1px solid rgba(94,245,124,0.2);
+      padding-bottom: 5px;
+    }
+    h2:first-child { margin-top: 0; }
+    p, li {
+      font-size: 14px;
+      color: #A0A0A0;
+      margin-bottom: 8px;
+    }
+    ul {
+      list-style: disc;
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    .highlight {
+      color: #E6E6E6;
+      font-weight: 600;
+    }
+    .payment-icons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .payment-icons img {
+      height: 32px;
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+    a {
+      color: #2D6BFF;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="back-btn">← Назад</a>
+  <div class="title">Информация</div>
+</div>
+
+<div class="content">
+
+  <!-- 1. Юридическая информация -->
+  <h2>🏢 Реквизиты продавца</h2>
+  <p><span class="highlight">ИП Голубев Вадим Алексеевич</span></p>
+  <p>Юридический адрес: 188640, Ленинградская обл., г. Всеволожск, ул. Александровская, д. 80</p>
+  <p>Фактический адрес: 188640, Ленинградская обл., г. Всеволожск, ул. Александровская, д. 80</p>
+  <p>ИНН: 470312345678 | ОГРНИП: 323470400012345</p>
+  <p>Телефон: +7 (931) 123-45-67</p>
+  <p>E-mail: starsmarket@yandex.ru</p>
+
+  <!-- 2. Адрес регистрации -->
+  <h2>📍 Адрес местонахождения</h2>
+  <p>188640, Ленинградская область, г. Всеволожск, ул. Александровская, д. 80</p>
+
+  <!-- 3. Логотипы платёжных систем -->
+  <h2>💳 Принимаемые способы оплаты</h2>
+  <div class="payment-icons">
+    <img src="img/СБП.png" alt="СБП" style="height: 32px;">
+    <span style="color:#fff; font-weight:600;">СБП (Система быстрых платежей)</span>
+  </div>
+  <div class="payment-icons">
+    <img src="img/TON12.png" alt="TON" style="height: 32px;">
+    <span style="color:#fff; font-weight:600;">TON (криптовалюта)</span>
+  </div>
+
+  <!-- 4. Контакты поддержки -->
+  <h2>📞 Служба поддержки</h2>
+  <p>Telegram-бот: <a href="https://t.me/MyStars812support_bot?start=help">@MyStars812support_bot</a></p>
+  <p>E-mail: starsmarket@yandex.ru</p>
+  <p>Время ответа: до 24 часов</p>
+
+  <!-- 5. Правила возврата -->
+  <h2>🔄 Правила возврата и отмены</h2>
+  <p>Возврат средств возможен, если Telegram Stars не были зачислены в течение 24 часов после оплаты.</p>
+  <p>Для отмены заказа до его обработки обратитесь в поддержку.</p>
+  <p>Подробнее: <a href="refund.html">Правила возврата</a></p>
+
+  <!-- 6. Договор оферты -->
+  <h2>📄 Договор публичной оферты</h2>
+  <p>Настоящий договор является публичной офертой ИП Голубев В.А. на оказание услуг по пополнению баланса Telegram Stars.</p>
+  <p>Акцептом оферты считается совершение оплаты пользователем.</p>
+  <p>Полный текст: <a href="terms.html">Договор оферты</a></p>
+
+  <!-- 7. Условия доставки -->
+  <h2>🚀 Условия и сроки предоставления услуги</h2>
+  <p>Услуга оказывается мгновенно — Telegram Stars зачисляются на указанный аккаунт сразу после подтверждения оплаты.</p>
+  <p>Доступные регионы: все страны мира, где доступен мессенджер Telegram.</p>
+
+  <!-- 8. Стоимость услуг -->
+  <h2>💰 Стоимость</h2>
+  <p>1 Telegram Star = 1.64 ₽ (при оплате через СБП)</p>
+  <p>1 Telegram Star = 0.015 TON (при оплате криптовалютой TON)</p>
+  <p>Минимальный заказ: 50 звёзд.</p>
+  <p>Цены указаны с учётом всех налогов и сборов.</p>
+
+  <!-- 9. Описание товара -->
+  <h2>⭐ Описание услуги</h2>
+  <p><span class="highlight">Telegram Stars</span> — внутренняя валюта мессенджера Telegram, используемая для оплаты цифровых товаров и услуг в мини-приложениях.</p>
+  <ul>
+    <li>Зачисляются мгновенно на указанный аккаунт</li>
+    <li>Минимальный заказ: 50 звёзд</li>
+    <li>Максимальный заказ: 5 000 звёзд за одну транзакцию</li>
+  </ul>
+
+  <!-- 10. Методы оплаты -->
+  <h2>💳 Доступные методы оплаты</h2>
+  <ul>
+    <li>СБП (Система быстрых платежей) — оплата по QR-коду через банковское приложение</li>
+    <li>TON — оплата криптовалютой через кошелёк Tonkeeper или аналоги</li>
+  </ul>
+
+  <!-- 11. Политика обработки данных -->
+  <h2>🔐 Политика обработки персональных данных</h2>
+  <p>Мы собираем только Telegram ID и username для выполнения заказа.</p>
+  <p>Данные не передаются третьим лицам и хранятся в зашифрованном виде.</p>
+  <p>Подробнее: <a href="privacy.html">Политика обработки данных</a></p>
+
+  <!-- 12. Форма регистрации -->
+  <h2>📝 Регистрация клиента</h2>
+  <p>Регистрация происходит автоматически при первом запуске мини-приложения. Пользователь авторизуется через Telegram.</p>
+  <p>Дополнительная регистрация не требуется — все данные (ID, username) передаются автоматически.</p>
+
+</div>
+
+</body>
+</html>
