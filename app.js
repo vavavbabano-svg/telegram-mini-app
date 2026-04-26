@@ -280,20 +280,9 @@ el.buy.onclick = () => {
     currency = "RUB";
   }
 
-  const shopId = "c2d5e47109ad1d1bccaacdde76130c892a7b5a47";
-  const orderId = `stars${stars}_${Date.now()}`;
-
-const enotUrl = `https://enot.io/pay?` +
-    `shop_id=${shopId}` +
-    `&amount=${amount}` +
-    `&currency=${currency}` +
-    `&order_id=${orderId}` +
-    `&hook_url=https://paypalych-server.onrender.com/enot/result` +
-    `&success_url=https://telegram-mini-app.vavavbabano.workers.dev/success.html` +
-    `&fail_url=https://telegram-mini-app.vavavbabano.workers.dev/fail.html` +
-    `&custom_username=${encodeURIComponent(username)}` +
-    `&custom_stars=${stars}`;
-
+  // Показываем окно оплаты вместо редиректа
+  alert(`⭐ ${stars} звёзд → ${amount} ${currency}\n\nДля оплаты перейдите в бот поддержки: @MyStars812support_bot`);
+  
   tg.sendData(JSON.stringify({
     type: "order",
     user_id: tgUser.id,
@@ -303,8 +292,8 @@ const enotUrl = `https://enot.io/pay?` +
     currency: currency,
     payment_method: selectedPayment
   }));
+
   
-  window.location.href = enotUrl;
 };
 
 /* ================= ADMIN ================= */
