@@ -174,7 +174,7 @@
   updateTotal();
   setTarget('self');
 
-  // Функция открытия ссылки в системном браузере (обход WebView)
+  // Функция открытия ссылки в системном браузере
   function openInSystemBrowser(url) {
     const a = document.createElement('a');
     a.href = url;
@@ -187,6 +187,10 @@
 
   // Плашка подтверждения
   function showConfirmModal(onConfirm) {
+    // Убираем старую плашку, если есть
+    const oldModal = document.querySelector('.modal-overlay');
+    if (oldModal) oldModal.remove();
+
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -235,18 +239,22 @@
         const data = await res.json();
 
         if (data.success && data.confirmation_url) {
-          // Важная часть: открываем ссылку в СИСТЕМНОМ браузере
-          if (tg && tg.openLink) {
-            // Telegram WebApp: пытаемся открыть "честно"
+          // Лучший способ — отправить ссылку через Telegram с возможностью открыть в браузере
+          if (tg && tg.openTelegramLink) {
+            // Этот метод заставит Telegram показать окно с кнопкой "Открыть в браузере"
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(data.confirmation_url)}`;
+            tg.openTelegramLink(shareUrl);
+            tg.close(); // Закрываем мини-апп после отправки
+          } else if (tg && tg.openLink) {
+            // Запасной вариант — пробуем обычный openLink
             tg.openLink(data.confirmation_url);
-            // Но если это не сработает, дополнительно показываем кнопку
             setTimeout(() => {
               const manualModal = document.createElement('div');
               manualModal.className = 'modal-overlay';
               manualModal.innerHTML = `
                 <div class="modal-card">
-                  <h3>🌐 Перенаправление</h3>
-                  <p>Если оплата не открылась автоматически, нажмите кнопку:</p>
+                  <h3>🌐 Открыть в браузере</h3>
+                  <p>Если оплата не открылась, нажмите кнопку:</p>
                   <button id="manualOpenBtn" style="background:#2C6EDB; border:none; padding:12px; border-radius:60px; color:white; margin-top:16px;">Открыть страницу оплаты</button>
                 </div>
               `;
@@ -258,14 +266,13 @@
               setTimeout(() => manualModal.remove(), 10000);
             }, 1000);
           } else {
-            // Обычный браузер
             window.location.href = data.confirmation_url;
           }
         } else {
           alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
         }
       } catch (err) {
-        alert('Ошбка: ' + err.message);
+        alert('Ошибка: ' + err.message);
       }
     });
   };
