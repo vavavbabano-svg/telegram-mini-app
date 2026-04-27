@@ -53,18 +53,6 @@
       color: #FFB347;
       margin: 16px 0;
     }
-    .qr-container {
-      background: #FFFFFF;
-      border-radius: 20px;
-      padding: 20px;
-      margin: 16px 0;
-      text-align: center;
-    }
-    .qr-container img {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto;
-    }
     .sbp-btn {
       width: 100%;
       background: #2C6EDB;
@@ -79,9 +67,24 @@
     .sbp-btn:disabled {
       opacity: 0.6;
     }
-    .copy-link-btn {
-      background: #2A2A35;
-      margin-top: 12px;
+    .qr-container {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .qr-container img {
+      width: 200px;
+      height: 200px;
+    }
+    .error-box {
+      background: #5a1e2a;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 16px;
+      color: #ff9999;
+      font-size: 12px;
     }
     .back-link {
       display: inline-block;
@@ -89,20 +92,6 @@
       color: #8E94B0;
       font-size: 14px;
       text-decoration: none;
-    }
-    .info-note {
-      background: #1E2A3A;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 12px;
-      color: #A0C0F0;
-      text-align: left;
-    }
-    .status-text {
-      margin: 12px 0;
-      font-size: 13px;
-      color: #FFB347;
     }
   </style>
 </head>
@@ -119,24 +108,16 @@
 
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <div id="sbpArea">
-    <button class="sbp-btn" id="createSbpBtn">📱 Сформировать QR-код СБП</button>
+  <div id="mainArea">
+    <button class="sbp-btn" id="createBtn">📱 Создать QR-код СБП</button>
   </div>
-  <div id="statusText" class="status-text"></div>
+  <div id="errorBox" class="error-box" style="display:none;"></div>
 
-  <a href="index.html" class="back-link">← Вернуться к выбору</a>
-
-  <div class="info-note">
-    💡 <strong>Как оплатить через СБП:</strong><br>
-    • Нажмите «Сформировать QR-код»<br>
-    • Отсканируйте QR-код в приложении любого банка<br>
-    • Подтвердите платёж — звёзды поступят мгновенно<br>
-    • Комиссия для продавца: 0.2–0.7%
-  </div>
+  <a href="index.html" class="back-link">← Вернуться</a>
 </div>
 
 <script>
-  // Загрузка заказа из localStorage
+  // Загрузка заказа
   let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
   try {
     const saved = localStorage.getItem('pendingOrder');
@@ -147,7 +128,6 @@
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // Извлекаем сумму в рублях для ЮKassa
   let amountRub = 100;
   const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
   if (match) amountRub = parseFloat(match[1].replace(',', '.'));
@@ -155,23 +135,24 @@
 
   const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
 
-  // КЛЮЧИ (тестовые)
-  const SHOP_ID = '1343358';
-  const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
+  const createBtn = document.getElementById('createBtn');
+  const mainArea = document.getElementById('mainArea');
+  const errorBox = document.getElementById('errorBox');
 
-  const sbpArea = document.getElementById('sbpArea');
-  const statusDiv = document.getElementById('statusText');
+  function showError(msg) {
+    errorBox.style.display = 'block';
+    errorBox.innerText = '❌ ' + msg;
+  }
 
-  async function createSbpPayment() {
-    const btn = document.getElementById('createSbpBtn');
-    btn.disabled = true;
-    btn.innerText = '⏳ Создание QR-кода...';
-    statusDiv.innerText = '⏳ Формирование платежа...';
+  createBtn.onclick = async () => {
+    createBtn.disabled = true;
+    createBtn.innerText = '⏳ Создание...';
+    errorBox.style.display = 'none';
 
     const paymentData = {
       amount: { value: amountRub.toFixed(2), currency: 'RUB' },
       capture: true,
-      confirmation: { type: 'qr' },  // тип "qr" для СБП
+      confirmation: { type: 'qr' },
       description: description,
       metadata: { test: true, method: 'sbp' }
     };
@@ -183,72 +164,47 @@
         body: JSON.stringify(paymentData)
       });
 
-      const result = await response.json();
-      console.log('ЮKassa ответ:', result);
+      // Сначала получаем текст ответа
+      const textResponse = await response.text();
+      console.log('Raw response:', textResponse);
 
-      if (result.confirmation && result.confirmation.confirmation_data && result.confirmation.confirmation_data.qr_code) {
+      // Пробуем распарсить JSON
+      let result;
+      try {
+        result = JSON.parse(textResponse);
+      } catch(e) {
+        console.error('JSON parse error:', e);
+        showError('Прокси вернул не JSON: ' + textResponse.substring(0, 200));
+        createBtn.disabled = false;
+        createBtn.innerText = '📱 Создать QR-код СБП';
+        return;
+      }
+
+      if (result.confirmation?.confirmation_data?.qr_code) {
         const qrUrl = result.confirmation.confirmation_data.qr_code;
-        const paymentId = result.id;
-        
-        // Сохраняем ID платежа для проверки статуса
-        localStorage.setItem('currentPaymentId', paymentId);
-        
-        // Показываем QR-код и ссылку
-        sbpArea.innerHTML = `
+        mainArea.innerHTML = `
           <div class="qr-container">
-            <div style="margin-bottom: 12px;">📲 Отсканируйте QR-код в приложении банка</div>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrUrl)}" alt="QR-код СБП">
-            <button id="copySbpLink" class="sbp-btn copy-link-btn" style="margin-top: 16px;">📋 Скопировать ссылку СБП</button>
-            <button id="checkPaymentBtn" class="sbp-btn" style="margin-top: 12px; background: #28a745;">✅ Я оплатил(а)</button>
+            <div>📲 Отсканируйте QR-код в приложении банка</div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrUrl)}">
+            <button id="copyLinkBtn" class="sbp-btn" style="margin-top: 16px; background: #2A2A35;">📋 Скопировать ссылку</button>
           </div>
         `;
-        
-        document.getElementById('copySbpLink')?.addEventListener('click', () => {
+        document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
           navigator.clipboard.writeText(qrUrl);
-          statusDiv.innerText = '🔗 Ссылка скопирована! Откройте её в приложении банка.';
+          alert('Ссылка для оплаты скопирована');
         });
-        
-        document.getElementById('checkPaymentBtn')?.addEventListener('click', () => {
-          statusDiv.innerText = '🔍 Проверяем статус платежа...';
-          checkPaymentStatus(paymentId);
-        });
-        
-        statusDiv.innerText = '✅ QR-код готов! Отсканируйте или скопируйте ссылку.';
       } else {
-        throw new Error(result.description || 'Не удалось создать QR-код');
+        showError(result.description || 'Не удалось получить QR-код');
+        createBtn.disabled = false;
+        createBtn.innerText = '📱 Создать QR-код СБП';
       }
     } catch (err) {
-      console.error('Ошибка:', err);
-      statusDiv.innerText = '❌ Ошибка: ' + err.message;
-      btn.disabled = false;
-      btn.innerText = '📱 Сформировать QR-код СБП';
+      console.error('Fetch error:', err);
+      showError('Ошибка соединения: ' + err.message);
+      createBtn.disabled = false;
+      createBtn.innerText = '📱 Создать QR-код СБП';
     }
-  }
-
-  // Проверка статуса платежа
-  async function checkPaymentStatus(paymentId) {
-    try {
-      const response = await fetch('/yookassa-check.php?payment_id=' + paymentId);
-      const result = await response.json();
-      
-      if (result.status === 'succeeded') {
-        statusDiv.innerText = '✅ Оплата прошла успешно! Перенаправление...';
-        setTimeout(() => {
-          window.location.href = 'success.html';
-        }, 2000);
-      } else if (result.status === 'pending' || result.status === 'waiting_for_capture') {
-        statusDiv.innerText = '⏳ Платёж ещё не подтверждён. Оплатите QR-кодом или подождите...';
-        // Повторяем проверку через 5 секунд
-        setTimeout(() => checkPaymentStatus(paymentId), 5000);
-      } else {
-        statusDiv.innerText = '❌ Статус платежа: ' + (result.status || 'неизвестен');
-      }
-    } catch (err) {
-      statusDiv.innerText = '❌ Ошибка проверки: ' + err.message;
-    }
-  }
-
-  document.getElementById('createSbpBtn').addEventListener('click', createSbpPayment);
+  };
 </script>
 </body>
 </html>
