@@ -7,9 +7,9 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #040406;
+      background: #1E1E1E;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #FFFFFF;
+      color: #E6E6E6;
       padding: 20px 16px;
       display: flex;
       justify-content: center;
@@ -19,23 +19,13 @@
     .payment-card {
       max-width: 500px;
       width: 100%;
-      background: #0F0F14;
+      background: #242424;
       border-radius: 28px;
       padding: 24px 20px;
       text-align: center;
     }
-    .test-badge {
-      background: #FF8C42;
-      color: #0F0F14;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 40px;
-      display: inline-block;
-      margin-bottom: 16px;
-    }
     .order-info {
-      background: #0B0B10;
+      background: #2E2E2E;
       border-radius: 20px;
       padding: 16px;
       margin: 20px 0;
@@ -45,137 +35,192 @@
       display: flex;
       justify-content: space-between;
       padding: 8px 0;
-      border-bottom: 0.5px solid #2A2A35;
+      border-bottom: 0.5px solid #A0A0A0;
     }
     .total {
       font-size: 28px;
       font-weight: 700;
-      color: #FFB347;
+      color: #5ef57c;
       margin: 16px 0;
     }
+    .pay-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+    }
     .pay-btn {
-      width: 100%;
       background: #2C6EDB;
       border: none;
-      padding: 16px;
+      padding: 14px;
       border-radius: 48px;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: white;
       cursor: pointer;
+      width: 100%;
     }
-    .pay-btn:disabled {
-      opacity: 0.6;
+    .pay-btn.secondary {
+      background: #383838;
+      color: #E6E6E6;
     }
-    .test-info {
-      background: #1E2A3A;
+    .warning {
+      background: #4a2a2a;
       border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 12px;
-      text-align: left;
+      padding: 16px;
+      margin: 16px 0;
+      color: #ff9999;
     }
     .back-link {
       display: inline-block;
       margin-top: 20px;
-      color: #8E94B0;
+      color: #A0A0A0;
       font-size: 14px;
       text-decoration: none;
+    }
+    .qr-container {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .qr-container img {
+      width: 180px;
+      height: 180px;
+    }
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-
-<div class="payment-card">
-  <div class="test-badge">🧪 ТЕСТОВАЯ ОПЛАТА</div>
+<div class="payment-card" id="paymentCard">
   <h2>💳 Оплата заказа</h2>
-
   <div class="order-info">
     <div class="order-row"><span>📦 Товар:</span><span>Звёзды Telegram</span></div>
     <div class="order-row"><span>👤 Получатель:</span><span id="recipient">—</span></div>
     <div class="order-row"><span>⭐ Количество:</span><span id="starsCount">—</span></div>
   </div>
-
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <div id="paymentArea">
-    <button class="pay-btn" id="payButton">💳 Оплатить картой (тест)</button>
-  </div>
+  <div id="dynamicContent"></div>
 
   <a href="index.html" class="back-link">← Вернуться к выбору</a>
-
-  <div class="test-info">
-    🔐 <strong>Тестовые данные:</strong><br>
-    • Карта: <strong>5555 5555 5555 4477</strong> (любая дата, любой CVV)
-  </div>
 </div>
 
 <script>
-  // Загрузка заказа
-  let order = { recipient: 'тестовый', stars: 100, total: '164 ₽' };
+  // Загрузка заказа из localStorage
+  let order = { recipient: 'тестовый', stars: 100, total: '164 ₽', paymentMethod: 'sbp' };
   try {
     const saved = localStorage.getItem('pendingOrder');
     if (saved) order = JSON.parse(saved);
   } catch(e) {}
+  // Если нет способа оплаты, ставим sbp по умолчанию
+  if (!order.paymentMethod) order.paymentMethod = 'sbp';
 
   document.getElementById('recipient').innerText = order.recipient || '—';
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // Извлекаем сумму
-  let amountRub = 100;
-  const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
-  if (match) amountRub = parseFloat(match[1].replace(',', '.'));
-
+  const amountRub = parseFloat((order.total || '0').replace(/[^0-9.,]/g, '').replace(',', '.'));
   const description = `Покупка ${order.stars} звёзд для ${order.recipient}`;
 
-  // КЛЮЧИ
+  // Ключи ЮKassa (тестовые)
   const SHOP_ID = '1343358';
   const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
 
-  async function createPayment() {
-    const btn = document.getElementById('payButton');
-    btn.disabled = true;
-    btn.innerText = '⏳ Создание платежа...';
+  const dynamicDiv = document.getElementById('dynamicContent');
 
+  // Функция создания платежа через прокси
+  async function createPayment(confirmationType) {
     const paymentData = {
       amount: { value: amountRub.toFixed(2), currency: 'RUB' },
       capture: true,
-      confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
+      confirmation: { type: confirmationType, return_url: 'https://fastmystars.ru/success.html' },
       description: description.substring(0, 100),
-      metadata: { test: true }
+      metadata: { test: true, method: confirmationType }
     };
-
+    if (confirmationType === 'qr') {
+      // Для QR нужно указать confirmation_data
+      paymentData.confirmation = { type: 'qr', return_url: 'https://fastmystars.ru/success.html' };
+    }
     try {
       const response = await fetch('/yookassa-proxy.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData)
       });
-
-      const text = await response.text();
-      console.log('Ответ прокси:', text);
-
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch(e) {
-        throw new Error('Прокси вернул не JSON: ' + text.substring(0, 100));
-      }
-
-      if (result.confirmation && result.confirmation.confirmation_url) {
+      const result = await response.json();
+      if (confirmationType === 'redirect' && result.confirmation?.confirmation_url) {
         window.location.href = result.confirmation.confirmation_url;
+      } else if (confirmationType === 'qr' && result.confirmation?.confirmation_data?.qr_code) {
+        const qrUrl = result.confirmation.confirmation_data.qr_code;
+        const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrUrl)}`;
+        dynamicDiv.innerHTML = `
+          <div class="qr-container">
+            <img src="${qrImg}" alt="QR-код СБП">
+            <button class="pay-btn secondary" id="copyQrLink" style="margin-top:12px;">📋 Скопировать ссылку</button>
+          </div>
+          <button class="pay-btn" id="backToOptions" style="background:#383838;">← Назад к выбору</button>
+        `;
+        document.getElementById('copyQrLink')?.addEventListener('click', () => {
+          navigator.clipboard.writeText(qrUrl);
+          alert('Ссылка СБП скопирована. Откройте её в приложении банка.');
+        });
+        document.getElementById('backToOptions')?.addEventListener('click', () => {
+          location.reload();
+        });
       } else {
-        throw new Error(result.description || 'Неизвестная ошибка');
+        throw new Error(result.description || 'Ошибка создания платежа');
       }
     } catch (err) {
       alert('❌ Ошибка: ' + err.message);
-      btn.disabled = false;
-      btn.innerText = '💳 Оплатить картой (тест)';
+      // Показываем кнопку назад
+      dynamicDiv.innerHTML = `<button class="pay-btn" id="backToOptions" style="background:#383838;">← Назад к выбору</button>`;
+      document.getElementById('backToOptions')?.addEventListener('click', () => location.reload());
     }
   }
 
-  document.getElementById('payButton').addEventListener('click', createPayment);
+  // Рендер в зависимости от paymentMethod
+  function render() {
+    if (order.paymentMethod === 'ton') {
+      dynamicDiv.innerHTML = `
+        <div class="warning">
+          ⚠️ Оплата через TON временно недоступна.<br>
+          Пожалуйста, выберите способ оплаты СБП.
+        </div>
+        <button class="pay-btn" id="switchToSbp">🔄 Выбрать СБП</button>
+      `;
+      document.getElementById('switchToSbp')?.addEventListener('click', () => {
+        order.paymentMethod = 'sbp';
+        localStorage.setItem('pendingOrder', JSON.stringify(order));
+        render();
+      });
+    } else if (order.paymentMethod === 'sbp') {
+      dynamicDiv.innerHTML = `
+        <div class="pay-options">
+          <button class="pay-btn" id="cardPay">💳 Оплатить банковской картой</button>
+          <button class="pay-btn secondary" id="qrPay">📱 Оплата по QR-коду (СБП)</button>
+        </div>
+      `;
+      document.getElementById('cardPay')?.addEventListener('click', () => createPayment('redirect'));
+      document.getElementById('qrPay')?.addEventListener('click', () => createPayment('qr'));
+    }
+  }
+
+  render();
 </script>
 </body>
 </html>

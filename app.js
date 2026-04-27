@@ -248,7 +248,7 @@ document.querySelectorAll(".pay-card").forEach(card => {
   });
 });
 
-/* ================= BUY ================= */
+
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
   const username = el.username.value.trim();
@@ -257,43 +257,34 @@ el.buy.onclick = () => {
     alert("Введите username получателя");
     return;
   }
-  
   if (!stars || stars < 50) {
     alert("Минимальное количество звёзд: 50");
     return;
   }
-
   if (!selectedPayment) {
     alert("Пожалуйста, выберите способ оплаты");
     return;
   }
 
-  const tgUser = tg.initDataUnsafe?.user;
-  if (!tgUser) return;
-
-  let amount, currency;
+  let total, currency;
   if (selectedPayment === "ton") {
-    amount = (stars * RATE_TON).toFixed(3);
+    total = (stars * RATE_TON).toFixed(3) + " TON";
     currency = "TON";
   } else {
-    amount = (stars * RATE_RUB).toFixed(2);
+    total = (stars * RATE_RUB).toFixed(2) + " ₽";
     currency = "RUB";
   }
 
-  // Показываем окно оплаты вместо редиректа
-  alert(`⭐ ${stars} звёзд → ${amount} ${currency}\n\nДля оплаты перейдите в бот поддержки: @MyStars812support_bot`);
-  
-  tg.sendData(JSON.stringify({
-    type: "order",
-    user_id: tgUser.id,
-    username: tgUser.username || "—",
-    stars,
-    amount: amount,
+  const order = {
+    recipient: username,
+    stars: stars,
+    total: total,
     currency: currency,
-    payment_method: selectedPayment
-  }));
-
-  
+    paymentMethod: selectedPayment,
+    timestamp: Date.now()
+  };
+  localStorage.setItem('pendingOrder', JSON.stringify(order));
+  window.location.href = 'payment.html';
 };
 
 /* ================= ADMIN ================= */
