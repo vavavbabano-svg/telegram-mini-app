@@ -1,192 +1,205 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Оплата — MyStars</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #040406;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            color: #FFFFFF;
-            padding: 20px 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .payment-card {
-            max-width: 500px;
-            width: 100%;
-            background: #0F0F14;
-            border-radius: 28px;
-            padding: 24px 20px;
-            text-align: center;
-        }
-        .order-info {
-            background: #0B0B10;
-            border-radius: 20px;
-            padding: 16px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .order-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 0.5px solid #2A2A35;
-        }
-        .total {
-            font-size: 28px;
-            font-weight: 700;
-            color: #FFB347;
-            margin: 16px 0;
-        }
-        .pay-btn {
-            width: 100%;
-            background: #2C6EDB;
-            border: none;
-            padding: 16px;
-            border-radius: 48px;
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-            cursor: pointer;
-        }
-        .pay-btn:disabled {
-            opacity: 0.6;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #8E94B0;
-            font-size: 14px;
-            text-decoration: none;
-        }
-        .debug {
-            background: #1A1A2A;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 20px;
-            font-size: 11px;
-            color: #88AACC;
-            text-align: left;
-            font-family: monospace;
-            word-break: break-all;
-        }
-        .error-box {
-            background: #5a1e2a;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 16px;
-            color: #ff9999;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Оплата — MyStars</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #040406;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: #FFFFFF;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .payment-card {
+      max-width: 500px;
+      width: 100%;
+      background: #0F0F14;
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+    }
+    .order-info {
+      background: #0B0B10;
+      border-radius: 20px;
+      padding: 16px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 0.5px solid #2A2A35;
+    }
+    .total {
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFB347;
+      margin: 16px 0;
+    }
+    .pay-btn {
+      width: 100%;
+      background: #2C6EDB;
+      border: none;
+      padding: 16px;
+      border-radius: 48px;
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+    }
+    .pay-btn:disabled {
+      opacity: 0.6;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #8E94B0;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .qr-container {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .qr-container img {
+      width: 200px;
+      height: 200px;
+    }
+    .info-text {
+      font-size: 14px;
+      color: #A0C0F0;
+      margin-top: 16px;
+    }
+    .error-box {
+      background: #5a1e2a;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 16px;
+      color: #ff9999;
+    }
+  </style>
 </head>
 <body>
 <div class="payment-card">
-    <h2>💳 Оплата заказа</h2>
+  <h2>💳 Оплата заказа</h2>
 
-    <div class="order-info">
-        <div class="order-row"><span>Товар:</span><span>Звёзды Telegram</span></div>
-        <div class="order-row"><span>Получатель:</span><span id="recipient">—</span></div>
-        <div class="order-row"><span>Количество:</span><span id="starsCount">—</span></div>
-    </div>
+  <div class="order-info">
+    <div class="order-row"><span>📦 Товар:</span><span>Звёзды Telegram</span></div>
+    <div class="order-row"><span>👤 Получатель:</span><span id="recipient">—</span></div>
+    <div class="order-row"><span>⭐ Количество:</span><span id="starsCount">—</span></div>
+  </div>
 
-    <div class="total">💰 <span id="totalAmount">—</span></div>
+  <div class="total">💰 <span id="totalAmount">—</span></div>
 
-    <button class="pay-btn" id="payBtn">Показать платёжную форму</button>
-    <a href="index.html" class="back-link">← Вернуться</a>
-    <div class="debug" id="debugBox">📡 Нажмите кнопку оплаты</div>
+  <div id="paymentArea">
+    <button class="pay-btn" id="createBtn">Оплатить через СБП</button>
+  </div>
+
+  <a href="index.html" class="back-link">← Вернуться</a>
 </div>
 
 <script>
-    // Загрузка заказа из localStorage
-    let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
-    try {
-        const saved = localStorage.getItem('pendingOrder');
-        if (saved) order = JSON.parse(saved);
-    } catch(e) {}
+  // Загружаем заказ из localStorage (устанавливается в index.html)
+  let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
+  try {
+    const saved = localStorage.getItem('pendingOrder');
+    if (saved) order = JSON.parse(saved);
+  } catch(e) {}
 
-    document.getElementById('recipient').innerText = order.recipient || '—';
-    document.getElementById('starsCount').innerText = order.stars || '—';
-    document.getElementById('totalAmount').innerText = order.total || '— ₽';
+  document.getElementById('recipient').innerText = order.recipient || '—';
+  document.getElementById('starsCount').innerText = order.stars || '—';
+  document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-    // --- Расчет суммы ---
-    let amount = 100;
-    const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
-    if (match) amount = parseFloat(match[1].replace(',', '.'));
-    if (isNaN(amount) || amount <= 0) amount = 100;
+  // Извлекаем сумму в рублях
+  let amountRub = 100;
+  const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
+  if (match) amountRub = parseFloat(match[1].replace(',', '.'));
+  if (isNaN(amountRub) || amountRub <= 0) amountRub = 100;
 
-    const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
+  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
 
-    const payBtn = document.getElementById('payBtn');
-    const debugBox = document.getElementById('debugBox');
-    function debug(msg, isError = false) {
-        console.log(msg);
-        debugBox.innerHTML += `\n📡 ${new Date().toLocaleTimeString()}: ${msg}`;
-        if (isError) {
-            const errorDiv = document.querySelector('.error-box') || document.createElement('div');
-            if (!document.querySelector('.error-box')) {
-                errorDiv.className = 'error-box';
-                document.querySelector('.payment-card').appendChild(errorDiv);
-            }
-            errorDiv.innerText = `❌ ${msg}`;
-        }
-    }
+  const createBtn = document.getElementById('createBtn');
+  const paymentArea = document.getElementById('paymentArea');
 
-    payBtn.onclick = async () => {
-        payBtn.disabled = true;
-        payBtn.innerText = '⏳ Создание платежа...';
-        debug('Создание ссылки на оплату...');
+  async function createSbpPayment() {
+    createBtn.disabled = true;
+    createBtn.innerText = '⏳ Создание платежа...';
 
-        try {
-            // 1. Запрашиваем у бекенда ссылку для открытия окна оплаты
-            const response = await fetch('/api/create-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount, description })
-            });
-            const data = await response.json();
-            debug(`Получен ответ от сервера: ${JSON.stringify(data)}`);
-
-            if (data.success && (data.invoice_url || data.confirmation_url)) {
-                const paymentUrl = data.invoice_url || data.confirmation_url;
-                debug(`Готово, открываем форму...`);
-
-                // 2. Это и есть "магия", которая решает твою проблему.
-                // Команда, которая заставляет Telegram показать нативное окно оплаты[citation:10][citation:2].
-                const paymentStatus = await window.Telegram.WebApp.openInvoice(paymentUrl, (status) => {
-    console.log('Статус платежа (callback):', status);
-    if (status === 'paid') {
-        window.location.href = '/success.html';
-    } else {
-        debug(`Платёж не завершён: ${status}`, true);
-        payBtn.disabled = false;
-        payBtn.innerText = 'Попробовать оплатить';
-        window.Telegram.WebApp.close();
-    }
-});
-                console.log('Статус платежа (promise/result):', paymentStatus);
-                if (paymentStatus === 'paid') {
-                    window.location.href = '/success.html';
-                } else if (paymentStatus && paymentStatus !== 'paid') {
-                    debug(`Платёж не завершён: ${paymentStatus}`, true);
-                    payBtn.disabled = false;
-                    payBtn.innerText = 'Попробовать оплатить';
-                }
-            } else {
-                throw new Error(data.error || 'Не удалось получить ссылку на оплату');
-            }
-        } catch (err) {
-            debug(`Ошибка соединения: ${err.message}`, true);
-            payBtn.disabled = false;
-            payBtn.innerText = 'Оплатить картой';
-        }
+    const paymentData = {
+      amount: { value: amountRub.toFixed(2), currency: 'RUB' },
+      capture: true,
+      confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
+      description: description.slice(0, 120),
+      metadata: { test: true }
     };
+
+    try {
+      const response = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentData)
+      });
+
+      const data = await response.json();
+      console.log('ЮKassa ответ:', data);
+
+      if (data.confirmation && data.confirmation.confirmation_url) {
+        // Получаем confirmation_url для редиректа
+        const paymentUrl = data.confirmation.confirmation_url;
+        // Для мобильных устройств открываем ссылку напрямую (через системный браузер)
+        if (window.Telegram && Telegram.WebApp) {
+          // Показываем кнопку для открытия в браузере (Telegram блокирует прямой редирект)
+          paymentArea.innerHTML = `
+            <div class="qr-container">
+              <div>📲 Нажмите кнопку, чтобы перейти к оплате в браузере</div>
+              <button id="openBrowserBtn" class="pay-btn" style="margin-top: 16px;">Открыть страницу оплаты</button>
+            </div>
+          `;
+          document.getElementById('openBrowserBtn').onclick = () => {
+            // Открываем ссылку в системном браузере
+            window.Telegram.WebApp.openLink(paymentUrl);
+            window.Telegram.WebApp.close();
+          };
+        } else {
+          // В обычном браузере просто редирект
+          window.location.href = paymentUrl;
+        }
+      } else if (data.confirmation && data.confirmation.confirmation_data && data.confirmation.confirmation_data.qr_code) {
+        // Альтернативный вариант: если ЮKassa вернул QR-код (для СБП на десктопе)
+        const qrCode = data.confirmation.confirmation_data.qr_code;
+        paymentArea.innerHTML = `
+          <div class="qr-container">
+            <div>📲 Отсканируйте QR-код в приложении банка</div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCode)}" alt="QR-код СБП">
+            <button id="copyBtn" class="pay-btn" style="margin-top: 16px; background: #2A2A35;">📋 Скопировать ссылку</button>
+          </div>
+        `;
+        document.getElementById('copyBtn').onclick = () => {
+          navigator.clipboard.writeText(qrCode);
+          alert('Ссылка скопирована, откройте её в приложении банка');
+        };
+      } else {
+        throw new Error(data.description || 'Не удалось создать платёж');
+      }
+    } catch (err) {
+      console.error(err);
+      paymentArea.innerHTML = `<div class="error-box">❌ Ошибка: ${err.message}<br><button class="pay-btn" id="retryBtn" style="margin-top: 12px;">Попробовать снова</button></div>`;
+      document.getElementById('retryBtn')?.addEventListener('click', () => location.reload());
+    }
+  }
+
+  createBtn.addEventListener('click', createSbpPayment);
 </script>
 </body>
 </html>
