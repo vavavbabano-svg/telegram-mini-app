@@ -2,96 +2,32 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оплата прошла</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Успешно — MyStars</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      background: #16161a;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #E6E6E6;
-    }
-
-    .container {
+      background: #040406;
+      color: white;
+      font-family: sans-serif;
       text-align: center;
-      padding: 24px;
+      padding: 40px 20px;
     }
-
-    .icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 20px;
-      background: #1e3a1e;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      border: 2px solid #5ef57c;
-      box-shadow: 0 0 30px rgba(94, 245, 124, 0.3);
+    .card {
+      background: #0F0F14;
+      border-radius: 28px;
+      padding: 32px;
+      max-width: 400px;
+      margin: 0 auto;
     }
-
-    h1 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #5ef57c;
-    }
-
-    p {
-      font-size: 14px;
-      color: #A0A0A0;
-      margin-bottom: 24px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 32px;
-      border-radius: 12px;
-      background: #2D6BFF;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .countdown {
-      font-size: 12px;
-      color: #A0A0A0;
-      margin-top: 16px;
-    }
+    h1 { color: #5ef57c; }
+    a { color: #2C6EDB; text-decoration: none; margin-top: 20px; display: inline-block; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="icon">✅</div>
-    <h1>Оплата прошла успешно!</h1>
-    <p>Звёзды скоро будут зачислены на ваш аккаунт</p>
-    <a href="https://t.me/MyStars812support_bot" class="btn">Вернуться в бот</a>
-    <div class="countdown" id="timer">Автовозврат через 3 сек...</div>
-  </div>
-
-  <script>
-    let sec = 3;
-    const timer = document.getElementById("timer");
-    const interval = setInterval(() => {
-      sec--;
-      if (sec <= 0) {
-        clearInterval(interval);
-        window.location.href = "https://t.me/MyStars812support_bot";
-      } else {
-        timer.textContent = `Автовозврат через ${sec} сек...`;
-      }
-    }, 1000);
-  </script>
+<div class="card">
+  <h1>✅ Оплата прошла успешно!</h1>
+  <p>Звёзды поступят на указанный аккаунт в течение нескольких секунд.</p>
+  <a href="index.html">← Вернуться в магазин</a>
+</div>
 </body>
 </html>
