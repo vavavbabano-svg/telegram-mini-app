@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: data.description || 'Ошибка создания платежа' });
     }
   } catch (error) {
-    console.error('YooKassa error:', error);
+    conole.error('YooKassa error:', error);
     return res.status(500).json({ success: false, error: 'Внутренняя ошибка сервера' });
   }
 }
