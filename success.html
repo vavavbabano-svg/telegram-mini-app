@@ -2,37 +2,49 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оплата прошла — MyStars</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Проверка оплаты</title>
   <style>
-    body {
-      background: #040406;
-      color: white;
-      font-family: system-ui, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .card {
-      background: #0F0F14;
-      border-radius: 28px;
-      padding: 32px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    h1 { color: #5ef57c; }
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      color: #2C6EDB;
-      text-decoration: none;
-    }
+    body { background: #040406; color: white; font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+    .loader { width: 40px; height: 40px; border: 3px solid #2A2A35; border-top-color: #2C6EDB; border-radius: 50%; margin: 20px auto; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error { color: #ff8888; }
+    .success { color: #5ef57c; }
+    button { background: #2C6EDB; border: none; padding: 12px 24px; border-radius: 48px; color: white; margin-top: 20px; cursor: pointer; }
   </style>
 </head>
 <body>
-<div class="card">
-  <h1>✅ Оплата прошла успешно!</h1>
-  <p>Звёзды поступят на аккаунт в течение нескольких секунд.</p>
-  <a href="index.html">← Вернуться в магазин</a>
+<div>
+  <div class="loader"></div>
+  <p>Проверяем статус платежа...</p>
+  <div id="message"></div>
 </div>
+<script>
+  const paymentId = localStorage.getItem('currentPaymentId');
+  if (!paymentId) {
+    document.getElementById('message').innerHTML = '<p class="error">❌ Не удалось определить платёж</p><button onclick="window.location.href=\'index.html\'">Вернуться в магазин</button>';
+    return;
+  }
+
+  fetch(`https://yookassa-api.твой-аккаунт.workers.dev/check-payment?id=${paymentId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'succeeded') {
+        document.querySelector('.loader').style.display = 'none';
+        document.getElementById('message').innerHTML = '<p class="success">✅ Оплата прошла успешно! Спасибо за покупку.</p><button onclick="window.location.href=\'index.html\'">Вернуться в магазин</button>';
+        // здесь можно обнулить корзину и т.д.
+      } else if (data.status === 'canceled') {
+        document.querySelector('.loader').style.display = 'none';
+        document.getElementById('message').innerHTML = '<p class="error">❌ Платёж отменён или не завершён. Попробуйте снова.</p><button onclick="window.location.href=\'index.html\'">На главную</button>';
+      } else {
+        document.querySelector('.loader').style.display = 'none';
+        document.getElementById('message').innerHTML = '<p class="error">⚠️ Статус платежа: ' + data.status + '. Попробуйте позже.</p><button onclick="window.location.href=\'index.html\'">На главную</button>';
+      }
+    })
+    .catch(() => {
+      document.querySelector('.loader').style.display = 'none';
+      document.getElementById('message').innerHTML = '<p class="error">❌ Ошибка проверки платежа</p><button onclick="window.location.href=\'index.html\'">Вернуться</button>';
+    });
+</script>
 </body>
 </html>

@@ -65,29 +65,17 @@
       font-size: 14px;
       text-decoration: none;
     }
-    .qr-container {
-      background: #FFFFFF;
-      border-radius: 20px;
-      padding: 20px;
-      margin: 20px 0;
-      text-align: center;
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
     }
-    .qr-container img {
-      width: 200px;
-      height: 200px;
-    }
-    .info-text {
-      font-size: 14px;
-      color: #A0C0F0;
-      margin-top: 16px;
-    }
-    .error-box {
-      background: #5a1e2a;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 16px;
-      color: #ff9999;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -102,15 +90,12 @@
 
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <div id="paymentArea">
-    <button class="pay-btn" id="createBtn">Оплатить через СБП</button>
-  </div>
-
+  <button class="pay-btn" id="createBtn">Перейти к оплате</button>
   <a href="index.html" class="back-link">← Вернуться</a>
 </div>
 
 <script>
-  // Загружаем заказ из localStorage (устанавливается в index.html)
+  // Загружаем заказ из localStorage
   let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
   try {
     const saved = localStorage.getItem('pendingOrder');
@@ -130,76 +115,42 @@
   const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
 
   const createBtn = document.getElementById('createBtn');
-  const paymentArea = document.getElementById('paymentArea');
 
-  async function createSbpPayment() {
+  createBtn.onclick = async () => {
     createBtn.disabled = true;
-    createBtn.innerText = '⏳ Создание платежа...';
-
-    const paymentData = {
-      amount: { value: amountRub.toFixed(2), currency: 'RUB' },
-      capture: true,
-      confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
-      description: description.slice(0, 120),
-      metadata: { test: true }
-    };
+    createBtn.innerHTML = '<span class="loader"></span> Создание платежа...';
 
     try {
-      const response = await fetch('/api/create-payment', {
+      // Запрос к твоему Cloudflare Worker
+      const response = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData)
+        body: JSON.stringify({
+          amount: amountRub,
+          description: description
+        })
       });
 
       const data = await response.json();
-      console.log('ЮKassa ответ:', data);
+      console.log('Worker response:', data);
 
-      if (data.confirmation && data.confirmation.confirmation_url) {
-        // Получаем confirmation_url для редиректа
-        const paymentUrl = data.confirmation.confirmation_url;
-        // Для мобильных устройств открываем ссылку напрямую (через системный браузер)
-        if (window.Telegram && Telegram.WebApp) {
-          // Показываем кнопку для открытия в браузере (Telegram блокирует прямой редирект)
-          paymentArea.innerHTML = `
-            <div class="qr-container">
-              <div>📲 Нажмите кнопку, чтобы перейти к оплате в браузере</div>
-              <button id="openBrowserBtn" class="pay-btn" style="margin-top: 16px;">Открыть страницу оплаты</button>
-            </div>
-          `;
-          document.getElementById('openBrowserBtn').onclick = () => {
-            // Открываем ссылку в системном браузере
-            window.Telegram.WebApp.openLink(paymentUrl);
-            window.Telegram.WebApp.close();
-          };
-        } else {
-          // В обычном браузере просто редирект
-          window.location.href = paymentUrl;
-        }
-      } else if (data.confirmation && data.confirmation.confirmation_data && data.confirmation.confirmation_data.qr_code) {
-        // Альтернативный вариант: если ЮKassa вернул QR-код (для СБП на десктопе)
-        const qrCode = data.confirmation.confirmation_data.qr_code;
-        paymentArea.innerHTML = `
-          <div class="qr-container">
-            <div>📲 Отсканируйте QR-код в приложении банка</div>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCode)}" alt="QR-код СБП">
-            <button id="copyBtn" class="pay-btn" style="margin-top: 16px; background: #2A2A35;">📋 Скопировать ссылку</button>
-          </div>
-        `;
-        document.getElementById('copyBtn').onclick = () => {
-          navigator.clipboard.writeText(qrCode);
-          alert('Ссылка скопирована, откройте её в приложении банка');
-        };
+      if (data.success && data.confirmation_url) {
+        // Сохраняем ID платежа для проверки статуса в success.html
+        if (data.id) localStorage.setItem('currentPaymentId', data.id);
+        // Редирект на страницу оплаты ЮKassa
+        window.location.href = data.confirmation_url;
       } else {
-        throw new Error(data.description || 'Не удалось создать платёж');
+        alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+        createBtn.disabled = false;
+        createBtn.innerHTML = 'Перейти к оплате';
       }
     } catch (err) {
-      console.error(err);
-      paymentArea.innerHTML = `<div class="error-box">❌ Ошибка: ${err.message}<br><button class="pay-btn" id="retryBtn" style="margin-top: 12px;">Попробовать снова</button></div>`;
-      document.getElementById('retryBtn')?.addEventListener('click', () => location.reload());
+      console.error('Ошибка:', err);
+      alert('Ошибка соединения: ' + err.message);
+      createBtn.disabled = false;
+      createBtn.innerHTML = 'Перейти к оплате';
     }
-  }
-
-  createBtn.addEventListener('click', createSbpPayment);
+  };
 </script>
 </body>
 </html>
