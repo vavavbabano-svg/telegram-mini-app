@@ -584,3 +584,34 @@ button:hover {
   border-color: #5ef57c;
   color: #5ef57c;
 }
+/* === ГАРАНТИРОВАННЫЙ НЕОН ДЛЯ АКТИВНЫХ КНОПОК === */
+.packs button.active,
+.btn.small.active,
+.pay-card.selected {
+  background: rgba(94, 245, 124, 0.15) !important;
+  color: #5ef57c !important;
+  border-color: #5ef57c !important;
+  box-shadow: 0 0 14px rgba(94, 245, 124, 0.5) !important;
+  transition: all 0.2s ease;
+}
+
+/* Убедимся, что #userId и adminBtn видны, если логика их не скрыла */
+#userId,
+.admin-btn:not(.hidden) {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Лёгкая анимация для карточек способов оплаты */
+.pay-card {
+  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.pay-card.selected {
+  transform: scale(0.98);
+}
+
+/* Немного увеличиваем область клика для пакетов */
+.packs button {
+  transition: all 0.2s ease;
+}
