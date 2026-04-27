@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -21,6 +19,9 @@ if (!$paymentData) {
     exit;
 }
 
+// Генерируем уникальный ключ идемпотентности
+$idempotenceKey = uniqid('payment_', true);
+
 $auth = base64_encode($shopId . ':' . $secretKey);
 
 $ch = curl_init('https://api.yookassa.ru/v3/payments');
@@ -29,7 +30,8 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'Authorization: Basic ' . $auth
+    'Authorization: Basic ' . $auth,
+    'Idempotence-Key: ' . $idempotenceKey
 ]);
 
 $response = curl_exec($ch);
@@ -38,4 +40,3 @@ curl_close($ch);
 
 http_response_code($httpCode);
 echo $response;
-?>
