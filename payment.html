@@ -43,28 +43,6 @@
       color: #FFB347;
       margin: 16px 0;
     }
-    .method-selector {
-      display: flex;
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .method-btn {
-      flex: 1;
-      background: #0B0B10;
-      border: 1px solid #2A2A35;
-      border-radius: 48px;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #AAAAAA;
-      transition: 0.2s;
-    }
-    .method-btn.active {
-      background: #2C6EDB;
-      border-color: #2C6EDB;
-      color: white;
-    }
     .pay-btn {
       width: 100%;
       background: #2C6EDB;
@@ -76,26 +54,12 @@
       color: white;
       cursor: pointer;
     }
-    .pay-btn:disabled {
-      opacity: 0.6;
-    }
     .back-link {
       display: inline-block;
       margin-top: 20px;
       color: #8E94B0;
       font-size: 14px;
       text-decoration: none;
-    }
-    .debug {
-      background: #1A1A2A;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 11px;
-      color: #88AACC;
-      text-align: left;
-      font-family: monospace;
-      word-break: break-all;
     }
   </style>
 </head>
@@ -111,118 +75,51 @@
 
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <div class="method-selector">
-    <div class="method-btn active" data-method="card">💳 Банковская карта</div>
-    <div class="method-btn" data-method="sbp">📱 СБП (QR)</div>
-  </div>
-
-  <button class="pay-btn" id="payBtn">Перейти к оплате</button>
+  <button class="pay-btn" id="payBtn">Оплатить картой</button>
   <a href="index.html" class="back-link">← Вернуться</a>
-  <div class="debug" id="debugBox">📡 Готов к оплате</div>
 </div>
 
 <script>
-  // Загрузка заказа
-  let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
-  try {
-    const saved = localStorage.getItem('pendingOrder');
-    if (saved) order = JSON.parse(saved);
-  } catch(e) {}
-
+  const order = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+  
   document.getElementById('recipient').innerText = order.recipient || '—';
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // Сумма в рублях
   let amount = 100;
   const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
   if (match) amount = parseFloat(match[1].replace(',', '.'));
   if (isNaN(amount) || amount <= 0) amount = 100;
 
   const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
-  
-  // Определяем окружение: Telegram или браузер?
-  const isTelegram = !!(window.Telegram && window.Telegram.WebApp);
-  const apiUrl = '/api/create-payment';
-  
-  // Выбранный способ оплаты
-  let currentMethod = 'card';
-  
-  const debugBox = document.getElementById('debugBox');
-  function debug(msg) {
-    console.log(msg);
-    debugBox.innerHTML += `\n📡 ${new Date().toLocaleTimeString()}: ${msg}`;
-  }
-  
-  // Переключение способа оплаты
-  const methodBtns = document.querySelectorAll('.method-btn');
-  methodBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      methodBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentMethod = btn.getAttribute('data-method');
-      debug(`Выбран способ: ${currentMethod === 'card' ? 'Карта' : 'СБП'}`);
-    });
-  });
-  
+
   const payBtn = document.getElementById('payBtn');
   
   payBtn.onclick = async () => {
     payBtn.disabled = true;
     payBtn.innerText = '⏳ Создание платежа...';
-    debug(`Окружение: ${isTelegram ? 'Telegram Mini App' : 'Браузер'}`);
-    debug(`Способ: ${currentMethod === 'card' ? 'редирект на карту' : 'QR для СБП'}`);
-    
-    // Определяем тип подтверждения в зависимости от способа оплаты
-    const confirmationType = currentMethod === 'card' ? 'redirect' : 'qr';
-    
-    const paymentData = {
-      amount: { value: amount.toFixed(2), currency: 'RUB' },
-      capture: true,
-      confirmation: { type: confirmationType, return_url: 'https://telegram-mini-app-ten-gamma.vercel.app/success.html' },
-      description: description.slice(0, 120),
-      metadata: { method: currentMethod, recipient: order.recipient, stars: order.stars }
-    };
     
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData)
+        body: JSON.stringify({
+          amount: amount,
+          description: description
+        })
       });
       
       const data = await response.json();
-      debug(`Ответ сервера: ${JSON.stringify(data).substring(0, 200)}`);
       
       if (data.success && data.confirmation_url) {
-        debug(`Редирект на: ${data.confirmation_url}`);
         window.location.href = data.confirmation_url;
-      } else if (data.success && data.qr_code) {
-        // Для СБП показываем QR-код
-        document.querySelector('.method-selector').style.display = 'none';
-        payBtn.style.display = 'none';
-        const qrContainer = document.createElement('div');
-        qrContainer.className = 'order-info';
-        qrContainer.innerHTML = `
-          <div style="text-align:center;">
-            <p>📱 Отсканируйте QR-код в приложении банка</p>
-            <img src="${data.qr_code}" style="width:200px; margin:16px auto; background:white; padding:16px; border-radius:16px;">
-            <button id="copyLinkBtn" class="pay-btn" style="background:#2A2A35; margin-top:16px;">📋 Скопировать ссылку СБП</button>
-          </div>
-        `;
-        document.querySelector('.payment-card').appendChild(qrContainer);
-        document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
-          navigator.clipboard.writeText(data.qr_code);
-          alert('Ссылка СБП скопирована');
-        });
       } else {
         throw new Error(data.error || 'Неизвестная ошибка');
       }
     } catch (err) {
-      debug(`❌ Ошибка: ${err.message}`);
-      alert('❌ Ошибка: ' + err.message + '\n\nПопробуйте позже');
+      alert('❌ Ошибка: ' + err.message);
       payBtn.disabled = false;
-      payBtn.innerText = 'Перейти к оплате';
+      payBtn.innerText = 'Оплатить картой';
     }
   };
 </script>
