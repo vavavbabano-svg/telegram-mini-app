@@ -434,5 +434,201 @@ button:active {
 .terms a:hover {
   color: #5ef57c;
 }
+/* ===== ПОЛНОСТЬЮ ДРУГОЙ ДИЗАЙН ДЛЯ ПК ===== */
+
+@media (min-width: 1024px) {
+    /* Меняем фон для ПК-версии */
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 0;
+        margin: 0;
+    }
+    
+    /* Новая структура сайта */
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: transparent;
+        padding: 20px;
+    }
+    
+    /* Новая шапка для ПК */
+    .shop-header {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .shop-header::before {
+        content: "🛒";
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        font-size: 120px;
+        opacity: 0.1;
+        transform: rotate(-15deg);
+    }
+    
+    .shop-header h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* Сетка товаров как в интернет-магазине */
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    /* Карточка как в магазине */
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 20px;
+        flex-direction: column;
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2);
+        border-color: #667eea;
+    }
+    
+    .product-emoji {
+        font-size: 80px;
+        margin: 0 0 20px 0;
+        display: inline-block;
+        transition: transform 0.3s;
+    }
+    
+    .product-card:hover .product-emoji {
+        transform: scale(1.1);
+    }
+    
+    .product-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 15px 0 10px;
+    }
+    
+    .product-price {
+        font-size: 28px;
+        font-weight: bold;
+        color: #667eea;
+        margin: 15px 0;
+    }
+    
+    /* Кнопки в стиле сайта */
+    .buy-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        width: 80%;
+        margin-top: 10px;
+        padding: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Страница оплаты на ПК */
+    .payment-container {
+        max-width: 800px;
+    }
+    
+    .payment-card {
+        background: white;
+        border-radius: 30px;
+        padding: 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .payment-card h2 {
+        font-size: 32px;
+        text-align: center;
+    }
+    
+    .order-details {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 25px;
+        border-radius: 20px;
+    }
+    
+    .order-row {
+        font-size: 18px;
+        padding: 12px 0;
+    }
+    
+    .address-box {
+        font-size: 16px;
+        padding: 15px;
+        background: #f0f0f0;
+    }
+    
+    /* Админка на ПК */
+    .admin-container {
+        max-width: 1000px;
+    }
+    
+    .admin-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+    }
+    
+    /* Анимации для ПК */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .product-card {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .product-card:nth-child(1) { animation-delay: 0.1s; }
+    .product-card:nth-child(2) { animation-delay: 0.2s; }
+    .product-card:nth-child(3) { animation-delay: 0.3s; }
+    .product-card:nth-child(4) { animation-delay: 0.4s; }
+    .product-card:nth-child(5) { animation-delay: 0.5s; }
+    
+    /* Кнопка назад на ПК */
+    .cancel-btn, .home-btn, .retry-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Дополнительные элементы для ПК */
+    body::after {
+        content: "";
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        opacity: 0.5;
+        pointer-events: none;
+        z-index: 999;
+    }
+}
 
 
