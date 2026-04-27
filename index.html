@@ -47,7 +47,6 @@
 <body>
 
 <div class="app">
-  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -124,7 +123,7 @@
     tg.expand();
   }
 
-  // --- DOM элементы ---
+  // --- DOM ---
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
@@ -170,7 +169,7 @@
   updateTotal();
   setTarget('self');
 
-  // Функция открытия ссылки в системном браузере (Safari/Chrome)
+  // Открытие в системном браузере (Safari/Chrome)
   function openInSystemBrowser(url) {
     const a = document.createElement('a');
     a.href = url;
@@ -181,7 +180,7 @@
     document.body.removeChild(a);
   }
 
-  // Плашка подтверждения
+  // Плашка
   function showConfirmModal(onConfirm) {
     const old = document.querySelector('.modal-overlay');
     if (old) old.remove();
@@ -206,7 +205,7 @@
     };
   }
 
-  // Основная логика
+  // ГЛАВНОЕ: покупка → запрос к API → открытие ссылки от ЮKassa
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -224,24 +223,17 @@
     localStorage.setItem('pendingOrder', JSON.stringify(order));
 
     showConfirmModal(async () => {
-      // Получаем сумму в рублях
       const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
       try {
-        // 1. Запрашиваем ссылку на оплату у своего API
         const res = await fetch('/api/create-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            amount: amount, 
-            description: `Покупка ${stars} звёзд для ${recipient}` 
-          })
+          body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
         });
         const data = await res.json();
 
         if (data.success && data.confirmation_url) {
-          // 2. Открываем ссылку от ЮKassa в системном браузере
           openInSystemBrowser(data.confirmation_url);
-          // 3. Закрываем мини-апп (опционально)
           if (tg) tg.close();
         } else {
           alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
