@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Разрешаем запросы
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
 
@@ -7,23 +6,24 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { amount, description, order_id } = req.body;
+  const { amount, description } = req.body;
+
+  // Проверка суммы
+  let amountValue = parseFloat(amount);
+  if (isNaN(amountValue) || amountValue < 1) {
+    return res.status(400).json({ success: false, error: 'Invalid amount' });
+  }
+  const amountFormatted = amountValue.toFixed(2); // "8200.00"
 
   // Твои ключи
   const shopId = '1343358';
   const secretKey = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
-
   const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
 
-  // Сумма для ЮKassa: обязательно число и 2 знака после запятой
-  let amountValue = Number(amount);
-  if (isNaN(amountValue) || amountValue <= 0) amountValue = 100;
-  // Ограничиваем максимум 150 000 рублей (лимит СБП/карт)
-  if (amountValue > 150000) amountValue = 150000;
-  const amountFormatted = amountValue.toFixed(2); // 100.00
-
-  // Правильный ключ идемпотентности: только латиница, цифры, дефис, подчёркивание
-  const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).replace(/[^a-zA-Z0-9_-]/g, '')}`;
+  // Генерация безопасного Idempotence-Key
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 10).replace(/[^a-z0-9]/gi, '');
+  const idempotenceKey = `pay_${timestamp}_${random}`; // pay_1745765432_abc123xyz
 
   const paymentData = {
     amount: {
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       type: 'redirect',
       return_url: 'https://telegram-mini-app-ten-gamma.vercel.app/success.html'
     },
-    description: description?.slice(0, 120).replace(/[^\w\s.,!?@-]/g, '') || 'Покупка телеграм звёзд',
+    description: description ? description.slice(0, 120).replace(/[^a-zA-Zа-яА-Я0-9\s.,!?-]/g, '') : 'Покупка звёзд',
     capture: true
   };
 
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Basic ${auth}`,
+        'Authorization': `Basic ${auth}`,
         'Idempotence-Key': idempotenceKey
       },
       body: JSON.stringify(paymentData)
@@ -57,8 +57,7 @@ export default async function handler(req, res) {
     if (data.confirmation?.confirmation_url) {
       return res.status(200).json({
         success: true,
-        confirmation_url: data.confirmation.confirmation_url,
-        payment_id: data.id
+        confirmation_url: data.confirmation.confirmation_url
       });
     } else {
       return res.status(400).json({
@@ -70,7 +69,7 @@ export default async function handler(req, res) {
     console.error('YooKassa error:', error);
     return res.status(500).json({
       success: false,
-      error: 'Внутренняя ошибка сервера'
+      error: 'Внутренняя ошибка'
     });
   }
 }
