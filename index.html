@@ -42,21 +42,12 @@
     }
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
-    .link-btn {
-      display: inline-block;
-      background: #2C6EDB;
-      color: white;
-      text-decoration: none;
-      padding: 12px 20px;
-      border-radius: 60px;
-      margin-top: 16px;
-      font-weight: 600;
-    }
   </style>
 </head>
 <body>
 
 <div class="app">
+  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -68,12 +59,14 @@
     </div>
   </div>
 
+  <!-- HERO -->
   <div class="card hero">
     <div class="hero-img">
       <img src="img/звездаглав2.png" alt="Stars">
     </div>
   </div>
 
+  <!-- USER -->
   <div class="card">
     <div class="row">
       <input id="username" placeholder="@username">
@@ -82,6 +75,7 @@
     </div>
   </div>
 
+  <!-- STARS -->
   <div class="card">
     <div class="price-line">
       <input id="stars" type="number" placeholder="50" value="50">
@@ -99,6 +93,7 @@
     </div>
   </div>
 
+  <!-- PAYMENTS -->
   <div class="card">
     <div class="payment-grid">
       <div class="pay-card" data-method="sbp">
@@ -179,12 +174,19 @@
   updateTotal();
   setTarget('self');
 
-  // --- Функция показа плашки (упрощённая) ---
-  function showConfirmModal(onConfirm, loading = false) {
-    // Если есть старая плашка — удаляем
-    const old = document.querySelector('.modal-overlay');
-    if (old) old.remove();
+  // Функция открытия ссылки в системном браузере (обход WebView)
+  function openInSystemBrowser(url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 
+  // Плашка подтверждения
+  function showConfirmModal(onConfirm) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -205,7 +207,7 @@
     };
   }
 
-  // --- Основная логика покупки ---
+  // Основная логика
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -223,7 +225,6 @@
     localStorage.setItem('pendingOrder', JSON.stringify(order));
 
     showConfirmModal(async () => {
-      // 1. Запрашиваем ссылку на оплату у своего сервера
       const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
       try {
         const res = await fetch('/api/create-payment', {
@@ -234,20 +235,37 @@
         const data = await res.json();
 
         if (data.success && data.confirmation_url) {
-          // 2. Открываем ссылку
+          // Важная часть: открываем ссылку в СИСТЕМНОМ браузере
           if (tg && tg.openLink) {
-            // Telegram Mini App: открываем в браузере
+            // Telegram WebApp: пытаемся открыть "честно"
             tg.openLink(data.confirmation_url);
-            // Можно закрыть мини-апп или оставить как есть
+            // Но если это не сработает, дополнительно показываем кнопку
+            setTimeout(() => {
+              const manualModal = document.createElement('div');
+              manualModal.className = 'modal-overlay';
+              manualModal.innerHTML = `
+                <div class="modal-card">
+                  <h3>🌐 Перенаправление</h3>
+                  <p>Если оплата не открылась автоматически, нажмите кнопку:</p>
+                  <button id="manualOpenBtn" style="background:#2C6EDB; border:none; padding:12px; border-radius:60px; color:white; margin-top:16px;">Открыть страницу оплаты</button>
+                </div>
+              `;
+              document.body.appendChild(manualModal);
+              document.getElementById('manualOpenBtn').onclick = () => {
+                openInSystemBrowser(data.confirmation_url);
+                manualModal.remove();
+              };
+              setTimeout(() => manualModal.remove(), 10000);
+            }, 1000);
           } else {
-            // Обычный браузер: редирект
+            // Обычный браузер
             window.location.href = data.confirmation_url;
           }
         } else {
-          alert('Ошибка: ' + (data.error || 'Не удалось получить ссылку на оплату'));
+          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
         }
       } catch (err) {
-        alert('Ошибка соединения с сервером: ' + err.message);
+        alert('Ошибка: ' + err.message);
       }
     });
   };
