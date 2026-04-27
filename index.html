@@ -225,7 +225,7 @@
     showConfirmModal(async () => {
       const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
       try {
-const res = await fetch('https://telegram-mini-app-ten-gamma.vercel.app/api/create-payment', {
+const res = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
