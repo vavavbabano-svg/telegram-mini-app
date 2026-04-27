@@ -47,6 +47,7 @@
 <body>
 
 <div class="app">
+  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -115,7 +116,7 @@
 </div>
 
 <script>
-  // Telegram WebApp
+  // --- Telegram WebApp ---
   let tg = null;
   if (window.Telegram && window.Telegram.WebApp) {
     tg = window.Telegram.WebApp;
@@ -123,7 +124,7 @@
     tg.expand();
   }
 
-  // DOM элементы
+  // --- DOM элементы ---
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
@@ -169,9 +170,8 @@
   updateTotal();
   setTarget('self');
 
-  // Открытие ссылки в Safari (системный браузер)
-  function openInSafari(url) {
-    // Создаём временную ссылку и эмулируем клик
+  // Функция открытия ссылки в системном браузере (Safari/Chrome)
+  function openInSystemBrowser(url) {
     const a = document.createElement('a');
     a.href = url;
     a.target = '_blank';
@@ -206,10 +206,6 @@
     };
   }
 
-  // Ссылка на оплату (замени на свою)
-  // Можешь использовать динамическую ссылку от ЮKassa или статическую
-  const PAYMENT_URL = 'https://pay.lava.ru/invoice/1d746b0e-3096-4c9d-a0cd-37d3ba583768/sbp';
-
   // Основная логика
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
@@ -227,12 +223,32 @@
     const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
     localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-    showConfirmModal(() => {
-      // Работает везде — открывает ссылку в системном браузере (Safari/Chrome)
-      openInSafari(PAYMENT_URL);
-      
-      // Закрываем мини-апп (опционально)
-      if (tg) tg.close();
+    showConfirmModal(async () => {
+      // Получаем сумму в рублях
+      const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
+      try {
+        // 1. Запрашиваем ссылку на оплату у своего API
+        const res = await fetch('/api/create-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            amount: amount, 
+            description: `Покупка ${stars} звёзд для ${recipient}` 
+          })
+        });
+        const data = await res.json();
+
+        if (data.success && data.confirmation_url) {
+          // 2. Открываем ссылку от ЮKassa в системном браузере
+          openInSystemBrowser(data.confirmation_url);
+          // 3. Закрываем мини-апп (опционально)
+          if (tg) tg.close();
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+        }
+      } catch (err) {
+        alert('Ошибка соединения: ' + err.message);
+      }
     });
   };
 </script>
