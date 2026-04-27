@@ -24,49 +24,58 @@ const el = {
 tg.ready();
 tg.expand();
 
-function applyFixedTheme() {
-  const bg = "#16161a";
-  const card = "#1e1e24";
-  const text = "#E6E6E6";
-  const muted = "#A0A0A0";
-  const blue = "#2D6BFF";
+// --- СИНХРОНИЗАЦИЯ ТЕМЫ С TELEGRAM ---
+function syncTelegramTheme() {
+  if (!tg) return;
 
-  document.documentElement.style.setProperty("--bg", bg);
-  document.documentElement.style.setProperty("--card", card);
-  document.documentElement.style.setProperty("--text", text);
-  document.documentElement.style.setProperty("--muted", muted);
-  document.documentElement.style.setProperty("--blue", blue);
-  document.documentElement.style.setProperty("--input", card);
-  document.documentElement.style.setProperty("--btn", card);
+  const bgColor = tg.themeParams.bg_color || '#16161a';
+  const textColor = tg.themeParams.text_color || '#E6E6E6';
+  const buttonColor = tg.themeParams.button_color || '#2D6BFF';
+  const headerBg = tg.themeParams.header_bg_color || bgColor;
 
-  tg.setHeaderColor(bg);
-  tg.setBackgroundColor(bg);
+  document.documentElement.style.setProperty('--bg', bgColor);
+  document.documentElement.style.setProperty('--card', bgColor);
+  document.documentElement.style.setProperty('--text', textColor);
+  document.documentElement.style.setProperty('--muted', textColor + 'cc');
+  document.documentElement.style.setProperty('--blue', buttonColor);
+  document.documentElement.style.setProperty('--input', bgColor);
+  document.documentElement.style.setProperty('--btn', bgColor);
+
+  tg.setHeaderColor(headerBg);
+  tg.setBackgroundColor(bgColor);
 }
 
-applyFixedTheme();
+tg.onEvent('themeChanged', syncTelegramTheme);
+syncTelegramTheme();
 
+// --- КНОПКА НАЗАД ДЛЯ СТРАНИЦЫ ОПЛАТЫ ---
+function setupBackButton() {
+  if (!tg) return;
+  if (window.location.pathname.includes('payment.html')) {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => window.history.back());
+  } else {
+    tg.BackButton.hide();
+  }
+}
+setupBackButton();
+
+// --- ОСТАЛЬНАЯ ЛОГИКА (твоя, без изменений) ---
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
   if (!tgUser) return;
 
   const tgId = String(tgUser.id);
-
-  // Ищем пользователя в таблице users
   const { data: user, error } = await supabase
     .from("users")
     .select("*")
     .eq("tg_id", tgId)
     .maybeSingle();
 
-  if (error) {
-    console.error("Ошибка запроса user:", error);
-    return;
-  }
+  if (error) console.error("Ошибка user:", error);
 
-  if (el.userId && user && user.number) {
-    // Показываем номер пользователя
-    const numberStr = String(user.number).padStart(4, "0");
-    el.userId.textContent = "#" + numberStr;
+  if (el.userId && user?.number) {
+    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
     el.userId.style.display = "inline-block";
   } else if (el.userId) {
     el.userId.textContent = "#----";
@@ -94,9 +103,7 @@ document.querySelectorAll(".packs button").forEach(btn => {
     const val = btn.dataset.stars;
     el.stars.value = val;
     update(val);
-
-    document.querySelectorAll(".packs button")
-      .forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".packs button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
   });
 });
@@ -130,7 +137,6 @@ el.username.addEventListener("keydown", (e) => {
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
-
   const u = tg.initDataUnsafe?.user;
   el.username.value = u?.username ? "@" + u.username : "@" + u?.id;
 };
@@ -205,13 +211,7 @@ document.querySelectorAll(".pay-card").forEach(card => {
     document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
     card.classList.add("selected");
     selectedPayment = card.dataset.method;
-
-    if (selectedPayment === "ton") {
-      currentCurrency = "TON";
-    } else {
-      currentCurrency = "RUB";
-    }
-    
+    currentCurrency = selectedPayment === "ton" ? "TON" : "RUB";
     update(Number(el.stars.value));
   });
 });
@@ -254,7 +254,6 @@ el.buy.onclick = () => {
   window.location.href = 'payment.html';
 };
 
-// Админка – видна для всех
 function setupAdmin() {
   const btn = el.admin;
   if (!btn) return;
@@ -267,27 +266,12 @@ if (el.admin) {
     try {
       const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
       const stats = await response.json();
-      
-      const msg = 
-        `📊 СТАТИСТИКА\n\n` +
-        `Сегодня:\n` +
-        `⭐ Звёзд: ${stats.today.stars}\n` +
-        `💰 Сумма: ${stats.today.amount} ₽\n` +
-        `📦 Заказов: ${stats.today.count}\n\n` +
-        `Всего:\n` +
-        `⭐ Звёзд: ${stats.all.stars}\n` +
-        `💰 Сумма: ${stats.all.amount} ₽\n` +
-        `📦 Заказов: ${stats.all.count}\n\n` +
-        `🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n` +
-        `🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`;
-      
-      alert(msg);
+      alert(`📊 СТАТИСТИКА\n\nСегодня:\n⭐ Звёзд: ${stats.today.stars}\n💰 Сумма: ${stats.today.amount} ₽\n📦 Заказов: ${stats.today.count}\n\nВсего:\n⭐ Звёзд: ${stats.all.stars}\n💰 Сумма: ${stats.all.amount} ₽\n📦 Заказов: ${stats.all.count}\n\n🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`);
     } catch (e) {
       alert("Ошибка загрузки статистики");
     }
   });
 }
 
-// Запуск
 initUser();
 setupAdmin();
