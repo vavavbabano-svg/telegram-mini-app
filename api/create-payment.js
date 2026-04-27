@@ -1,14 +1,14 @@
 export default async function handler(req, res) {
-  // Разрешаем CORS
+  // Разрешаем CORS и ставим тип ответа
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
 
-  // Только POST
+  // Разрешаем только POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Получаем данные из запроса
+  // Получаем сумму и описание из запроса
   const { amount, description } = req.body;
 
   // Проверяем сумму
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   // Авторизация
   const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
 
-  // Уникальный ключ идемпотентности (строго латиница/цифры/дефис/подчёркивание)
+  // Уникальный ключ идемпотентности (без спецсимволов)
   const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 
   // Данные для ЮKassa
@@ -59,6 +59,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    console.log('YooKassa response:', data);
+
     // Если есть ссылка на оплату — возвращаем её
     if (data.confirmation && data.confirmation.confirmation_url) {
       return res.status(200).json({
@@ -66,7 +68,7 @@ export default async function handler(req, res) {
         confirmation_url: data.confirmation.confirmation_url
       });
     } else {
-      // Иначе — ошибка
+      // Иначе — возвращаем ошибку
       return res.status(400).json({
         success: false,
         error: data.description || 'Ошибка создания платежа'
