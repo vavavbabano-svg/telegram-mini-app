@@ -7,9 +7,9 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #040406;
+      background: #1E1E1E;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #FFFFFF;
+      color: #E6E6E6;
       padding: 20px 16px;
       display: flex;
       justify-content: center;
@@ -19,23 +19,13 @@
     .payment-card {
       max-width: 500px;
       width: 100%;
-      background: #0F0F14;
+      background: #242424;
       border-radius: 28px;
       padding: 24px 20px;
       text-align: center;
     }
-    .test-badge {
-      background: #FF8C42;
-      color: #0F0F14;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 40px;
-      display: inline-block;
-      margin-bottom: 16px;
-    }
     .order-info {
-      background: #0B0B10;
+      background: #2E2E2E;
       border-radius: 20px;
       padding: 16px;
       margin: 20px 0;
@@ -45,17 +35,17 @@
       display: flex;
       justify-content: space-between;
       padding: 8px 0;
-      border-bottom: 0.5px solid #2A2A35;
+      border-bottom: 0.5px solid #3A3A3A;
     }
     .total {
       font-size: 28px;
       font-weight: 700;
-      color: #FFB347;
+      color: #5ef57c;
       margin: 16px 0;
     }
     .pay-btn {
       width: 100%;
-      background: #2C6EDB;
+      background: #2D6BFF;
       border: none;
       padding: 16px;
       border-radius: 48px;
@@ -67,38 +57,50 @@
     .pay-btn:disabled {
       opacity: 0.6;
     }
-    .debug-info {
-      background: #1E1A2A;
-      border-radius: 16px;
+    .ton-wallet {
+      background: #2E2E2E;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .ton-address {
+      background: #1E1E1E;
       padding: 12px;
-      margin-top: 20px;
-      font-size: 10px;
-      color: #A0A0C0;
-      text-align: left;
-      word-break: break-all;
+      border-radius: 16px;
       font-family: monospace;
+      word-break: break-all;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .copy-btn {
+      background: #383838;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
     }
     .back-link {
       display: inline-block;
       margin-top: 20px;
-      color: #8E94B0;
+      color: #A0A0A0;
       font-size: 14px;
       text-decoration: none;
     }
-    .error-msg {
-      background: #5a1e2a;
+    .test-note {
+      background: #2E2E2E;
       border-radius: 16px;
       padding: 12px;
-      margin-top: 16px;
-      color: #ff9999;
+      margin-top: 20px;
       font-size: 12px;
+      color: #A0A0A0;
     }
   </style>
 </head>
 <body>
 
 <div class="payment-card">
-  <div class="test-badge">🧪 ТЕСТОВАЯ ОПЛАТА</div>
   <h2>💳 Оплата заказа</h2>
 
   <div class="order-info">
@@ -109,126 +111,105 @@
 
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <button class="pay-btn" id="payButton">💳 Оплатить картой (тест)</button>
-
-  <div id="errorBox" class="error-msg" style="display:none;"></div>
-  <div id="debugBox" class="debug-info">📡 Ожидание нажатия...</div>
+  <div id="paymentArea"></div>
 
   <a href="index.html" class="back-link">← Вернуться к выбору</a>
-
-  <div class="debug-info">
-    🔐 <strong>Тестовая карта:</strong> 5555 5555 5555 4477<br>
-    📍 URL прокси: /yookassa-proxy.php
-  </div>
 </div>
 
 <script>
-  // 1. Загрузка заказа
-  let order = { recipient: 'тестовый', stars: 100, total: '164 ₽' };
+  // Загрузка заказа
+  let order = { recipient: 'пользователь', stars: 100, total: '164 ₽', method: 'sbp' };
   try {
     const saved = localStorage.getItem('pendingOrder');
     if (saved) {
       order = JSON.parse(saved);
-      console.log('Заказ загружен:', order);
-    } else {
-      console.warn('Нет pendingOrder, использую значения по умолчанию');
     }
-  } catch(e) {
-    console.error('Ошибка парсинга заказа:', e);
-  }
+  } catch(e) {}
 
   document.getElementById('recipient').innerText = order.recipient || '—';
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // 2. Извлечение суммы (рубли)
-  let amountRub = NaN;
-  if (order.total && typeof order.total === 'string') {
-    const match = order.total.match(/(\d+(?:[.,]\d+)?)/);
-    if (match) {
-      amountRub = parseFloat(match[1].replace(',', '.'));
-    }
-  }
-  if (isNaN(amountRub) || amountRub <= 0) {
-    amountRub = 100;
-    console.warn('Не удалось определить сумму, использую 100 RUB');
-  }
+  const paymentArea = document.getElementById('paymentArea');
+  const method = order.method || 'sbp';
 
-  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`.substring(0, 120);
-  
-  // КЛЮЧИ
-  const SHOP_ID = '1343358';
-  const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
+  if (method === 'sbp') {
+    // ---------- ЮKassa (карта / СБП) ----------
+    paymentArea.innerHTML = `<button class="pay-btn" id="payButton">💳 Оплатить картой или СБП</button>`;
 
-  const debugBox = document.getElementById('debugBox');
-  const errorBox = document.getElementById('errorBox');
+    let amountRub = 100;
+    const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
+    if (match) amountRub = parseFloat(match[1].replace(',', '.'));
 
-  function logDebug(msg, isError = false) {
-    console.log(msg);
-    if (isError) {
-      errorBox.style.display = 'block';
-      errorBox.innerHTML = `❌ ${msg}`;
-    }
-    debugBox.innerHTML = `📡 ${new Date().toLocaleTimeString()}: ${msg}`;
-  }
+    const SHOP_ID = '1343358';  // тестовый, потом замени на 1341702
+    const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
+    const description = `Покупка ${order.stars} звёзд для ${order.recipient}`.substring(0, 120);
 
-  async function createPayment() {
-    const btn = document.getElementById('payButton');
-    btn.disabled = true;
-    btn.innerText = '⏳ Создание платежа...';
-    errorBox.style.display = 'none';
-    
-    const paymentData = {
-      amount: { 
-        value: amountRub.toFixed(2),
-        currency: 'RUB' 
-      },
-      capture: true,
-      confirmation: { 
-        type: 'redirect', 
-        return_url: 'https://fastmystars.ru/success.html' 
-      },
-      description: description,
-      metadata: { test: true, source: 'mystars' }
-    };
+    async function createPayment() {
+      const btn = document.getElementById('payButton');
+      btn.disabled = true;
+      btn.innerText = '⏳ Создание платежа...';
 
-    logDebug(`Отправка запроса: сумма ${paymentData.amount.value} RUB, описание: ${description}`);
+      const paymentData = {
+        amount: { value: amountRub.toFixed(2), currency: 'RUB' },
+        capture: true,
+        confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
+        description: description,
+        metadata: { method: 'sbp' }
+      };
 
-    try {
-      const response = await fetch('/yookassa-proxy.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData)
-      });
-
-      const status = response.status;
-      const text = await response.text();
-      logDebug(`Ответ сервера: статус ${status}`);
-      
-      let result;
       try {
-        result = JSON.parse(text);
-      } catch(e) {
-        logDebug(`Ошибка парсинга JSON: ${text.substring(0, 200)}`, true);
-        throw new Error('Прокси вернул невалидный JSON');
+        const response = await fetch('/yookassa-proxy.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(paymentData)
+        });
+        const result = await response.json();
+        if (result.confirmation && result.confirmation.confirmation_url) {
+          window.location.href = result.confirmation.confirmation_url;
+        } else {
+          throw new Error(result.description || 'Ошибка создания платежа');
+        }
+      } catch (err) {
+        alert('Ошибка: ' + err.message);
+        btn.disabled = false;
+        btn.innerText = '💳 Оплатить картой или СБП';
       }
-
-      if (status === 200 && result.confirmation && result.confirmation.confirmation_url) {
-        logDebug(`Успех! Редирект на: ${result.confirmation.confirmation_url}`);
-        window.location.href = result.confirmation.confirmation_url;
-      } else {
-        const errMsg = result.description || result.error || `HTTP ${status}`;
-        logDebug(`Ошибка от ЮKassa: ${errMsg}`, true);
-        throw new Error(errMsg);
-      }
-    } catch (err) {
-      logDebug(`Исключение: ${err.message}`, true);
-      btn.disabled = false;
-      btn.innerText = '💳 Оплатить картой (тест)';
     }
-  }
 
-  document.getElementById('payButton').addEventListener('click', createPayment);
+    document.getElementById('payButton').addEventListener('click', createPayment);
+
+  } else if (method === 'ton') {
+    // ---------- TON кошелёк (прямой перевод) ----------
+    const tonPrice = order.total || '0 TON';
+    const tonAmount = parseFloat(tonPrice.replace(' TON', '').trim());
+    const walletAddress = 'UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';  // замени на свой TON-кошелёк
+
+    paymentArea.innerHTML = `
+      <div class="ton-wallet">
+        <div style="margin-bottom: 12px;">⬇️ Оплатите точную сумму в TON</div>
+        <div class="ton-address">
+          📤 Адрес получателя:<br>
+          <strong style="font-size: 13px; word-break: break-all;">${walletAddress}</strong>
+        </div>
+        <div style="margin: 16px 0;">
+          <strong>Сумма к оплате: ${tonAmount.toFixed(4)} TON</strong>
+        </div>
+        <button class="copy-btn" id="copyTonAddress">📋 Копировать адрес</button>
+        <button class="pay-btn" id="tonPaidBtn" style="margin-top: 16px;">✅ Я оплатил(а)</button>
+      </div>
+    `;
+
+    document.getElementById('copyTonAddress').addEventListener('click', () => {
+      navigator.clipboard.writeText(walletAddress);
+      alert('Адрес кошелька скопирован');
+    });
+
+    document.getElementById('tonPaidBtn').addEventListener('click', () => {
+      alert('Демо-режим: ваша оплата будет проверена вручную. Ожидайте зачисление в течение часа.');
+      window.location.href = 'success.html';
+    });
+  }
 </script>
 </body>
 </html>
