@@ -1,64 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Политика</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #16161a;
-      color: #E6E6E6;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      background: #1e1e24;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .back-btn {
-      background: none;
-      border: none;
-      color: #2D6BFF;
-      font-size: 16px;
-      cursor: pointer;
-      padding: 4px 8px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .back-btn:hover { opacity: 0.8; }
-    .title {
-      flex: 1;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-      margin-right: 40px;
-    }
-    .content {
-      padding: 20px;
-      line-height: 1.6;
-    }
-    h1 { color: #5ef57c; font-size: 20px; margin-bottom: 12px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Политика конфиденциальности</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .content-page { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        h2 { color: #333; margin-top: 25px; }
+        p, li { line-height: 1.6; color: #555; }
+        ul { padding-left: 20px; }
+    </style>
 </head>
 <body>
-  <div class="header">
-    <button class="back-btn" onclick="history.back()">← Назад</button>
-    <div class="title">Политика</div>
-  </div>
-  <div class="content">
-    <h1>Политика обработки данных</h1>
-    <p>Мы собираем только Telegram ID и username для выполнения заказа. Данные не передаются третьим лицам и хранятся в зашифрованном виде.</p>
-  </div>
+    <div class="container">
+        <div class="content-page">
+            <h1>🔒 Политика конфиденциальности</h1>
+            <p><strong>Дата последнего обновления:</strong> 27 апреля 2026 г.</p>
+            
+            <h2>1. Какие данные мы собираем</h2>
+            <p>Для обработки заказа мы можем собирать:</p>
+            <ul>
+                <li>Ваше имя и username (из Telegram, если вы зашли через мини-приложение)</li>
+                <li>Адрес электронной почты (если вы его указали)</li>
+                <li>Номер телефона (для оплаты через СБП)</li>
+                <li>Данные о платеже (сумма, дата, статус)</li>
+            </ul>
+            
+            <h2>2. Как мы используем данные</h2>
+            <ul>
+                <li>Для обработки и доставки заказа</li>
+                <li>Для связи с вами по вопросам оплаты</li>
+                <li>Для предотвращения мошенничества</li>
+                <li>Для улучшения работы сервиса</li>
+            </ul>
+            
+            <h2>3. Передача данных третьим лицам</h2>
+            <p>Мы передаём данные только платёжным системам (Lava, Enot.io) для обработки платежей. Ваши данные не продаются и не передаются рекламным сетям.</p>
+            
+            <h2>4. Хранение данных</h2>
+            <p>Данные о заказах хранятся 12 месяцев. Вы можете запросить удаление ваших данных, написав на ksioneru@gmail.com.</p>
+            
+            <h2>5. Ваши права</h2>
+            <ul>
+                <li>Запросить копию ваших данных</li>
+                <li>Исправить неточные данные</li>
+                <li>Потребовать удаления данных</li>
+                <li>Отозвать согласие на обработку</li>
+            </ul>
+            
+            <h2>6. Контакты</h2>
+            <p>По всем вопросам: <strong>ksioneru@gmail.com</strong> или Telegram <strong>@ksioneru</strong></p>
+            
+            <button onclick="window.location.href='index.html'">◀️ На главную</button>
+        </div>
+    </div>
+    <script src="utils/tg.js"></script>
 </body>
 </html>

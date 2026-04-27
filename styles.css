@@ -434,6 +434,26 @@ button:active {
 .terms a:hover {
   color: #5ef57c;
 }
+/* Стили для страниц контента на ПК */
+@media (min-width: 768px) {
+    .content-page {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin: 20px auto;
+    }
+}
 
+button {
+    background: #2c2c2c;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
 
 
