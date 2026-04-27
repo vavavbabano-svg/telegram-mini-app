@@ -1,28 +1,12 @@
 <?php
-// Разрешаем любые методы (для обхода 405)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
-    exit;
-}
-
 header('Content-Type: application/json');
 
 $shopId = '1343358';
 $secretKey = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
 
-// Разрешаем только POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed. Use POST.']);
-    exit;
-}
-
 $input = file_get_contents('php://input');
-if (empty($input)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Empty request body']);
+if (!$input) {
+    echo json_encode(['error' => 'Empty request']);
     exit;
 }
 
@@ -35,9 +19,9 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
     'Authorization: Basic ' . $auth,
-    'Idempotence-Key: ' . uniqid('pay_', true)
+    'Idempotence-Key: ' . uniqid()
 ]);
-curl_setopt($ch, CURLOPT_SSL_VERIFYP EER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);

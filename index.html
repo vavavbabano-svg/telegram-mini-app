@@ -7,6 +7,64 @@
 
   <link rel="stylesheet" href="styles.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <style>
+    /* Стили для плашки подтверждения */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+    }
+    .modal-card {
+      background: #0F0F14;
+      border-radius: 32px;
+      padding: 24px 20px;
+      max-width: 320px;
+      width: 85%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #2A2A35;
+    }
+    .modal-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: white;
+    }
+    .modal-card p {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 60px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .modal-btn.confirm {
+      background: #2C6EDB;
+      color: white;
+    }
+    .modal-btn.cancel {
+      background: #2A2A35;
+      color: white;
+    }
+    .modal-btn:active { transform: scale(0.97); }
+  </style>
 </head>
 
 <body>
@@ -98,5 +156,90 @@
 <a href="payment.html" class="buy" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Купить звёзды</a>
 
 <script type="module" src="app.js"></script>
+
+<script>
+  // Скрипт плашки подтверждения
+  (function() {
+    // Находим ссылку "Купить звёзды"
+    const buyLink = document.querySelector('.buy');
+    if (!buyLink) return;
+    
+    // Получаем значения звёзд и суммы из DOM
+    function getCurrentStars() {
+      const starsInput = document.getElementById('stars');
+      return starsInput ? parseInt(starsInput.value) || 0 : 0;
+    }
+    
+    function getCurrentPrice() {
+      const rubOut = document.getElementById('rubOut');
+      return rubOut ? rubOut.innerText : '0 ₽';
+    }
+    
+    function getCurrentUsername() {
+      const usernameInput = document.getElementById('username');
+      return usernameInput ? usernameInput.value.trim() : '';
+    }
+    
+    function isSelfMode() {
+      const selfBtn = document.getElementById('selfBtn');
+      return selfBtn ? selfBtn.classList.contains('active') : true;
+    }
+    
+    // Функция показа плашки
+    function showConfirmModal(onConfirm) {
+      const stars = getCurrentStars();
+      const price = getCurrentPrice();
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-card">
+          <h3>🛒 Подтверждение заказа</h3>
+          <p>Вы действительно хотите купить <strong>${stars}</strong> звёзд за <strong>${price}</strong>?</p>
+          <div class="modal-buttons">
+            <button class="modal-btn cancel" id="modalCancel">Отмена</button>
+            <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      
+      document.getElementById('modalCancel').onclick = () => modal.remove();
+      document.getElementById('modalConfirm').onclick = () => {
+        modal.remove();
+        onConfirm();
+      };
+    }
+    
+    // Перехватываем клик по ссылке
+    buyLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const username = getCurrentUsername();
+      const isSelf = isSelfMode();
+      
+      // Проверка: если режим "Другому" и поле пустое
+      if (!isSelf && !username) {
+        alert('Укажите @username получателя');
+        return;
+      }
+      
+      // Сохраняем заказ в localStorage
+      const order = {
+        recipient: username || (isSelf ? 'свой аккаунт' : ''),
+        stars: getCurrentStars(),
+        total: getCurrentPrice(),
+        target: isSelf ? 'self' : 'other',
+        timestamp: Date.now()
+      };
+      localStorage.setItem('pendingOrder', JSON.stringify(order));
+      
+      // Показываем плашку
+      showConfirmModal(() => {
+        window.location.href = buyLink.getAttribute('href');
+      });
+    });
+  })();
+</script>
 </body>
 </html>
