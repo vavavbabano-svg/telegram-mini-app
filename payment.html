@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Перенаправление на оплату</title>
+  <title>Оплата — MyStars</title>
   <style>
     body {
       background: #040406;
@@ -26,45 +26,72 @@
       margin: 20px auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      background: #5a1e2a;
+      padding: 16px;
+      border-radius: 16px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 <div>
   <div class="loader"></div>
   <p>⏳ Перенаправление на страницу оплаты...</p>
-  <p style="font-size: 12px; color: #888;">Не закрывайте страницу</p>
+  <div id="errorBox" style="display:none;" class="error-box"></div>
 </div>
 
 <script>
   const order = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
-  const amount = parseFloat((order.total || '0').replace(/[^0-9.,]/g, '').replace(',', '.'));
-  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
+  let amount = 100;
+  const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
+  if (match) amount = parseFloat(match[1].replace(',', '.'));
+  if (isNaN(amount) || amount <= 0) amount = 100;
+  
+  const description = `Покупка ${order.stars || 0} звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
 
-  (async () => {
+  async function createPayment() {
     try {
-      const res = await fetch('/yookassa-proxy.php', {
+      const response = await fetch('/yookassa-proxy.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: { value: amount.toFixed(2), currency: 'RUB' },
           capture: true,
           confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
-          description: description.slice(0, 120),
+          description: description,
           metadata: { test: true }
         })
       });
-      const data = await res.json();
+
+      const text = await response.text();
+      console.log('Raw response:', text);
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch(e) {
+        document.querySelector('.loader').style.display = 'none';
+        const errorBox = document.getElementById('errorBox');
+        errorBox.style.display = 'block';
+        errorBox.innerHTML = `❌ Ошибка: сервер вернул не JSON.<br><small>${text.substring(0, 200)}</small><br><br><button onclick="window.location.href='index.html'">← Вернуться</button>`;
+        return;
+      }
+
       if (data.confirmation?.confirmation_url) {
         window.location.href = data.confirmation.confirmation_url;
       } else {
-        alert('Ошибка: ' + (data.description || 'Неизвестная ошибка'));
-        window.location.href = 'index.html';
+        throw new Error(data.description || 'Неизвестная ошибка');
       }
     } catch (err) {
-      alert('Ошибка соединения: ' + err.message);
-      window.location.href = 'index.html';
+      document.querySelector('.loader').style.display = 'none';
+      const errorBox = document.getElementById('errorBox');
+      errorBox.style.display = 'block';
+      errorBox.innerHTML = `❌ Ошибка: ${err.message}<br><br><button onclick="window.location.href='index.html'">← Вернуться</button>`;
     }
-  })();
+  }
+
+  createPayment();
 </script>
 </body>
 </html>
