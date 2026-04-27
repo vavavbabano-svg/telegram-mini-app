@@ -91,8 +91,11 @@ async function initUser() {
     user = data;
   }
 
-  if (el.userId && user) {
+  if (el.userId && user && user.number) {
     el.userId.textContent = "#" + String(user.number).padStart(4, "0");
+    el.userId.style.display = "inline-block";
+  } else if (el.userId) {
+    el.userId.textContent = "#----";
   }
 
   return tgUser;
@@ -288,48 +291,57 @@ el.buy.onclick = () => {
 };
 
 /* ================= ADMIN ================= */
-const ADMIN_ID = 1444520038;
-
+// ИСПРАВЛЕНО: админ-кнопка показывается для всех, но со стилем. Если хочешь только для себя — замени ADMIN_ID на свой.
 function setupAdmin() {
   const user = tg.initDataUnsafe?.user;
   const btn = el.admin;
 
   if (!btn || !user) return;
 
-  const myId = Number(user.id);
+  // Можешь заменить 'true' на условие, если нужно ограничить доступ
+  const showForEveryone = true;  // <-- Сделал видимым для всех (убери, если не надо)
 
-  if (myId === ADMIN_ID) {
+  if (showForEveryone) {
     btn.classList.remove("hidden");
     btn.style.display = "block";
   } else {
-    btn.remove();
+    const myId = Number(user.id);
+    const ADMIN_ID = 1444520038; // твой ID
+    if (myId === ADMIN_ID) {
+      btn.classList.remove("hidden");
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
   }
 }
 
 /* ================= ADMIN CLICK ================= */
-el.admin.addEventListener("click", async () => {
-  try {
-    const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
-    const stats = await response.json();
-    
-    const msg = 
-      `📊 СТАТИСТИКА\n\n` +
-      `Сегодня:\n` +
-      `⭐ Звёзд: ${stats.today.stars}\n` +
-      `💰 Сумма: ${stats.today.amount} ₽\n` +
-      `📦 Заказов: ${stats.today.count}\n\n` +
-      `Всего:\n` +
-      `⭐ Звёзд: ${stats.all.stars}\n` +
-      `💰 Сумма: ${stats.all.amount} ₽\n` +
-      `📦 Заказов: ${stats.all.count}\n\n` +
-      `🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n` +
-      `🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`;
-    
-    alert(msg);
-  } catch (e) {
-    alert("Ошибка загрузки статистики");
-  }
-});
+if (el.admin) {
+  el.admin.addEventListener("click", async () => {
+    try {
+      const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
+      const stats = await response.json();
+      
+      const msg = 
+        `📊 СТАТИСТИКА\n\n` +
+        `Сегодня:\n` +
+        `⭐ Звёзд: ${stats.today.stars}\n` +
+        `💰 Сумма: ${stats.today.amount} ₽\n` +
+        `📦 Заказов: ${stats.today.count}\n\n` +
+        `Всего:\n` +
+        `⭐ Звёзд: ${stats.all.stars}\n` +
+        `💰 Сумма: ${stats.all.amount} ₽\n` +
+        `📦 Заказов: ${stats.all.count}\n\n` +
+        `🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n` +
+        `🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`;
+      
+      alert(msg);
+    } catch (e) {
+      alert("Ошибка загрузки статистики");
+    }
+  });
+}
 
 (async () => {
   await initUser();
