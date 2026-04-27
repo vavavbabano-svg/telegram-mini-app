@@ -1,32 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Тест прокси</title>
+  <title>Test YooKassa</title>
 </head>
 <body>
-<pre id="result">Загрузка...</pre>
+<button id="pay">Оплатить</button>
 <script>
-    (async () => {
-        const testData = {
-            amount: { value: "1.00", currency: "RUB" },
-            capture: true,
-            confirmation: { type: "redirect", return_url: "https://fastmystars.ru/success.html" },
-            description: "Тест 1 рубль"
-        };
-
-        try {
-            const response = await fetch('/yookassa-proxy.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(testData)
-            });
-            const text = await response.text();
-            document.getElementById('result').innerText = text;
-        } catch (err) {
-            document.getElementById('result').innerText = 'Ошибка: ' + err.message;
-        }
-    })();
+  document.getElementById('pay').onclick = async () => {
+    const res = await fetch('/api/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: 100, description: 'Test' })
+    });
+    const data = await res.json();
+    console.log(data);
+    alert(JSON.stringify(data));
+  };
 </script>
 </body>
 </html>
