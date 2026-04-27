@@ -19,9 +19,6 @@ if (!$paymentData) {
     exit;
 }
 
-// Генерируем уникальный ключ идемпотентности
-$idempotenceKey = uniqid('payment_', true);
-
 $auth = base64_encode($shopId . ':' . $secretKey);
 
 $ch = curl_init('https://api.yookassa.ru/v3/payments');
@@ -30,8 +27,7 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'Authorization: Basic ' . $auth,
-    'Idempotence-Key: ' . $idempotenceKey
+    'Authorization: Basic ' . $auth
 ]);
 
 $response = curl_exec($ch);
