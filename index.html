@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Плашка подтверждения */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -44,13 +43,23 @@
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
     .modal-btn:active { transform: scale(0.97); }
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
 <div class="app">
 
-  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -62,14 +71,12 @@
     </div>
   </div>
 
-  <!-- HERO -->
   <div class="card hero">
     <div class="hero-img">
       <img src="img/звездаглав2.png" alt="Stars">
     </div>
   </div>
 
-  <!-- USER -->
   <div class="card">
     <div class="row">
       <input id="username" placeholder="@username">
@@ -78,7 +85,6 @@
     </div>
   </div>
 
-  <!-- STARS -->
   <div class="card">
     <div class="price-line">
       <input id="stars" type="number" placeholder="50" value="50">
@@ -96,7 +102,6 @@
     </div>
   </div>
 
-  <!-- PAYMENTS -->
   <div class="card">
     <div class="payment-grid">
       <div class="pay-card" data-method="sbp">
@@ -119,23 +124,19 @@
     <a href="requirements.html">О магазине</a>
   </div>
 
-  <!-- КНОПКА КУПИТЬ -->
   <button id="buyButton" class="buy" style="display:flex;align-items:center;justify-content:center;width:100%; border:none;">Купить звёзды</button>
 </div>
 
 <script>
-  // ========== Telegram WebApp ==========
-  let tgUser = null;
+  // Telegram WebApp
+  let tg = null;
   if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
+    tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      tgUser = tg.initDataUnsafe.user;
-    }
   }
 
-  // ========== DOM элементы ==========
+  // DOM элементы
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
@@ -156,16 +157,13 @@
   function setTarget(target) {
     if (target === 'self') {
       usernameField.disabled = true;
-      if (tgUser && tgUser.username) usernameField.value = `@${tgUser.username}`;
-      else if (tgUser && tgUser.first_name) usernameField.value = tgUser.first_name;
-      else usernameField.value = '';
+      if (tg && tg.initDataUnsafe?.user?.username) {
+        usernameField.value = `@${tg.initDataUnsafe.user.username}`;
+      }
       selfBtn.classList.add('active');
       otherBtn.classList.remove('active');
     } else {
       usernameField.disabled = false;
-      if (!usernameField.value && tgUser && tgUser.username) {
-        usernameField.value = `@${tgUser.username}`;
-      }
       selfBtn.classList.remove('active');
       otherBtn.classList.add('active');
     }
@@ -184,7 +182,7 @@
   updateTotal();
   setTarget('self');
 
-  // ========== ПЛАШКА С РЕДИРЕКТОМ НА ЮKASSA ==========
+  // Плашка подтверждения
   function showConfirmModal(onConfirm) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -206,7 +204,7 @@
     };
   }
 
-  // ========== КНОПКА КУПИТЬ ==========
+  // Кнопка "Купить"
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -221,7 +219,6 @@
     const stars = parseInt(starsInput.value);
     const totalText = rubOutDiv.innerText;
 
-    // Сохраняем заказ
     const order = {
       recipient: recipient,
       stars: stars,
@@ -231,14 +228,15 @@
     };
     localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-    // Показываем плашку → после подтверждения запрос к API ЮKassa → редирект
     showConfirmModal(async () => {
-      // Сумма в рублях
-      let amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
-      if (isNaN(amount)) amount = 100;
-      
-      // Запрос к твоему API на Vercel (создание платежа в ЮKassa)
+      // Показываем загрузку в кнопке (необязательно)
+      const originalText = buyButton.innerText;
+      buyButton.innerText = '⏳ Создание платежа...';
+      buyButton.disabled = true;
+
       try {
+        // 1. Запрашиваем у своего API ссылку на оплату
+        const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
         const response = await fetch('/api/create-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -247,17 +245,26 @@
             description: `Покупка ${stars} звёзд для ${recipient}`
           })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.confirmation_url) {
-          // Редирект на платёжную страницу ЮKassa
-          window.location.href = data.confirmation_url;
+          // 2. Открываем ссылку в системном браузере (обход ограничений Telegram)
+          if (tg && tg.openLink) {
+            // Telegram Mini App — открываем в браузере
+            tg.openLink(data.confirmation_url);
+          } else {
+            // Обычный браузер — редирект
+            window.location.href = data.confirmation_url;
+          }
         } else {
           alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
         }
       } catch (err) {
         alert('Ошибка соединения: ' + err.message);
+      } finally {
+        buyButton.innerText = originalText;
+        buyButton.disabled = false;
       }
     });
   };
