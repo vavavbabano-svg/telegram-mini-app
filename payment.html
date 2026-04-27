@@ -88,14 +88,6 @@
       font-size: 14px;
       text-decoration: none;
     }
-    .test-note {
-      background: #2E2E2E;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 12px;
-      color: #A0A0A0;
-    }
   </style>
 </head>
 <body>
@@ -141,7 +133,7 @@
     const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
     if (match) amountRub = parseFloat(match[1].replace(',', '.'));
 
-    const SHOP_ID = '1343358';  // тестовый, потом замени на 1341702
+    const SHOP_ID = '1343358';
     const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
     const description = `Покупка ${order.stars} звёзд для ${order.recipient}`.substring(0, 120);
 
@@ -164,7 +156,18 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(paymentData)
         });
-        const result = await response.json();
+
+        const text = await response.text();
+        console.log('Сырой ответ прокси:', text);
+
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch(e) {
+          alert('Ошибка: прокси вернул не JSON. Ответ: ' + text.substring(0, 200));
+          throw new Error('Invalid JSON');
+        }
+
         if (result.confirmation && result.confirmation.confirmation_url) {
           window.location.href = result.confirmation.confirmation_url;
         } else {
@@ -183,7 +186,7 @@
     // ---------- TON кошелёк (прямой перевод) ----------
     const tonPrice = order.total || '0 TON';
     const tonAmount = parseFloat(tonPrice.replace(' TON', '').trim());
-    const walletAddress = 'UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';  // замени на свой TON-кошелёк
+    const walletAddress = 'UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
     paymentArea.innerHTML = `
       <div class="ton-wallet">
