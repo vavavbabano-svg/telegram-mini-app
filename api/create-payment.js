@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 
   const paymentData = {
-    amount: { value: amountFormatted, currency: 'RUB' },
+    amunt: { value: amountFormatted, currency: 'RUB' },
     payment_method_data: { type: 'sbp' },   // СБП
     confirmation: { type: 'redirect', return_url: 'https://telegram-mini-app-ten-gamma.vercel.app/success.html' },
     capture: true,
