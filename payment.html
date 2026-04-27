@@ -67,12 +67,16 @@
     .pay-btn:disabled {
       opacity: 0.6;
     }
-    .back-link {
-      display: inline-block;
+    .debug-box {
+      background: #1A1A2A;
+      border-radius: 16px;
+      padding: 12px;
       margin-top: 20px;
-      color: #8E94B0;
-      font-size: 14px;
-      text-decoration: none;
+      font-size: 11px;
+      color: #88AACC;
+      text-align: left;
+      font-family: monospace;
+      word-break: break-all;
     }
     .error-box {
       background: #5a1e2a;
@@ -81,6 +85,13 @@
       margin-top: 16px;
       color: #ff9999;
       font-size: 12px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #8E94B0;
+      font-size: 14px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -99,6 +110,7 @@
 
   <button class="pay-btn" id="payBtn">Оплатить</button>
   <div id="errorBox" class="error-box" style="display:none;"></div>
+  <div id="debugBox" class="debug-box">⚡ Нажмите кнопку оплаты</div>
 
   <a href="index.html" class="back-link">← Вернуться</a>
 </div>
@@ -125,16 +137,24 @@
 
   const payBtn = document.getElementById('payBtn');
   const errorBox = document.getElementById('errorBox');
+  const debugBox = document.getElementById('debugBox');
+
+  function showDebug(msg) {
+    console.log(msg);
+    debugBox.innerHTML += `\n📡 ${new Date().toLocaleTimeString()}: ${msg}`;
+  }
 
   function showError(msg) {
     errorBox.style.display = 'block';
     errorBox.innerText = '❌ ' + msg;
+    showDebug('ОШИБКА: ' + msg);
   }
 
   payBtn.onclick = async () => {
     payBtn.disabled = true;
-    payBtn.innerText = '⏳ Перенаправление...';
+    payBtn.innerText = '⏳ Создание...';
     errorBox.style.display = 'none';
+    debugBox.innerHTML = '📡 Запуск...';
 
     const paymentData = {
       amount: { value: amountRub.toFixed(2), currency: 'RUB' },
@@ -144,37 +164,45 @@
       metadata: { test: true }
     };
 
+    showDebug(`Сумма: ${amountRub}₽, описание: ${description}`);
+
     try {
+      showDebug('Отправка запроса к /yookassa-proxy.php');
       const response = await fetch('/yookassa-proxy.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData)
       });
 
+      showDebug(`Статус ответа: ${response.status}`);
+
       const text = await response.text();
-      console.log('Ответ сервера:', text);
+      showDebug(`Ответ сервера (первые 200 символов): ${text.substring(0, 200)}`);
 
       let result;
       try {
         result = JSON.parse(text);
+        showDebug('JSON успешно распарсен');
       } catch(e) {
-        console.error('JSON ошибка:', e);
-        showError('Сервер вернул ошибку: ' + text.substring(0, 150));
+        showDebug(`Ошибка парсинга JSON: ${e.message}`);
+        showError('Сервер вернул не JSON: ' + text.substring(0, 150));
         payBtn.disabled = false;
         payBtn.innerText = 'Оплатить';
         return;
       }
 
       if (result.confirmation && result.confirmation.confirmation_url) {
-        // Редирект на платёжную страницу
+        showDebug(`Редирект на: ${result.confirmation.confirmation_url}`);
         window.location.href = result.confirmation.confirmation_url;
       } else {
-        showError(result.description || 'Не удалось создать платёж');
+        const errMsg = result.description || 'Неизвестная ошибка';
+        showDebug(`Ошибка от ЮKassa: ${errMsg}`);
+        showError(errMsg);
         payBtn.disabled = false;
         payBtn.innerText = 'Оплатить';
       }
     } catch (err) {
-      console.error('Fetch ошибка:', err);
+      showDebug(`Fetch ошибка: ${err.message}`);
       showError('Ошибка соединения: ' + err.message);
       payBtn.disabled = false;
       payBtn.innerText = 'Оплатить';
