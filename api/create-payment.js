@@ -14,14 +14,16 @@ export default async function handler(req, res) {
   }
   const amountFormatted = amountValue.toFixed(2);
 
-  const shopId = '1343358';
-  const secretKey = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
+  // БОЕВЫЕ КЛЮЧИ
+  const shopId = '1341702';
+  const secretKey = 'live_a1aXLXBEnRsw8iD1c0migf6Lp5w0sX7VakxMDZgwVbE';   // ЗАМЕНИ НА РЕАЛЬНЫЙ
+
   const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
   const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 
   const paymentData = {
     amount: { value: amountFormatted, currency: 'RUB' },
-    payment_method_data: { type: 'sbp' },
+    payment_method_data: { type: 'sbp' },   // СБП
     confirmation: { type: 'redirect', return_url: 'https://telegram-mini-app-ten-gamma.vercel.app/success.html' },
     capture: true,
     description: description?.slice(0, 120) || 'Покупка звёзд'
