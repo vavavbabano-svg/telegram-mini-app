@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест прокси</title>
+</head>
+<body>
+<pre id="result">Загрузка...</pre>
+<script>
+    (async () => {
+        const testData = {
+            amount: { value: "1.00", currency: "RUB" },
+            capture: true,
+            confirmation: { type: "redirect", return_url: "https://fastmystars.ru/success.html" },
+            description: "Тест 1 рубль"
+        };
+
+        try {
+            const response = await fetch('/yookassa-proxy.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(testData)
+            });
+            const text = await response.text();
+            document.getElementById('result').innerText = text;
+        } catch (err) {
+            document.getElementById('result').innerText = 'Ошибка: ' + err.message;
+        }
+    })();
+</script>
+</body>
+</html>
