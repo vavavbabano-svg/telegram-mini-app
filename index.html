@@ -42,24 +42,21 @@
     }
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
-    .modal-btn:active { transform: scale(0.97); }
-    .loader {
+    .link-btn {
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 8px;
+      background: #2C6EDB;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 60px;
+      margin-top: 16px;
+      font-weight: 600;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
 <div class="app">
-
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -128,7 +125,7 @@
 </div>
 
 <script>
-  // Telegram WebApp
+  // --- Telegram WebApp ---
   let tg = null;
   if (window.Telegram && window.Telegram.WebApp) {
     tg = window.Telegram.WebApp;
@@ -136,7 +133,7 @@
     tg.expand();
   }
 
-  // DOM элементы
+  // --- DOM элементы ---
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
@@ -182,8 +179,12 @@
   updateTotal();
   setTarget('self');
 
-  // Плашка подтверждения
-  function showConfirmModal(onConfirm) {
+  // --- Функция показа плашки (упрощённая) ---
+  function showConfirmModal(onConfirm, loading = false) {
+    // Если есть старая плашка — удаляем
+    const old = document.querySelector('.modal-overlay');
+    if (old) old.remove();
+
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -204,7 +205,7 @@
     };
   }
 
-  // Кнопка "Купить"
+  // --- Основная логика покупки ---
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -218,53 +219,35 @@
 
     const stars = parseInt(starsInput.value);
     const totalText = rubOutDiv.innerText;
-
-    const order = {
-      recipient: recipient,
-      stars: stars,
-      total: totalText,
-      target: selfBtn.classList.contains('active') ? 'self' : 'other',
-      timestamp: Date.now()
-    };
+    const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
     localStorage.setItem('pendingOrder', JSON.stringify(order));
 
     showConfirmModal(async () => {
-      // Показываем загрузку в кнопке (необязательно)
-      const originalText = buyButton.innerText;
-      buyButton.innerText = '⏳ Создание платежа...';
-      buyButton.disabled = true;
-
+      // 1. Запрашиваем ссылку на оплату у своего сервера
+      const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
       try {
-        // 1. Запрашиваем у своего API ссылку на оплату
-        const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
-        const response = await fetch('/api/create-payment', {
+        const res = await fetch('/api/create-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: amount,
-            description: `Покупка ${stars} звёзд для ${recipient}`
-          })
+          body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
         });
-
-        const data = await response.json();
+        const data = await res.json();
 
         if (data.success && data.confirmation_url) {
-          // 2. Открываем ссылку в системном браузере (обход ограничений Telegram)
+          // 2. Открываем ссылку
           if (tg && tg.openLink) {
-            // Telegram Mini App — открываем в браузере
+            // Telegram Mini App: открываем в браузере
             tg.openLink(data.confirmation_url);
+            // Можно закрыть мини-апп или оставить как есть
           } else {
-            // Обычный браузер — редирект
+            // Обычный браузер: редирект
             window.location.href = data.confirmation_url;
           }
         } else {
-          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+          alert('Ошибка: ' + (data.error || 'Не удалось получить ссылку на оплату'));
         }
       } catch (err) {
-        alert('Ошибка соединения: ' + err.message);
-      } finally {
-        buyButton.innerText = originalText;
-        buyButton.disabled = false;
+        alert('Ошибка соединения с сервером: ' + err.message);
       }
     });
   };
