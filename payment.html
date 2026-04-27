@@ -115,8 +115,6 @@
       if (saved) {
         order = JSON.parse(saved);
         console.log('Заказ загружен:', order);
-      } else {
-        console.warn('Нет заказа, использую значения по умолчанию');
       }
     } catch(e) {
       console.error('Ошибка загрузки заказа', e);
@@ -134,10 +132,9 @@
     }
     if (isNaN(amountRub) || amountRub <= 0) {
       amountRub = 100;
-      console.warn('Сумма не распознана, использую 100 RUB');
     }
 
-    const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
+    const description = `Покупка звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
 
     // ---------------------- КЛЮЧИ ----------------------
     const SHOP_ID = '1343358';
@@ -154,11 +151,7 @@
     function setDebug(msg, isError = false) {
       console.log(msg);
       debugBox.innerHTML = `📡 ${new Date().toLocaleTimeString()}: ${msg}`;
-      if (isError) {
-        debugBox.style.background = '#3a1a2a';
-      } else {
-        debugBox.style.background = '#1A1A2A';
-      }
+      debugBox.style.background = isError ? '#3a1a2a' : '#1A1A2A';
     }
 
     // ---------------------- ОТПРАВКА ПЛАТЕЖА ----------------------
@@ -177,7 +170,6 @@
       };
 
       try {
-        // Используем ПОЛНЫЙ URL, чтобы избежать проблем с WebView
         const proxyUrl = 'https://fastmystars.ru/yookassa-proxy.php';
         setDebug(`→ ${proxyUrl}`);
 
@@ -189,17 +181,14 @@
 
         setDebug(`HTTP статус: ${response.status}`);
 
-        // ⚡ КЛЮЧЕВОЙ МОМЕНТ: читаем ответ ОДИН РАЗ как текст
-        const responseText = await response.text();
-        setDebug(`Получен ответ (первые 100 символов): ${responseText.substring(0, 100)}`);
-
-        // Пытаемся распарсить JSON
+        // ⚡ ЕДИНСТВЕННОЕ ЧТЕНИЕ ОТВЕТА — ОДИН РАЗ КАК JSON
         let result;
         try {
-          result = JSON.parse(responseText);
-        } catch (parseError) {
-          setDebug(`❌ Ответ не JSON: ${responseText.substring(0, 150)}`, true);
-          throw new Error('Прокси вернул не JSON');
+          result = await response.json();
+        } catch (jsonError) {
+          // Если JSON не парсится — ошибка на стороне прокси
+          setDebug(`❌ Прокси вернул не JSON (код ${response.status})`, true);
+          throw new Error('Ошибка на сервере, прокси не отвечает JSON');
         }
 
         if (result.confirmation && result.confirmation.confirmation_url) {
@@ -207,7 +196,7 @@
           window.location.href = result.confirmation.confirmation_url;
         } else {
           const errMsg = result.description || result.error || 'Неизвестная ошибка';
-          setDebug(`❌ Ошибка от ЮKassa: ${errMsg}`, true);
+          setDebug(`❌ ЮKassa: ${errMsg}`, true);
           throw new Error(errMsg);
         }
       } catch (err) {
