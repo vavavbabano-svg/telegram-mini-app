@@ -1,5 +1,4 @@
 <?php
-// yookassa-proxy.php
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -37,3 +36,4 @@ curl_close($ch);
 
 http_response_code($httpCode);
 echo $response;
+?>
