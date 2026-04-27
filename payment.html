@@ -160,12 +160,20 @@
         const text = await response.text();
         console.log('Сырой ответ прокси:', text);
 
+        // Показываем ответ на странице для отладки
+        const debugDiv = document.createElement('div');
+        debugDiv.style.cssText = 'background:#2E2E2E; padding:10px; margin-top:20px; border-radius:12px; font-size:11px; text-align:left; word-break:break-all;';
+        debugDiv.innerHTML = `<strong>Ответ прокси:</strong><br>${text.substring(0, 500)}`;
+        paymentArea.appendChild(debugDiv);
+
         let result;
         try {
           result = JSON.parse(text);
         } catch(e) {
           alert('Ошибка: прокси вернул не JSON. Ответ: ' + text.substring(0, 200));
-          throw new Error('Invalid JSON');
+          btn.disabled = false;
+          btn.innerText = '💳 Оплатить картой или СБП';
+          return;
         }
 
         if (result.confirmation && result.confirmation.confirmation_url) {
