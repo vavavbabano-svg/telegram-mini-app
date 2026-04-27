@@ -83,6 +83,7 @@
       color: #88AACC;
       text-align: left;
       font-family: monospace;
+      word-break: break-all;
     }
   </style>
 </head>
@@ -106,7 +107,7 @@
 </div>
 
 <script>
-  // --- Загрузка заказа ---
+  // --- 1. ЗАГРУЗКА ЗАКАЗА ---
   let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
   try {
     const saved = localStorage.getItem('pendingOrder');
@@ -117,28 +118,37 @@
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // --- Извлечение суммы ---
+  // --- 2. РАСЧЁТ СУММЫ ---
   let amountRub = 100;
   const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
   if (match) amountRub = parseFloat(match[1].replace(',', '.'));
   if (isNaN(amountRub) || amountRub <= 0) amountRub = 100;
 
-  const description = `Покупка ${order.stars} звёзд для ${order.recipient || order.target || 'аккаунта'}`.slice(0, 120);
+  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
   const SHOP_ID = '1343358';
   const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
 
+  // --- 3. ИНИЦИАЛИЗАЦИЯ TELEGRAM (если внутри мини-аппа) ---
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+      console.log('✅ Telegram WebApp готов');
+    }
+  });
+
   const debugBox = document.getElementById('debugBox');
-  
   function debug(msg) {
     console.log(msg);
     debugBox.innerHTML = `📡 ${new Date().toLocaleTimeString()}: ${msg}`;
   }
 
+  // --- 4. ОТПРАВКА ЗАПРОСА В ЮKASSA ---
   async function createPayment() {
     const btn = document.getElementById('payButton');
     btn.disabled = true;
     btn.innerText = '⏳ Создание...';
-    debug('Отправка запроса...');
+    debug('Отправка запроса в прокси...');
 
     const paymentData = {
       amount: { value: amountRub.toFixed(2), currency: 'RUB' },
@@ -148,8 +158,6 @@
       metadata: { test: true }
     };
 
-    debug(`💰 Сумма: ${amountRub} RUB`);
-
     try {
       const response = await fetch('/yookassa-proxy.php', {
         method: 'POST',
@@ -157,26 +165,29 @@
         body: JSON.stringify(paymentData)
       });
 
-      debug(`Статус ответа: ${response.status}`);
-      
+      debug(`HTTP статус: ${response.status}`);
+
+      // ⚠️ ВАЖНО: читаем ответ ТОЛЬКО ОДИН РАЗ как JSON
       let result;
       try {
         result = await response.json();
-      } catch(e) {
-        const text = await response.text();
-        debug(`Ошибка: ответ не JSON. Код ${response.status}`, true);
-        debug(`Текст: ${text.substring(0, 200)}`);
-        throw new Error('Прокси вернул не JSON');
+      } catch (jsonError) {
+        // Если не JSON — читаем как текст для отладки
+        const textResponse = await response.text();
+        debug(`❌ Ошибка: ответ не JSON. Текст: ${textResponse.substring(0, 200)}`);
+        throw new Error('Сервер вернул не JSON');
       }
 
       if (result.confirmation && result.confirmation.confirmation_url) {
         debug(`✅ Редирект на оплату...`);
         window.location.href = result.confirmation.confirmation_url;
       } else {
-        throw new Error(result.description || 'Неизвестная ошибка');
+        const errMsg = result.description || result.error || 'Неизвестная ошибка';
+        debug(`❌ Ошибка от ЮKassa: ${errMsg}`);
+        throw new Error(errMsg);
       }
     } catch (err) {
-      debug(`❌ Ошибка: ${err.message}`, true);
+      debug(`❌ ${err.message}`);
       btn.disabled = false;
       btn.innerText = 'Оплатить картой (тест)';
     }
