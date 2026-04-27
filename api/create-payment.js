@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   // БОЕВЫЕ КЛЮЧИ
   const shopId = '1341702';
-  const scretKey = 'live_a1aXLXBEnRsw8iD1c0migf6Lp5w0sX7VakxMDZgwVbE';   // ЗАМЕНИ НА РЕАЛЬНЫЙ
+  const secretKey = 'live_a1aXLXBEnRsw8iD1c0migf6Lp5w0sX7VakxMDZgwVbE';   // ЗАМЕНИ НА РЕАЛЬНЫЙ
 
   const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
   const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
