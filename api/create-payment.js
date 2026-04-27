@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Разрешаем CORS
+  // Разрешаем запросы
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
 
@@ -9,32 +9,36 @@ export default async function handler(req, res) {
 
   const { amount, description, order_id } = req.body;
 
-  // Твои тестовые ключи (потом заменишь на боевые)
+  // Твои ключи
   const shopId = '1343358';
   const secretKey = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
 
   const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
 
-  // Уникальный ID заказа (можно передать из фронта)
-  const idempotenceKey = order_id || `order_${Date.now()}_${Math.random().toString(36)}`;
+  // Сумма для ЮKassa: обязательно число и 2 знака после запятой
+  let amountValue = Number(amount);
+  if (isNaN(amountValue) || amountValue <= 0) amountValue = 100;
+  // Ограничиваем максимум 150 000 рублей (лимит СБП/карт)
+  if (amountValue > 150000) amountValue = 150000;
+  const amountFormatted = amountValue.toFixed(2); // 100.00
+
+  // Правильный ключ идемпотентности: только латиница, цифры, дефис, подчёркивание
+  const idempotenceKey = `pay_${Date.now()}_${Math.random().toString(36).replace(/[^a-zA-Z0-9_-]/g, '')}`;
 
   const paymentData = {
     amount: {
-      value: Number(amount).toFixed(2),
+      value: amountFormatted,
       currency: 'RUB'
     },
     payment_method_data: {
-      type: 'bank_card'  // Можно менять на 'sbp' для СБП
+      type: 'bank_card'
     },
     confirmation: {
       type: 'redirect',
       return_url: 'https://telegram-mini-app-ten-gamma.vercel.app/success.html'
     },
-    description: description?.slice(0, 120) || 'Покупка звёзд',
-    capture: true,
-    metadata: {
-      order_id: idempotenceKey
-    }
+    description: description?.slice(0, 120).replace(/[^\w\s.,!?@-]/g, '') || 'Покупка телеграм звёзд',
+    capture: true
   };
 
   try {
@@ -42,7 +46,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${auth}`,
+        Authorization: `Basic ${auth}`,
         'Idempotence-Key': idempotenceKey
       },
       body: JSON.stringify(paymentData)
@@ -51,13 +55,10 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (data.confirmation?.confirmation_url) {
-      // Сохраняем информацию о заказе (временно, можно добавить Firebase)
-      // Для простоты — вернём всё фронту
       return res.status(200).json({
         success: true,
         confirmation_url: data.confirmation.confirmation_url,
-        payment_id: data.id,
-        order_id: idempotenceKey
+        payment_id: data.id
       });
     } else {
       return res.status(400).json({

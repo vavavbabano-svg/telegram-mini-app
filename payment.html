@@ -100,14 +100,14 @@
     payBtn.innerText = '⏳ Создание платежа...';
     
     try {
-      const response = await fetch('/api/create-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: amount,
-          description: description
-        })
-      });
+const response = await fetch('/api/create-payment', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    amount: Number(amount).toFixed(2),    // строка, например "100.00"
+    description: String(description).slice(0, 120).replace(/[^\w\s.,!?@-]/g, '')
+  })
+});
       
       const data = await response.json();
       
