@@ -126,7 +126,7 @@
   const method = order.method || 'sbp';
 
   if (method === 'sbp') {
-    // ---------- ЮKassa (карта / СБП) ----------
+    console.log('СБП блок активирован, метод:', method);
     paymentArea.innerHTML = `<button class="pay-btn" id="payButton">💳 Оплатить картой или СБП</button>`;
 
     let amountRub = 100;
@@ -150,6 +150,9 @@
         metadata: { method: 'sbp' }
       };
 
+      console.log('Отправка POST на /yookassa-proxy.php');
+      console.log('Данные:', paymentData);
+
       try {
         const response = await fetch('/yookassa-proxy.php', {
           method: 'POST',
@@ -160,7 +163,6 @@
         const text = await response.text();
         console.log('Сырой ответ прокси:', text);
 
-        // Показываем ответ на странице для отладки
         const debugDiv = document.createElement('div');
         debugDiv.style.cssText = 'background:#2E2E2E; padding:10px; margin-top:20px; border-radius:12px; font-size:11px; text-align:left; word-break:break-all;';
         debugDiv.innerHTML = `<strong>Ответ прокси:</strong><br>${text.substring(0, 500)}`;
