@@ -47,6 +47,7 @@
 <body>
 
 <div class="app">
+  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -169,22 +170,11 @@
   updateTotal();
   setTarget('self');
 
-  // Открытие в системном браузере (Safari/Chrome)
-  function openInSystemBrowser(url) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
-  // Плашка
+  // Плашка подтверждения
   function showConfirmModal(onConfirm) {
     const old = document.querySelector('.modal-overlay');
     if (old) old.remove();
-    
+
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -225,16 +215,16 @@
     showConfirmModal(async () => {
       const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
       try {
-const res = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
-});
+        const res = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
+        });
         const data = await res.json();
 
         if (data.success && data.confirmation_url) {
-          openInSystemBrowser(data.confirmation_url);
-          if (tg) tg.close();
+          // Обычный редирект — как работала Lava
+          window.location.href = data.confirmation_url;
         } else {
           alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
         }
