@@ -74,22 +74,11 @@
       font-size: 14px;
       text-decoration: none;
     }
-    .debug {
-      background: #1A1A2A;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 11px;
-      color: #88AACC;
-      text-align: left;
-      font-family: monospace;
-      word-break: break-all;
-    }
   </style>
 </head>
 <body>
 <div class="payment-card">
-  <div class="test-badge">🧪 ТЕСТ ЮKassa</div>
+  <div class="test-badge">🧪 ТЕСТ</div>
   <h2>💳 Оплата заказа</h2>
 
   <div class="order-info">
@@ -100,114 +89,69 @@
 
   <div class="total">💰 <span id="totalAmount">—</span></div>
 
-  <button class="pay-btn" id="payButton">💳 Оплатить картой (тест)</button>
+  <button class="pay-btn" id="payButton">Оплатить картой (тест)</button>
   <a href="index.html" class="back-link">← Вернуться</a>
-
-  <div class="debug" id="debugBox">⚡ Нажмите кнопку оплаты</div>
 </div>
 
 <script>
-  (function() {
-    // ---------------------- ЗАГРУЗКА ЗАКАЗА ----------------------
-    let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
+  // Загрузка заказа
+  let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
+  try {
+    const saved = localStorage.getItem('pendingOrder');
+    if (saved) order = JSON.parse(saved);
+  } catch(e) {}
+
+  document.getElementById('recipient').innerText = order.recipient || '—';
+  document.getElementById('starsCount').innerText = order.stars || '—';
+  document.getElementById('totalAmount').innerText = order.total || '— ₽';
+
+  // Сумма в рублях
+  let amountRub = 100;
+  const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
+  if (match) amountRub = parseFloat(match[1].replace(',', '.'));
+  if (isNaN(amountRub) || amountRub <= 0) amountRub = 100;
+
+  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
+  const SHOP_ID = '1343358';
+  const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
+
+  const payBtn = document.getElementById('payButton');
+
+  payBtn.onclick = async function() {
+    payBtn.disabled = true;
+    payBtn.innerText = '⏳ Создание...';
+
+    const paymentData = {
+      amount: { value: amountRub.toFixed(2), currency: 'RUB' },
+      capture: true,
+      confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
+      description: description,
+      metadata: { test: true }
+    };
+
     try {
-      const saved = localStorage.getItem('pendingOrder');
-      if (saved) {
-        order = JSON.parse(saved);
-        console.log('Заказ загружен:', order);
+      const response = await fetch('/yookassa-proxy.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentData)
+      });
+
+      // ОДИН РАЗ читаем ответ как JSON
+      const result = await response.json();
+
+      if (result.confirmation && result.confirmation.confirmation_url) {
+        window.location.href = result.confirmation.confirmation_url;
+      } else {
+        alert('Ошибка: ' + (result.description || 'Неизвестная ошибка'));
+        payBtn.disabled = false;
+        payBtn.innerText = 'Оплатить картой (тест)';
       }
-    } catch(e) {
-      console.error('Ошибка загрузки заказа', e);
+    } catch (err) {
+      alert('Ошибка соединения: ' + err.message);
+      payBtn.disabled = false;
+      payBtn.innerText = 'Оплатить картой (тест)';
     }
-
-    document.getElementById('recipient').innerText = order.recipient || '—';
-    document.getElementById('starsCount').innerText = order.stars || '—';
-    document.getElementById('totalAmount').innerText = order.total || '— ₽';
-
-    // ---------------------- РАСЧЁТ СУММЫ ----------------------
-    let amountRub = 100;
-    const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
-    if (match && match[1]) {
-      amountRub = parseFloat(match[1].replace(',', '.'));
-    }
-    if (isNaN(amountRub) || amountRub <= 0) {
-      amountRub = 100;
-    }
-
-    const description = `Покупка звёзд для ${order.recipient || 'аккаунта'}`.slice(0, 120);
-
-    // ---------------------- КЛЮЧИ ----------------------
-    const SHOP_ID = '1343358';
-    const SECRET_KEY = 'test_NjodJO1Gkl9oRh7mCQNmPV0-p7T9ekDH4fBXDlPWR4M';
-
-    // ---------------------- TELEGRAM APP ----------------------
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
-      console.log('✅ Telegram WebApp инициализирован');
-    }
-
-    const debugBox = document.getElementById('debugBox');
-    function setDebug(msg, isError = false) {
-      console.log(msg);
-      debugBox.innerHTML = `📡 ${new Date().toLocaleTimeString()}: ${msg}`;
-      debugBox.style.background = isError ? '#3a1a2a' : '#1A1A2A';
-    }
-
-    // ---------------------- ОТПРАВКА ПЛАТЕЖА ----------------------
-    async function createPayment() {
-      const btn = document.getElementById('payButton');
-      btn.disabled = true;
-      btn.innerText = '⏳ Создание...';
-      setDebug('Отправка запроса к прокси...');
-
-      const paymentData = {
-        amount: { value: amountRub.toFixed(2), currency: 'RUB' },
-        capture: true,
-        confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
-        description: description,
-        metadata: { test_mode: true }
-      };
-
-      try {
-        const proxyUrl = 'https://fastmystars.ru/yookassa-proxy.php';
-        setDebug(`→ ${proxyUrl}`);
-
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(paymentData)
-        });
-
-        setDebug(`HTTP статус: ${response.status}`);
-
-        // ⚡ ЕДИНСТВЕННОЕ ЧТЕНИЕ ОТВЕТА — ОДИН РАЗ КАК JSON
-        let result;
-        try {
-          result = await response.json();
-        } catch (jsonError) {
-          // Если JSON не парсится — ошибка на стороне прокси
-          setDebug(`❌ Прокси вернул не JSON (код ${response.status})`, true);
-          throw new Error('Ошибка на сервере, прокси не отвечает JSON');
-        }
-
-        if (result.confirmation && result.confirmation.confirmation_url) {
-          setDebug(`✅ Редирект на оплату...`);
-          window.location.href = result.confirmation.confirmation_url;
-        } else {
-          const errMsg = result.description || result.error || 'Неизвестная ошибка';
-          setDebug(`❌ ЮKassa: ${errMsg}`, true);
-          throw new Error(errMsg);
-        }
-      } catch (err) {
-        setDebug(`❌ ${err.message}`, true);
-        btn.disabled = false;
-        btn.innerText = '💳 Оплатить картой (тест)';
-      }
-    }
-
-    document.getElementById('payButton').addEventListener('click', createPayment);
-  })();
+  };
 </script>
 </body>
 </html>
