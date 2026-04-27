@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Оплата — MyStars</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #040406;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -58,20 +54,15 @@
       color: white;
       cursor: pointer;
     }
+    .pay-btn:disabled {
+      opacity: 0.6;
+    }
     .back-link {
       display: inline-block;
       margin-top: 20px;
       color: #8E94B0;
       font-size: 14px;
       text-decoration: none;
-    }
-    .info {
-      background: #1E2A3A;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 12px;
-      color: #A0C0F0;
     }
   </style>
 </head>
@@ -89,32 +80,20 @@
 
   <button class="pay-btn" id="payBtn">Перейти к оплате</button>
   <a href="index.html" class="back-link">← Вернуться</a>
-
-  <div class="info">
-    💡 После нажатия вы перейдёте на защищённую страницу ЮKassa.<br>
-    🔐 Оплата картой или через СБП.
-  </div>
 </div>
 
 <script>
-  // Загрузка заказа
-  let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
-  try {
-    const saved = localStorage.getItem('pendingOrder');
-    if (saved) order = JSON.parse(saved);
-  } catch(e) {}
-
+  const order = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+  
   document.getElementById('recipient').innerText = order.recipient || '—';
   document.getElementById('starsCount').innerText = order.stars || '—';
   document.getElementById('totalAmount').innerText = order.total || '— ₽';
 
-  // Извлекаем сумму
   let amount = 100;
   const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
   if (match) amount = parseFloat(match[1].replace(',', '.'));
   if (isNaN(amount) || amount <= 0) amount = 100;
 
-  // Функция создания платежа (вызовет PHP-прокси)
   const payBtn = document.getElementById('payBtn');
   
   payBtn.onclick = async () => {
@@ -122,31 +101,28 @@
     payBtn.innerText = '⏳ Создание платежа...';
     
     try {
-      // Пытаемся создать платёж через наш прокси
-      const response = await fetch('/yookassa-proxy.php', {
+      const response = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: { value: amount.toFixed(2), currency: 'RUB' },
-          capture: true,
-          confirmation: { type: 'redirect', return_url: 'https://fastmystars.ru/success.html' },
+          amount: amount,
           description: `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`,
-          metadata: { test: true }
+          recipient: order.recipient,
+          stars: order.stars
         })
       });
       
       const data = await response.json();
       
-      if (data.confirmation && data.confirmation.confirmation_url) {
-        window.location.href = data.confirmation.confirmation_url;
+      if (data.success && data.confirmation_url) {
+        window.location.href = data.confirmation_url;
       } else {
-        throw new Error(data.description || 'Неизвестная ошибка');
+        throw new Error(data.error || 'Неизвестная ошибка');
       }
     } catch (err) {
-      // Если прокси не работает — показываем заглушку
+      alert('❌ Ошибка: ' + err.message + '\n\nПопробуйте позже или свяжитесь с поддержкой @MyStars812support_bot');
       payBtn.disabled = false;
       payBtn.innerText = 'Перейти к оплате';
-      alert('⚠️ Платёжный сервис временно недоступен.\nПопробуйте позже или свяжитесь с поддержкой @MyStars812support_bot');
     }
   };
 </script>
