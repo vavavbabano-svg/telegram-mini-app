@@ -45,60 +45,32 @@ function applyFixedTheme() {
 
 applyFixedTheme();
 
-async function getNextNumber() {
-  const { data } = await supabase
-    .from("counters")
-    .select("last_number")
-    .eq("id", 1)
-    .single();
-
-  const next = (data?.last_number || 0) + 1;
-
-  await supabase
-    .from("counters")
-    .update({ last_number: next })
-    .eq("id", 1);
-
-  return next;
-}
-
 async function initUser() {
   const tgUser = tg.initDataUnsafe?.user;
-  if (!tgUser) return null;
+  if (!tgUser) return;
 
   const tgId = String(tgUser.id);
 
-  let { data: user } = await supabase
+  // Ищем пользователя в таблице users
+  const { data: user, error } = await supabase
     .from("users")
     .select("*")
     .eq("tg_id", tgId)
     .maybeSingle();
 
-  if (!user) {
-    const number = await getNextNumber();
-
-    const { data } = await supabase
-      .from("users")
-      .insert({
-        tg_id: tgId,
-        username: tgUser.username || null,
-        stars: 0,
-        number
-      })
-      .select()
-      .single();
-
-    user = data;
+  if (error) {
+    console.error("Ошибка запроса user:", error);
+    return;
   }
 
   if (el.userId && user && user.number) {
-    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
+    // Показываем номер пользователя
+    const numberStr = String(user.number).padStart(4, "0");
+    el.userId.textContent = "#" + numberStr;
     el.userId.style.display = "inline-block";
   } else if (el.userId) {
     el.userId.textContent = "#----";
   }
-
-  return tgUser;
 }
 
 let currentCurrency = "RUB";
@@ -129,22 +101,18 @@ document.querySelectorAll(".packs button").forEach(btn => {
   });
 });
 
-/* ================= INPUT ================= */
 el.stars.addEventListener("input", e => {
   let val = e.target.value;
-  
   if (val === "") {
     update(0);
     return;
   }
-  
   update(Number(val));
 });
 
 el.stars.value = 50;
 update(50);
 
-/* ================= ЗАКРЫТИЕ КЛАВИАТУРЫ ПО ENTER ================= */
 el.stars.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -159,7 +127,6 @@ el.username.addEventListener("keydown", (e) => {
   }
 });
 
-/* ================= TOGGLE ================= */
 el.self.onclick = () => {
   el.self.classList.add("active");
   el.other.classList.remove("active");
@@ -184,7 +151,6 @@ el.other.onclick = () => {
   }
 })();
 
-/* ================= КЛАВИАТУРА НЕ ДВИГАЕТ КНОПКУ ================= */
 const buyBtn = el.buy;
 buyBtn.style.transition = "none";
 
@@ -232,7 +198,6 @@ el.username.addEventListener("blur", () => {
   }, 200);
 });
 
-/* ================= PAYMENT ================= */
 let selectedPayment = null;
 
 document.querySelectorAll(".pay-card").forEach(card => {
@@ -250,7 +215,6 @@ document.querySelectorAll(".pay-card").forEach(card => {
     update(Number(el.stars.value));
   });
 });
-
 
 el.buy.onclick = () => {
   const stars = Number(el.stars.value);
@@ -290,33 +254,14 @@ el.buy.onclick = () => {
   window.location.href = 'payment.html';
 };
 
-/* ================= ADMIN ================= */
-// ИСПРАВЛЕНО: админ-кнопка показывается для всех, но со стилем. Если хочешь только для себя — замени ADMIN_ID на свой.
+// Админка – видна для всех
 function setupAdmin() {
-  const user = tg.initDataUnsafe?.user;
   const btn = el.admin;
-
-  if (!btn || !user) return;
-
-  // Можешь заменить 'true' на условие, если нужно ограничить доступ
-  const showForEveryone = true;  // <-- Сделал видимым для всех (убери, если не надо)
-
-  if (showForEveryone) {
-    btn.classList.remove("hidden");
-    btn.style.display = "block";
-  } else {
-    const myId = Number(user.id);
-    const ADMIN_ID = 1444520038; // твой ID
-    if (myId === ADMIN_ID) {
-      btn.classList.remove("hidden");
-      btn.style.display = "block";
-    } else {
-      btn.style.display = "none";
-    }
-  }
+  if (!btn) return;
+  btn.classList.remove("hidden");
+  btn.style.display = "block";
 }
 
-/* ================= ADMIN CLICK ================= */
 if (el.admin) {
   el.admin.addEventListener("click", async () => {
     try {
@@ -343,7 +288,6 @@ if (el.admin) {
   });
 }
 
-(async () => {
-  await initUser();
-  setupAdmin();
-})();
+// Запуск
+initUser();
+setupAdmin();
