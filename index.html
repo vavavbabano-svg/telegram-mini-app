@@ -4,12 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Stars App</title>
-
   <link rel="stylesheet" href="styles.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
   <style>
-    /* Стили для плашки подтверждения */
+    /* Плашка подтверждения */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -30,23 +28,11 @@
       max-width: 320px;
       width: 85%;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       border: 1px solid #2A2A35;
     }
-    .modal-card h3 {
-      font-size: 20px;
-      margin-bottom: 12px;
-      color: white;
-    }
-    .modal-card p {
-      font-size: 14px;
-      color: #aaa;
-      margin-bottom: 20px;
-    }
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-    }
+    .modal-card h3 { font-size: 20px; margin-bottom: 12px; color: white; }
+    .modal-card p { font-size: 14px; color: #aaa; margin-bottom: 20px; }
+    .modal-buttons { display: flex; gap: 12px; }
     .modal-btn {
       flex: 1;
       padding: 12px;
@@ -55,50 +41,41 @@
       border: none;
       cursor: pointer;
     }
-    .modal-btn.confirm {
-      background: #2C6EDB;
-      color: white;
-    }
-    .modal-btn.cancel {
-      background: #2A2A35;
-      color: white;
-    }
+    .modal-btn.confirm { background: #2C6EDB; color: white; }
+    .modal-btn.cancel { background: #2A2A35; color: white; }
     .modal-btn:active { transform: scale(0.97); }
   </style>
 </head>
-
 <body>
 
 <div class="app">
 
   <!-- TOP -->
-<div class="topbar">
-  <div id="userId">#----</div>
-  <div class="logo"></div>
-  <div class="topbar-right">
-    <button id="adminBtn" class="admin-btn hidden">Admin</button>
-    <a class="tg-btn" href="https://t.me/MyStars812support_bot?start=help" target="_blank">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
-    </a>
+  <div class="topbar">
+    <div id="userId">#----</div>
+    <div class="logo"></div>
+    <div class="topbar-right">
+      <button id="adminBtn" class="admin-btn hidden">Admin</button>
+      <a class="tg-btn" href="https://t.me/MyStars812support_bot?start=help" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
+      </a>
+    </div>
   </div>
-</div>
 
-<!-- HERO -->
-<div class="card hero">
-  <div class="hero-img">
-    <img src="img/звездаглав2.png" alt="Stars">
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="hero-img">
+      <img src="img/звездаглав2.png" alt="Stars">
+    </div>
   </div>
-</div>
 
   <!-- USER -->
   <div class="card">
-
     <div class="row">
       <input id="username" placeholder="@username">
       <button id="selfBtn" class="btn small active">Себе</button>
       <button id="otherBtn" class="btn small">Другому</button>
     </div>
-
   </div>
 
   <!-- STARS -->
@@ -110,7 +87,6 @@
       <div id="rubOut">82.00 ₽</div>
       <span class="price-label" id="currencyLabel">RUB</span>
     </div>
-
     <div class="packs">
       <button data-stars="50">50</button>
       <button data-stars="100">100</button>
@@ -118,128 +94,173 @@
       <button data-stars="1000">1K</button>
       <button data-stars="5000">5K</button>
     </div>
-
   </div>
 
   <!-- PAYMENTS -->
   <div class="card">
     <div class="payment-grid">
-      <!-- СБП -->
       <div class="pay-card" data-method="sbp">
         <div class="currency-tag">₽ RUB</div>
-        <div class="payment-logo">
-          <img src="img/СБП.png" alt="СБП">
-        </div>
+        <div class="payment-logo"><img src="img/СБП.png" alt="СБП"></div>
         <div class="payment-name">СБП</div>
       </div>
-
-      <!-- TON -->
       <div class="pay-card" data-method="ton">
         <div class="currency-tag">TON</div>
-        <div class="payment-logo">
-          <img src="img/TON12.png" alt="TON">
-        </div>
+        <div class="payment-logo"><img src="img/TON12.png" alt="TON"></div>
         <div class="payment-name">TON</div>
       </div>
     </div>
   </div>
 
-  
-<div class="terms">
-  <a href="terms.html">Правила</a> ·
-  <a href="privacy.html">Политика</a> ·
-  <a href="refund.html">Возврат</a> ·
-  <a href="requirements.html">О магазине</a>
+  <div class="terms">
+    <a href="terms.html">Правила</a> ·
+    <a href="privacy.html">Политика</a> ·
+    <a href="refund.html">Возврат</a> ·
+    <a href="requirements.html">О магазине</a>
+  </div>
+
+  <!-- КНОПКА КУПИТЬ -->
+  <button id="buyButton" class="buy" style="display:flex;align-items:center;justify-content:center;width:100%; border:none;">Купить звёзды</button>
 </div>
 
-<!-- BUY -->
-<a href="payment.html" class="buy" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Купить звёзды</a>
-
-<script type="module" src="app.js"></script>
-
 <script>
-  // Скрипт плашки подтверждения
-  (function() {
-    // Находим ссылку "Купить звёзды"
-    const buyLink = document.querySelector('.buy');
-    if (!buyLink) return;
-    
-    // Получаем значения звёзд и суммы из DOM
-    function getCurrentStars() {
-      const starsInput = document.getElementById('stars');
-      return starsInput ? parseInt(starsInput.value) || 0 : 0;
+  // ========== Telegram WebApp ==========
+  let tgUser = null;
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      tgUser = tg.initDataUnsafe.user;
     }
-    
-    function getCurrentPrice() {
-      const rubOut = document.getElementById('rubOut');
-      return rubOut ? rubOut.innerText : '0 ₽';
+  }
+
+  // ========== DOM элементы ==========
+  const starsInput = document.getElementById('stars');
+  const rubOutDiv = document.getElementById('rubOut');
+  const selfBtn = document.getElementById('selfBtn');
+  const otherBtn = document.getElementById('otherBtn');
+  const usernameField = document.getElementById('username');
+  const buyButton = document.getElementById('buyButton');
+  const packButtons = document.querySelectorAll('.packs button');
+
+  const RUB_PER_STAR = 1.64;
+
+  function updateTotal() {
+    let stars = parseInt(starsInput.value);
+    if (isNaN(stars) || stars < 1) stars = 1;
+    starsInput.value = stars;
+    rubOutDiv.innerHTML = `${(stars * RUB_PER_STAR).toFixed(2)} ₽`;
+  }
+
+  function setTarget(target) {
+    if (target === 'self') {
+      usernameField.disabled = true;
+      if (tgUser && tgUser.username) usernameField.value = `@${tgUser.username}`;
+      else if (tgUser && tgUser.first_name) usernameField.value = tgUser.first_name;
+      else usernameField.value = '';
+      selfBtn.classList.add('active');
+      otherBtn.classList.remove('active');
+    } else {
+      usernameField.disabled = false;
+      if (!usernameField.value && tgUser && tgUser.username) {
+        usernameField.value = `@${tgUser.username}`;
+      }
+      selfBtn.classList.remove('active');
+      otherBtn.classList.add('active');
     }
-    
-    function getCurrentUsername() {
-      const usernameInput = document.getElementById('username');
-      return usernameInput ? usernameInput.value.trim() : '';
-    }
-    
-    function isSelfMode() {
-      const selfBtn = document.getElementById('selfBtn');
-      return selfBtn ? selfBtn.classList.contains('active') : true;
-    }
-    
-    // Функция показа плашки
-    function showConfirmModal(onConfirm) {
-      const stars = getCurrentStars();
-      const price = getCurrentPrice();
-      
-      const modal = document.createElement('div');
-      modal.className = 'modal-overlay';
-      modal.innerHTML = `
-        <div class="modal-card">
-          <h3>🛒 Подтверждение заказа</h3>
-          <p>Вы действительно хотите купить <strong>${stars}</strong> звёзд за <strong>${price}</strong>?</p>
-          <div class="modal-buttons">
-            <button class="modal-btn cancel" id="modalCancel">Отмена</button>
-            <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
-          </div>
+  }
+
+  selfBtn.addEventListener('click', () => setTarget('self'));
+  otherBtn.addEventListener('click', () => setTarget('other'));
+  starsInput.addEventListener('input', updateTotal);
+  packButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const stars = btn.getAttribute('data-stars');
+      if (stars) starsInput.value = stars;
+      updateTotal();
+    });
+  });
+  updateTotal();
+  setTarget('self');
+
+  // ========== ПЛАШКА С РЕДИРЕКТОМ НА ЮKASSA ==========
+  function showConfirmModal(onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-card">
+        <h3>🛒 Подтверждение заказа</h3>
+        <p>Вы действительно хотите купить <strong>${starsInput.value}</strong> звёзд за <strong>${rubOutDiv.innerText}</strong>?</p>
+        <div class="modal-buttons">
+          <button class="modal-btn cancel" id="modalCancel">Отмена</button>
+          <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
         </div>
-      `;
-      document.body.appendChild(modal);
-      
-      document.getElementById('modalCancel').onclick = () => modal.remove();
-      document.getElementById('modalConfirm').onclick = () => {
-        modal.remove();
-        onConfirm();
-      };
-    }
-    
-    // Перехватываем клик по ссылке
-    buyLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      const username = getCurrentUsername();
-      const isSelf = isSelfMode();
-      
-      // Проверка: если режим "Другому" и поле пустое
-      if (!isSelf && !username) {
+      </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('modalCancel').onclick = () => modal.remove();
+    document.getElementById('modalConfirm').onclick = () => {
+      modal.remove();
+      onConfirm();
+    };
+  }
+
+  // ========== КНОПКА КУПИТЬ ==========
+  buyButton.onclick = () => {
+    let recipient = usernameField.value.trim();
+    if (!recipient) {
+      if (selfBtn.classList.contains('active')) {
+        recipient = 'свой аккаунт';
+      } else {
         alert('Укажите @username получателя');
         return;
       }
+    }
+
+    const stars = parseInt(starsInput.value);
+    const totalText = rubOutDiv.innerText;
+
+    // Сохраняем заказ
+    const order = {
+      recipient: recipient,
+      stars: stars,
+      total: totalText,
+      target: selfBtn.classList.contains('active') ? 'self' : 'other',
+      timestamp: Date.now()
+    };
+    localStorage.setItem('pendingOrder', JSON.stringify(order));
+
+    // Показываем плашку → после подтверждения запрос к API ЮKassa → редирект
+    showConfirmModal(async () => {
+      // Сумма в рублях
+      let amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
+      if (isNaN(amount)) amount = 100;
       
-      // Сохраняем заказ в localStorage
-      const order = {
-        recipient: username || (isSelf ? 'свой аккаунт' : ''),
-        stars: getCurrentStars(),
-        total: getCurrentPrice(),
-        target: isSelf ? 'self' : 'other',
-        timestamp: Date.now()
-      };
-      localStorage.setItem('pendingOrder', JSON.stringify(order));
-      
-      // Показываем плашку
-      showConfirmModal(() => {
-        window.location.href = buyLink.getAttribute('href');
-      });
+      // Запрос к твоему API на Vercel (создание платежа в ЮKassa)
+      try {
+        const response = await fetch('/api/create-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: amount,
+            description: `Покупка ${stars} звёзд для ${recipient}`
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.confirmation_url) {
+          // Редирект на платёжную страницу ЮKassa
+          window.location.href = data.confirmation_url;
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+        }
+      } catch (err) {
+        alert('Ошибка соединения: ' + err.message);
+      }
     });
-  })();
+  };
 </script>
 </body>
 </html>
