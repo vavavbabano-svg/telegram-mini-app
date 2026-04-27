@@ -552,3 +552,35 @@ button:hover {
     animation: fadeSlideUp 0.4s ease forwards;
   }
 }
+/* === Активные кнопки (зелёный неон) === */
+
+/* Кнопки выбора суммы */
+.packs button.active {
+  background: rgba(94, 245, 124, 0.15);
+  color: #5ef57c;
+  border-color: #5ef57c;
+  box-shadow: 0 0 14px rgba(94, 245, 124, 0.4);
+}
+
+/* Кнопка выбора себя / другого (уже есть, но продублирую для уверенности) */
+.btn.small.active {
+  background: rgba(94, 245, 124, 0.15);
+  color: #5ef57c;
+  border-color: #5ef57c;
+  box-shadow: 0 0 14px rgba(94, 245, 124, 0.4);
+}
+
+/* Кнопка способа оплаты (после выбора) */
+.method-btn.active {
+  background: rgba(94, 245, 124, 0.15);
+  color: #5ef57c;
+  border-color: #5ef57c;
+  box-shadow: 0 0 12px rgba(94, 245, 124, 0.4);
+}
+
+/* Админ-кнопка (если появится) */
+.admin-btn.active {
+  background: rgba(94, 245, 124, 0.2);
+  border-color: #5ef57c;
+  color: #5ef57c;
+}
