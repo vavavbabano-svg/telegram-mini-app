@@ -2,55 +2,78 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Политика возврата</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Возврат средств | Stars App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .content-page { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
-        h2 { color: #333; margin-top: 25px; }
-        p, li { line-height: 1.6; color: #555; }
+        .content-page {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .content-page h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .content-page h2 {
+            font-size: 20px;
+            margin: 24px 0 12px 0;
+            color: #222;
+        }
+        .content-page p, .content-page li {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+        .content-page ul {
+            padding-left: 20px;
+        }
+        .back-btn {
+            background: #007aff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        @media (min-width: 768px) {
+            .content-page { max-width: 700px; padding: 40px; }
+            .back-btn { width: auto; min-width: 200px; display: block; margin: 30px auto 0; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="content-page">
-            <h1>💰 Политика возврата</h1>
+            <h1>💰 Возврат средств</h1>
             
-            <h2>1. Возврат возможен в случаях</h2>
+            <h2>Когда возврат возможен</h2>
             <ul>
-                <li>Звёзды не поступили в течение 24 часов после оплаты</li>
-                <li>Ошибка в сумме платежа (неверная сумма или дублирование)</li>
-                <li>Технический сбой на стороне платёжной системы</li>
+                <li>Звёзды не поступили в течение 24 часов</li>
+                <li>Ошибка в сумме платежа</li>
+                <li>Технический сбой платёжной системы</li>
             </ul>
             
-            <h2>2. Возврат НЕ осуществляется</h2>
+            <h2>Когда возврат НЕ возможен</h2>
             <ul>
-                <li>Если звёзды уже были использованы</li>
-                <li>Если прошло более 14 дней с момента оплаты</li>
-                <li>При передумывании покупателя (виртуальный товар)</li>
-                <li>При неверно указанных данных при вводе</li>
+                <li>Звёзды уже использованы</li>
+                <li>Прошло более 14 дней с момента оплаты</li>
+                <li>Передумывание покупателя (виртуальный товар)</li>
             </ul>
             
-            <h2>3. Сроки возврата</h2>
-            <p>После одобрения заявки деньги возвращаются в течение:</p>
-            <ul>
-                <li>При оплате TON — до 1 часа</li>
-                <li>При оплате СБП — до 3 банковских дней</li>
-            </ul>
+            <h2>Сроки возврата</h2>
+            <p>TON — до 1 часа • СБП — до 3 банковских дней</p>
             
-            <h2>4. Как оформить возврат</h2>
-            <p>Напишите нам на почту <strong>ksioneru@gmail.com</strong> или в Telegram <strong>@ksioneru</strong> с указанием:</p>
-            <ul>
-                <li>Номера заказа (есть в чеке)</li>
-                <li>Даты и суммы платежа</li>
-                <li>Причины возврата</li>
-                <li>Реквизитов для возврата (адрес кошелька TON или номер карты)</li>
-            </ul>
+            <h2>Как оформить возврат</h2>
+            <p>Напишите в поддержку <strong>@MyStars812support_bot</strong> с указанием номера заказа, даты платежа и причины возврата.</p>
             
-            <h2>5. Рассмотрение заявок</h2>
-            <p>Заявки рассматриваются в течение 3 рабочих дней. Мы ответим вам с решением.</p>
-            
-            <button onclick="window.location.href='index.html'">◀️ На главную</button>
+            <button class="back-btn" onclick="window.location.href='index.html'">← На главную</button>
         </div>
     </div>
     <script src="utils/tg.js"></script>

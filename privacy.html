@@ -2,57 +2,89 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Политика конфиденциальности</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Политика конфиденциальности | Stars App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .content-page { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
-        h2 { color: #333; margin-top: 25px; }
-        p, li { line-height: 1.6; color: #555; }
-        ul { padding-left: 20px; }
+        .content-page {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .content-page h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .content-page h2 {
+            font-size: 20px;
+            margin: 24px 0 12px 0;
+            color: #222;
+        }
+        .content-page p, .content-page li {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+        .content-page ul {
+            padding-left: 20px;
+        }
+        .update-date {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: #007aff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        @media (min-width: 768px) {
+            .content-page { max-width: 700px; padding: 40px; }
+            .content-page h1 { font-size: 34px; }
+            .back-btn { width: auto; min-width: 200px; display: block; margin: 30px auto 0; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="content-page">
-            <h1>🔒 Политика конфиденциальности</h1>
-            <p><strong>Дата последнего обновления:</strong> 27 апреля 2026 г.</p>
+            <h1>🔒 Конфиденциальность</h1>
+            <div class="update-date">Последнее обновление: 27 апреля 2026 г.</div>
             
             <h2>1. Какие данные мы собираем</h2>
-            <p>Для обработки заказа мы можем собирать:</p>
             <ul>
-                <li>Ваше имя и username (из Telegram, если вы зашли через мини-приложение)</li>
-                <li>Адрес электронной почты (если вы его указали)</li>
-                <li>Номер телефона (для оплаты через СБП)</li>
+                <li>Имя и username (из Telegram)</li>
+                <li>Номер телефона (для СБП)</li>
                 <li>Данные о платеже (сумма, дата, статус)</li>
             </ul>
             
             <h2>2. Как мы используем данные</h2>
             <ul>
-                <li>Для обработки и доставки заказа</li>
-                <li>Для связи с вами по вопросам оплаты</li>
-                <li>Для предотвращения мошенничества</li>
-                <li>Для улучшения работы сервиса</li>
+                <li>Обработка и доставка заказа</li>
+                <li>Связь по вопросам оплаты</li>
+                <li>Предотвращение мошенничества</li>
             </ul>
             
-            <h2>3. Передача данных третьим лицам</h2>
-            <p>Мы передаём данные только платёжным системам (Lava, Enot.io) для обработки платежей. Ваши данные не продаются и не передаются рекламным сетям.</p>
+            <h2>3. Передача данных</h2>
+            <p>Мы передаём данные только платёжным системам (Lava, Enot). Данные не продаются и не передаются рекламе.</p>
             
             <h2>4. Хранение данных</h2>
-            <p>Данные о заказах хранятся 12 месяцев. Вы можете запросить удаление ваших данных, написав на ksioneru@gmail.com.</p>
+            <p>Данные хранятся 12 месяцев. Вы можете запросить удаление, написав в поддержку.</p>
             
-            <h2>5. Ваши права</h2>
-            <ul>
-                <li>Запросить копию ваших данных</li>
-                <li>Исправить неточные данные</li>
-                <li>Потребовать удаления данных</li>
-                <li>Отозвать согласие на обработку</li>
-            </ul>
+            <h2>5. Контакты</h2>
+            <p>📱 <strong>Поддержка:</strong> @MyStars812support_bot<br>📧 <strong>Email:</strong> ksioneru@gmail.com</p>
             
-            <h2>6. Контакты</h2>
-            <p>По всем вопросам: <strong>ksioneru@gmail.com</strong> или Telegram <strong>@ksioneru</strong></p>
-            
-            <button onclick="window.location.href='index.html'">◀️ На главную</button>
+            <button class="back-btn" onclick="window.location.href='index.html'">← На главную</button>
         </div>
     </div>
     <script src="utils/tg.js"></script>

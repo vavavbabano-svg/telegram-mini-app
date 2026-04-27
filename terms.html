@@ -2,52 +2,90 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Пользовательское соглашение</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Пользовательское соглашение | Stars App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .content-page { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
-        h2 { color: #333; margin-top: 25px; }
-        p, li { line-height: 1.6; color: #555; }
+        .content-page {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .content-page h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .content-page h2 {
+            font-size: 20px;
+            margin: 24px 0 12px 0;
+            color: #222;
+        }
+        .content-page p, .content-page li {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+        .content-page ul {
+            padding-left: 20px;
+        }
+        .seller-info {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .back-btn {
+            background: #007aff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        @media (min-width: 768px) {
+            .content-page { max-width: 700px; padding: 40px; }
+            .back-btn { width: auto; min-width: 200px; display: block; margin: 30px auto 0; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="content-page">
             <h1>📜 Пользовательское соглашение</h1>
-            <p><strong>Индивидуальный предприниматель:</strong> Голубев Вадим Алексеевич<br>
-            <strong>Сайт:</strong> fastmystars.ru<br>
-            <strong>Дата публикации:</strong> 27 апреля 2026 г.</p>
+            
+            <div class="seller-info">
+                <p><strong>Продавец:</strong> Голубев Вадим Алексеевич<br>
+                <strong>Сайт:</strong> fastmystars.ru<br>
+                <strong>Дата:</strong> 27 апреля 2026 г.</p>
+            </div>
             
             <h2>1. Предмет соглашения</h2>
-            <p>Продавец обязуется передать виртуальные звёзды, а Покупатель — оплатить их в порядке и на условиях, предусмотренных настоящим Соглашением.</p>
+            <p>Продавец передаёт виртуальные звёзды, Покупатель оплачивает их на условиях соглашения.</p>
             
             <h2>2. Порядок заказа</h2>
             <ul>
-                <li>Покупатель выбирает количество звёзд на сайте</li>
-                <li>Оплачивает заказ через выбранный способ (СБП, TON)</li>
-                <li>После подтверждения платежа звёзды зачисляются автоматически в течение 15 минут</li>
+                <li>Выбор количества звёзд на сайте</li>
+                <li>Оплата (СБП или TON)</li>
+                <li>Зачисление звёзд в течение 15 минут</li>
             </ul>
             
             <h2>3. Цены и оплата</h2>
-            <p>Цены указаны в рублях и TON по курсу на момент оплаты. Продавец оставляет за собой право изменять цены. Изменения не распространяются на оплаченные заказы.</p>
+            <p>Цены указаны в рублях и TON. Продавец может менять цены, но не для оплаченных заказов.</p>
             
-            <h2>4. Права и обязанности</h2>
-            <p><strong>Продавец обязуется:</strong> предоставить товар после оплаты, обрабатывать персональные данные по закону.</p>
-            <p><strong>Покупатель обязуется:</strong> вводить достоверные данные, не использовать сайт для мошенничества.</p>
+            <h2>4. Ответственность</h2>
+            <p>Продавец не отвечает за задержки платёжных систем. Максимальная ответственность — стоимость заказа.</p>
             
-            <h2>5. Ответственность</h2>
-            <p>Продавец не несёт ответственности за задержки, вызванные платёжными системами. Максимальная ответственность ограничена стоимостью заказа.</p>
+            <h2>5. Контакты</h2>
+            <p>📱 <strong>Поддержка:</strong> @MyStars812support_bot<br>📧 <strong>Email:</strong> ksioneru@gmail.com</p>
             
-            <h2>6. Форс-мажор</h2>
-            <p>Стороны освобождаются от ответственности при наступлении обстоятельств непреодолимой силы (война, стихия, блокировки).</p>
-            
-            <h2>7. Реквизиты</h2>
-            <p><strong>ФИЗ ЛИЦО Голубев Вадим Алексеевич<br>
-            Email:</strong> ksioneru@gmail.com<br>
-            <strong>Telegram:</strong> @ksioneru</p>
-            
-            <button onclick="window.location.href='index.html'">◀️ На главную</button>
+            <button class="back-btn" onclick="window.location.href='index.html'">← На главную</button>
         </div>
     </div>
     <script src="utils/tg.js"></script>

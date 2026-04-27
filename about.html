@@ -2,41 +2,125 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>О магазине Stars App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>О магазине | Stars App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <meta name="description" content="Информация о магазине Stars App">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .content-page { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
-        h2 { color: #333; margin-top: 25px; }
-        p, li { line-height: 1.6; color: #555; }
-        ul { padding-left: 20px; }
-        .back-btn { margin-top: 30px; display: inline-block; }
+        /* Дополнительные стили для контентных страниц в стиле сайта */
+        .content-page {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .content-page h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1a1a1a;
+        }
+        
+        .content-page h2 {
+            font-size: 20px;
+            margin: 24px 0 12px 0;
+            color: #222;
+        }
+        
+        .content-page p, .content-page li {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+        
+        .content-page ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .content-page li {
+            margin: 8px 0;
+        }
+        
+        .back-btn {
+            background: #007aff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .contact-block {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .contact-block p {
+            margin: 8px 0;
+        }
+        
+        .contact-block strong {
+            color: #007aff;
+        }
+        
+        @media (min-width: 768px) {
+            .content-page {
+                max-width: 700px;
+                padding: 40px;
+            }
+            .content-page h1 {
+                font-size: 34px;
+            }
+            .back-btn {
+                width: auto;
+                min-width: 200px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="content-page">
-            <h1>🌟 О магазине Stars App</h1>
+            <h1>🌟 О магазине</h1>
+            
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Виртуальные звёзды для вашего аккаунта</p>
             
             <h2>Кто мы</h2>
-            <p>Stars App — это онлайн-сервис по продаже виртуальных звёзд для повышения активности и популярности в социальных сетях. Мы работаем с 2024 года и помогаем пользователям быстро и безопасно получать нужное количество звёзд.</p>
+            <p>Stars App — это сервис по продаже виртуальных звёзд для повышения активности в социальных сетях. Мы работаем с 2025 года и помогаем пользователям быстро получать звёзды.</p>
             
             <h2>Что мы продаём</h2>
-            <p>Виртуальные звёзды — это внутренняя валюта, которую можно использовать для поддержки авторов, открытия контента и участия в программе лояльности. Звёзды начисляются мгновенно после подтверждения оплаты.</p>
+            <p>Виртуальные звёзды — внутренняя валюта для поддержки авторов и открытия контента. Звёзды начисляются мгновенно после оплаты.</p>
             
             <h2>Как мы работаем</h2>
             <ul>
                 <li>Вы выбираете количество звёзд (50, 100, 500, 1K, 5K)</li>
                 <li>Оплачиваете удобным способом (СБП или TON)</li>
-                <li>После подтверждения платежа звёзды поступают на ваш аккаунт автоматически</li>
+                <li>После подтверждения платежа звёзды поступают на ваш аккаунт</li>
             </ul>
             
-            <h2>Наши реквизиты</h2>
-            <p><strong>ИП / Самозанятый:</strong> Голубев Вадим Алексеевич<br>
-            <strong>Email для связи:</strong> ksioneru@gmail.com<br>
-            <strong>Telegram:</strong> @ksioneru</p>
+            <div class="contact-block">
+                <p>📱 <strong>Поддержка:</strong> <a href="https://t.me/MyStars812support_bot" target="_blank">@MyStars812support_bot</a></p>
+                <p>📧 <strong>Email:</strong> ksioneru@gmail.com</p>
+            </div>
             
-            <button class="back-btn" onclick="window.location.href='index.html'">◀️ На главную</button>
+            <button class="back-btn" onclick="window.location.href='index.html'">← На главную</button>
         </div>
     </div>
     <script src="utils/tg.js"></script>
