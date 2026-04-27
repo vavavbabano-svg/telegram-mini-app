@@ -455,5 +455,54 @@ button {
 button:hover {
     opacity: 0.9;
 }
+.seller-info {
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .seller-info {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+/* ===== СПЕЦИАЛЬНО ДЛЯ ПК: САЙТ СЛЕВА И РАСТЯНУТ ===== */
+
+@media (min-width: 1024px) {
+    body {
+        background: #f0f2f5;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: flex-start; /* Прижимаем к левому краю */
+    }
+    
+    .container {
+        max-width: 1000px; /* Ширина сайта (растянут, но не на весь экран) */
+        width: 85%; /* Или 85% от ширины экрана */
+        margin: 20px 0 20px 40px; /* Отступ слева 40px, справа автоматически */
+        background: transparent;
+        padding: 0;
+    }
+    
+    /* Карточки товаров — 2-3 колонки */
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+    }
+    
+    /* Адаптация контентных страниц (about, privacy и т.д.) */
+    .content-page {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    /* Плавающий блок самозанятого */
+    .seller-info {
+        text-align: left;
+    }
+}
 
 
