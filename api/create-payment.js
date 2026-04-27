@@ -1,18 +1,15 @@
+// api/create-payment.js
 export default async function handler(req, res) {
-  // Разрешаем CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'application/json');
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Пробуем получить сумму
-  const { amount } = req.body;
-  
-  // Тестовый ответ — всегда успех
-  return res.status(200).json({
-    success: true,
-    confirmation_url: 'https://google.com'
-  });
+    // ... (твои проверки суммы, cors и т.д.)
+    // 1. Создаешь платеж в ЮKasse
+    // ...
+    // 2. Успешный ответ от ЮKassa должен содержать поле `confirmation_url`
+    if (data.confirmation && data.confirmation.confirmation_url) {
+        // ВАЖНО: нужно вернуть ссылку, которую понимает openInvoice
+        return res.status(200).json({
+            success: true,
+            confirmation_url: data.confirmation.confirmation_url,
+            invoice_url: data.confirmation.confirmation_url
+        });
+    }
 }

@@ -1,109 +1,192 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Оплата — MyStars</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #040406;
-      font-family: system-ui, sans-serif;
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .card {
-      background: #0F0F14;
-      border-radius: 28px;
-      padding: 24px;
-      max-width: 450px;
-      width: 100%;
-    }
-    .order {
-      background: #0B0B10;
-      border-radius: 20px;
-      padding: 16px;
-      margin: 20px 0;
-    }
-    .row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-    }
-    .pay-btn {
-      width: 100%;
-      background: #2C6EDB;
-      border: none;
-      padding: 16px;
-      border-radius: 48px;
-      font-size: 17px;
-      font-weight: 700;
-      color: white;
-      cursor: pointer;
-    }
-    .back {
-      display: block;
-      margin-top: 20px;
-      color: #8E94B0;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Оплата — MyStars</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #040406;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: #FFFFFF;
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .payment-card {
+            max-width: 500px;
+            width: 100%;
+            background: #0F0F14;
+            border-radius: 28px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .order-info {
+            background: #0B0B10;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 0.5px solid #2A2A35;
+        }
+        .total {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFB347;
+            margin: 16px 0;
+        }
+        .pay-btn {
+            width: 100%;
+            background: #2C6EDB;
+            border: none;
+            padding: 16px;
+            border-radius: 48px;
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+        }
+        .pay-btn:disabled {
+            opacity: 0.6;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #8E94B0;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .debug {
+            background: #1A1A2A;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #88AACC;
+            text-align: left;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .error-box {
+            background: #5a1e2a;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 16px;
+            color: #ff9999;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-<div class="card">
-  <h2>💳 Оплата заказа</h2>
+<div class="payment-card">
+    <h2>💳 Оплата заказа</h2>
 
-  <div class="order">
-    <div class="row"><span>Товар:</span><span>Звёзды Telegram</span></div>
-    <div class="row"><span>Получатель:</span><span id="recipient"></span></div>
-    <div class="row"><span>Количество:</span><span id="stars"></span></div>
-    <div class="row"><span>Сумма:</span><span id="total"></span></div>
-  </div>
+    <div class="order-info">
+        <div class="order-row"><span>Товар:</span><span>Звёзды Telegram</span></div>
+        <div class="order-row"><span>Получатель:</span><span id="recipient">—</span></div>
+        <div class="order-row"><span>Количество:</span><span id="starsCount">—</span></div>
+    </div>
 
-  <button class="pay-btn" id="payBtn">Оплатить картой</button>
-  <a href="index.html" class="back">← Вернуться</a>
+    <div class="total">💰 <span id="totalAmount">—</span></div>
+
+    <button class="pay-btn" id="payBtn">Показать платёжную форму</button>
+    <a href="index.html" class="back-link">← Вернуться</a>
+    <div class="debug" id="debugBox">📡 Нажмите кнопку оплаты</div>
 </div>
 
 <script>
-  const order = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
-  document.getElementById('recipient').innerText = order.recipient || '—';
-  document.getElementById('stars').innerText = order.stars || '—';
-  document.getElementById('total').innerText = order.total || '— ₽';
-
-  let amount = 100;
-  const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
-  if (match) amount = parseFloat(match[1].replace(',', '.'));
-  if (isNaN(amount) || amount < 1) amount = 100;
-
-  const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
-
-  const payBtn = document.getElementById('payBtn');
-  payBtn.onclick = async () => {
-    payBtn.disabled = true;
-    payBtn.innerText = '⏳ Создание...';
-
+    // Загрузка заказа из localStorage
+    let order = { recipient: 'тест', stars: 100, total: '164 ₽' };
     try {
-      const res = await fetch('/api/create-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, description })
-      });
-      const data = await res.json();
-      if (data.success && data.confirmation_url) {
-        window.location.href = data.confirmation_url;
-      } else {
-        throw new Error(data.error || 'Ошибка');
-      }
-    } catch (err) {
-      alert('❌ Ошибка: ' + err.message);
-      payBtn.disabled = false;
-      payBtn.innerText = 'Оплатить картой';
+        const saved = localStorage.getItem('pendingOrder');
+        if (saved) order = JSON.parse(saved);
+    } catch(e) {}
+
+    document.getElementById('recipient').innerText = order.recipient || '—';
+    document.getElementById('starsCount').innerText = order.stars || '—';
+    document.getElementById('totalAmount').innerText = order.total || '— ₽';
+
+    // --- Расчет суммы ---
+    let amount = 100;
+    const match = (order.total || '').match(/(\d+(?:[.,]\d+)?)/);
+    if (match) amount = parseFloat(match[1].replace(',', '.'));
+    if (isNaN(amount) || amount <= 0) amount = 100;
+
+    const description = `Покупка ${order.stars} звёзд для ${order.recipient || 'аккаунта'}`;
+
+    const payBtn = document.getElementById('payBtn');
+    const debugBox = document.getElementById('debugBox');
+    function debug(msg, isError = false) {
+        console.log(msg);
+        debugBox.innerHTML += `\n📡 ${new Date().toLocaleTimeString()}: ${msg}`;
+        if (isError) {
+            const errorDiv = document.querySelector('.error-box') || document.createElement('div');
+            if (!document.querySelector('.error-box')) {
+                errorDiv.className = 'error-box';
+                document.querySelector('.payment-card').appendChild(errorDiv);
+            }
+            errorDiv.innerText = `❌ ${msg}`;
+        }
     }
-  };
+
+    payBtn.onclick = async () => {
+        payBtn.disabled = true;
+        payBtn.innerText = '⏳ Создание платежа...';
+        debug('Создание ссылки на оплату...');
+
+        try {
+            // 1. Запрашиваем у бекенда ссылку для открытия окна оплаты
+            const response = await fetch('/api/create-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, description })
+            });
+            const data = await response.json();
+            debug(`Получен ответ от сервера: ${JSON.stringify(data)}`);
+
+            if (data.success && (data.invoice_url || data.confirmation_url)) {
+                const paymentUrl = data.invoice_url || data.confirmation_url;
+                debug(`Готово, открываем форму...`);
+
+                // 2. Это и есть "магия", которая решает твою проблему.
+                // Команда, которая заставляет Telegram показать нативное окно оплаты[citation:10][citation:2].
+                const paymentStatus = await window.Telegram.WebApp.openInvoice(paymentUrl, (status) => {
+    console.log('Статус платежа (callback):', status);
+    if (status === 'paid') {
+        window.location.href = '/success.html';
+    } else {
+        debug(`Платёж не завершён: ${status}`, true);
+        payBtn.disabled = false;
+        payBtn.innerText = 'Попробовать оплатить';
+        window.Telegram.WebApp.close();
+    }
+});
+                console.log('Статус платежа (promise/result):', paymentStatus);
+                if (paymentStatus === 'paid') {
+                    window.location.href = '/success.html';
+                } else if (paymentStatus && paymentStatus !== 'paid') {
+                    debug(`Платёж не завершён: ${paymentStatus}`, true);
+                    payBtn.disabled = false;
+                    payBtn.innerText = 'Попробовать оплатить';
+                }
+            } else {
+                throw new Error(data.error || 'Не удалось получить ссылку на оплату');
+            }
+        } catch (err) {
+            debug(`Ошибка соединения: ${err.message}`, true);
+            payBtn.disabled = false;
+            payBtn.innerText = 'Оплатить картой';
+        }
+    };
 </script>
 </body>
 </html>
