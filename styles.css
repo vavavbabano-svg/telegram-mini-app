@@ -3,18 +3,24 @@
   --card: #242424;
   --input: #2E2E2E;
   --btn: #383838;
-
   --text: #E6E6E6;
   --muted: #A0A0A0;
-
   --blue: #2D6BFF;
-
   --r: 14px;
   --gap: 8px;
-
   --fw-regular: 500;
   --fw-medium: 600;
   --fw-bold: 700;
+}
+
+/* Telegram WebApp синхронизация */
+body {
+  background: var(--tg-theme-bg-color, var(--bg)) !important;
+  color: var(--tg-theme-text-color, var(--text)) !important;
+}
+
+.app, .container, .card, .topbar {
+  background: var(--tg-theme-bg-color, var(--card)) !important;
 }
 
 /* RESET */
@@ -26,8 +32,6 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
   font-family: Arial, sans-serif;
   font-weight: var(--fw-regular);
   touch-action: manipulation;
@@ -54,19 +58,19 @@ body {
   gap: 8px;
 }
 
-/* TOP — userId и админка теперь видны */
+/* TOP */
 .topbar {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 6px 0;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--tg-theme-hint-color, var(--muted));
 }
 
 #userId {
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.2));
   border-radius: 10px;
   padding: 4px 10px;
   font-size: 12px;
@@ -74,7 +78,7 @@ body {
   width: fit-content;
   justify-self: start;
   margin-left: 4px;
-  background: var(--card);
+  background: var(--tg-theme-secondary-bg-color, var(--card));
 }
 
 .topbar-right {
@@ -84,11 +88,10 @@ body {
   justify-self: end;
 }
 
-/* Админ-кнопка — всегда видна, если не скрыта через класс hidden */
 .admin-btn {
-  background: var(--btn);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text);
+  background: var(--tg-theme-secondary-bg-color, var(--btn));
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
+  color: var(--tg-theme-text-color, var(--text));
   padding: 5px 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -113,10 +116,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--btn);
+  background: var(--tg-theme-secondary-bg-color, var(--btn));
   border-radius: 8px;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
   transition: all 0.2s ease;
 }
 
@@ -132,7 +135,7 @@ body {
 
 /* CARD */
 .card {
-  background: var(--card);
+  background: var(--tg-theme-secondary-bg-color, var(--card));
   border-radius: var(--r);
   padding: 10px;
   margin: 0;
@@ -177,10 +180,10 @@ input {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.1));
   outline: none;
-  background: var(--input);
-  color: var(--text);
+  background: var(--tg-theme-bg-color, var(--input));
+  color: var(--tg-theme-text-color, var(--text));
   transition: all 0.2s ease;
 }
 
@@ -197,13 +200,13 @@ input:focus {
   align-items: center;
 }
 
-/* BUTTONS (НЕОНОВЫЕ ЭФФЕКТЫ) */
+/* BUTTONS */
 .btn.small {
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: var(--btn);
-  color: var(--muted);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
+  background: var(--tg-theme-secondary-bg-color, var(--btn));
+  color: var(--tg-theme-hint-color, var(--muted));
   font-size: 13px;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
@@ -238,10 +241,10 @@ input:focus {
   text-align: center;
   padding: 8px 4px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.1));
   outline: none;
-  background: var(--input);
-  color: var(--text);
+  background: var(--tg-theme-bg-color, var(--input));
+  color: var(--tg-theme-text-color, var(--text));
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
@@ -254,7 +257,7 @@ input:focus {
 
 .price-label {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--tg-theme-hint-color, var(--muted));
   text-transform: uppercase;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -268,7 +271,7 @@ input:focus {
 }
 
 #rubOut {
-  color: var(--muted);
+  color: var(--tg-theme-hint-color, var(--muted));
   font-weight: var(--fw-bold);
   font-size: 14px;
   white-space: nowrap;
@@ -286,9 +289,9 @@ input:focus {
 .packs button {
   padding: 8px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: var(--btn);
-  color: var(--muted);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
+  background: var(--tg-theme-secondary-bg-color, var(--btn));
+  color: var(--tg-theme-hint-color, var(--muted));
   font-size: 13px;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
@@ -317,7 +320,7 @@ input:focus {
 }
 
 .pay-card {
-  background: #1c1c1e;
+  background: var(--tg-theme-secondary-bg-color, #1c1c1e);
   border-radius: 18px;
   aspect-ratio: 1 / 1;
   display: flex;
@@ -328,7 +331,7 @@ input:focus {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
 }
 
@@ -392,7 +395,7 @@ input:focus {
 }
 
 .payment-name {
-  color: #ffffff;
+  color: var(--tg-theme-text-color, #ffffff);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -410,11 +413,20 @@ input:focus {
 /* TERMS */
 .terms {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--tg-theme-hint-color, var(--muted));
   text-align: center;
 }
 
-/* BUY (главная кнопка) */
+.terms a {
+  color: var(--tg-theme-hint-color, var(--muted));
+  text-decoration: none;
+}
+
+.terms a:hover {
+  color: #5ef57c;
+}
+
+/* BUY */
 .buy {
   position: fixed;
   bottom: 12px;
@@ -441,32 +453,14 @@ input:focus {
   transform: translateX(-50%) scale(1.02);
 }
 
-/* CLICK */
 button:active {
   transform: scale(0.98);
   filter: brightness(1.15);
 }
 
-.terms a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.terms a:hover {
-  color: #5ef57c;
-}
-
-/* Стили для страниц контента на ПК */
-@media (min-width: 768px) {
-  .content-page {
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    margin: 20px auto;
-  }
-}
-
 button {
-  background: #2c2c2c;
-  color: white;
+  background: var(--tg-theme-secondary-bg-color, #2c2c2c);
+  color: var(--tg-theme-button-text-color, white);
   border: none;
   padding: 12px 24px;
   border-radius: 12px;
@@ -514,7 +508,7 @@ button:hover {
 .card:nth-child(5) { animation-delay: 0.25s; }
 .card:nth-child(6) { animation-delay: 0.30s; }
 
-/* ===== СПЕЦИАЛЬНО ДЛЯ ПК: САЙТ СЛЕВА И РАСТЯНУТ ===== */
+/* ПК версия */
 @media (min-width: 1024px) {
   body {
     background: #f0f2f5;
@@ -552,39 +546,8 @@ button:hover {
     animation: fadeSlideUp 0.4s ease forwards;
   }
 }
-/* === Активные кнопки (зелёный неон) === */
 
-/* Кнопки выбора суммы */
-.packs button.active {
-  background: rgba(94, 245, 124, 0.15);
-  color: #5ef57c;
-  border-color: #5ef57c;
-  box-shadow: 0 0 14px rgba(94, 245, 124, 0.4);
-}
-
-/* Кнопка выбора себя / другого (уже есть, но продублирую для уверенности) */
-.btn.small.active {
-  background: rgba(94, 245, 124, 0.15);
-  color: #5ef57c;
-  border-color: #5ef57c;
-  box-shadow: 0 0 14px rgba(94, 245, 124, 0.4);
-}
-
-/* Кнопка способа оплаты (после выбора) */
-.method-btn.active {
-  background: rgba(94, 245, 124, 0.15);
-  color: #5ef57c;
-  border-color: #5ef57c;
-  box-shadow: 0 0 12px rgba(94, 245, 124, 0.4);
-}
-
-/* Админ-кнопка (если появится) */
-.admin-btn.active {
-  background: rgba(94, 245, 124, 0.2);
-  border-color: #5ef57c;
-  color: #5ef57c;
-}
-/* === ГАРАНТИРОВАННЫЙ НЕОН ДЛЯ АКТИВНЫХ КНОПОК === */
+/* Активные кнопки */
 .packs button.active,
 .btn.small.active,
 .pay-card.selected {
@@ -595,7 +558,6 @@ button:hover {
   transition: all 0.2s ease;
 }
 
-/* Убедимся, что #userId и adminBtn видны, если логика их не скрыла */
 #userId,
 .admin-btn:not(.hidden) {
   display: inline-block !important;
@@ -603,15 +565,14 @@ button:hover {
   opacity: 1 !important;
 }
 
-/* Лёгкая анимация для карточек способов оплаты */
 .pay-card {
   transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
+
 .pay-card.selected {
   transform: scale(0.98);
 }
 
-/* Немного увеличиваем область клика для пакетов */
 .packs button {
   transition: all 0.2s ease;
 }

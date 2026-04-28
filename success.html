@@ -5,13 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Проверка оплаты</title>
   <style>
-    body { background: #040406; color: white; font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-    .loader { width: 40px; height: 40px; border: 3px solid #2A2A35; border-top-color: #2C6EDB; border-radius: 50%; margin: 20px auto; animation: spin 1s linear infinite; }
+    body { 
+      background: var(--tg-theme-bg-color, #040406); 
+      color: var(--tg-theme-text-color, white); 
+      font-family: system-ui; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      text-align: center; 
+    }
+    .loader { 
+      width: 40px; 
+      height: 40px; 
+      border: 3px solid var(--tg-theme-hint-color, #2A2A35); 
+      border-top-color: var(--tg-theme-button-color, #2C6EDB); 
+      border-radius: 50%; 
+      margin: 20px auto; 
+      animation: spin 1s linear infinite; 
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
     .error { color: #ff8888; }
-    .success { color: #5ef57c; }
-    button { background: #2C6EDB; border: none; padding: 12px 24px; border-radius: 48px; color: white; margin-top: 20px; cursor: pointer; }
+    .success { color: var(--tg-theme-link-color, #5ef57c); }
+    button { 
+      background: var(--tg-theme-button-color, #2C6EDB); 
+      border: none; 
+      padding: 12px 24px; 
+      border-radius: 48px; 
+      color: var(--tg-theme-button-text-color, white); 
+      margin-top: 20px; 
+      cursor: pointer; 
+    }
   </style>
+  <script>
+    if (window.Telegram && Telegram.WebApp) {
+      const tg = Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+
+      const bgColor = tg.themeParams.bg_color || '#040406';
+      const textColor = tg.themeParams.text_color || '#ffffff';
+      const hintColor = tg.themeParams.hint_color || '#2A2A35';
+      const buttonColor = tg.themeParams.button_color || '#2C6EDB';
+      const buttonTextColor = tg.themeParams.button_text_color || '#ffffff';
+      const linkColor = tg.themeParams.link_color || '#5ef57c';
+      
+      document.documentElement.style.setProperty('--tg-theme-bg-color', bgColor);
+      document.documentElement.style.setProperty('--tg-theme-text-color', textColor);
+      document.documentElement.style.setProperty('--tg-theme-hint-color', hintColor);
+      document.documentElement.style.setProperty('--tg-theme-button-color', buttonColor);
+      document.documentElement.style.setProperty('--tg-theme-button-text-color', buttonTextColor);
+      document.documentElement.style.setProperty('--tg-theme-link-color', linkColor);
+      
+      document.body.style.backgroundColor = bgColor;
+      tg.setBackgroundColor(bgColor);
+      
+      tg.onEvent('themeChanged', () => {
+        const newBg = tg.themeParams.bg_color || '#040406';
+        const newText = tg.themeParams.text_color || '#ffffff';
+        const newHint = tg.themeParams.hint_color || '#2A2A35';
+        const newButton = tg.themeParams.button_color || '#2C6EDB';
+        const newButtonText = tg.themeParams.button_text_color || '#ffffff';
+        const newLink = tg.themeParams.link_color || '#5ef57c';
+        
+        document.documentElement.style.setProperty('--tg-theme-bg-color', newBg);
+        document.documentElement.style.setProperty('--tg-theme-text-color', newText);
+        document.documentElement.style.setProperty('--tg-theme-hint-color', newHint);
+        document.documentElement.style.setProperty('--tg-theme-button-color', newButton);
+        document.documentElement.style.setProperty('--tg-theme-button-text-color', newButtonText);
+        document.documentElement.style.setProperty('--tg-theme-link-color', newLink);
+        
+        document.body.style.backgroundColor = newBg;
+        tg.setBackgroundColor(newBg);
+      });
+    }
+  </script>
 </head>
 <body>
 <div>
@@ -26,16 +94,18 @@
     return;
   }
 
-  fetch(`https://yookassa-api.твой-аккаунт.workers.dev/check-payment?id=${paymentId}`)
+  fetch(`https://yookassa-api.vavavbabano.workers.dev/check-payment?id=${paymentId}`)
     .then(res => res.json())
     .then(data => {
       if (data.status === 'succeeded') {
         document.querySelector('.loader').style.display = 'none';
         document.getElementById('message').innerHTML = '<p class="success">✅ Оплата прошла успешно! Спасибо за покупку.</p><button onclick="window.location.href=\'index.html\'">Вернуться в магазин</button>';
-        // здесь можно обнулить корзину и т.д.
+        localStorage.removeItem('pendingOrder');
+        localStorage.removeItem('currentPaymentId');
       } else if (data.status === 'canceled') {
         document.querySelector('.loader').style.display = 'none';
         document.getElementById('message').innerHTML = '<p class="error">❌ Платёж отменён или не завершён. Попробуйте снова.</p><button onclick="window.location.href=\'index.html\'">На главную</button>';
+        localStorage.removeItem('currentPaymentId');
       } else {
         document.querySelector('.loader').style.display = 'none';
         document.getElementById('message').innerHTML = '<p class="error">⚠️ Статус платежа: ' + data.status + '. Попробуйте позже.</p><button onclick="window.location.href=\'index.html\'">На главную</button>';
