@@ -44,12 +44,10 @@
     .modal-btn.cancel { background: #2A2A35; color: white; }
   </style>
   <script>
-    // Telegram синхронизация только цветов (фон не трогаем)
     if (window.Telegram && Telegram.WebApp) {
       const tg = Telegram.WebApp;
       tg.ready();
       tg.expand();
-
       const setColors = () => {
         const textColor = tg.themeParams.text_color || '#E6E6E6';
         const hintColor = tg.themeParams.hint_color || '#A0A0A0';
@@ -66,7 +64,6 @@
 <body>
 
 <div class="app">
-  <!-- TOP -->
   <div class="topbar">
     <div id="userId">#----</div>
     <div class="logo"></div>
@@ -94,7 +91,7 @@
 
   <div class="card">
     <div class="price-line">
-      <input id="stars" type="number" placeholder="50" value="50">
+      <input id="stars" type="number" placeholder="0" value="50">
       <span class="price-label">Stars</span>
       <img src="img/стрелка2.png" alt="→" class="arrow-icon">
       <div id="rubOut">82.00 ₽</div>
@@ -135,7 +132,6 @@
 </div>
 
 <script>
-  // --- Telegram WebApp ---
   let tg = null;
   if (window.Telegram && window.Telegram.WebApp) {
     tg = window.Telegram.WebApp;
@@ -143,7 +139,6 @@
     tg.expand();
   }
 
-  // --- DOM элементы ---
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
@@ -154,46 +149,65 @@
   const payCards = document.querySelectorAll('.pay-card');
 
   const RUB_PER_STAR = 1.64;
+  const TON_PER_STAR = 0.009;
 
-  // Обновление цены
+  let currentCurrency = 'rub';
+  const currencyLabel = document.getElementById('currencyLabel');
+
   function updateTotal() {
-    let stars = parseInt(starsInput.value);
-    if (isNaN(stars) || stars < 1) stars = 1;
-    starsInput.value = stars;
-    rubOutDiv.innerHTML = `${(stars * RUB_PER_STAR).toFixed(2)} ₽`;
-    // Подсветить кнопку packs, если число совпадает с каким-то preset
+    const rawValue = starsInput.value;
+    let stars = 0;
+    if (rawValue !== null && rawValue !== '' && !isNaN(parseFloat(rawValue))) {
+      stars = parseFloat(rawValue);
+      if (stars < 0) stars = 0;
+    } else {
+      stars = 0;
+    }
+    starsInput.value = stars === 0 ? '' : stars;
+    
+    let total, unit;
+    if (currentCurrency === 'ton') {
+      total = stars * TON_PER_STAR;
+      unit = 'TON';
+      rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(3)} ${unit}`;
+    } else {
+      total = stars * RUB_PER_STAR;
+      unit = '₽';
+      rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(2)} ${unit}`;
+    }
+    
+    // Подсветка кнопки packs, если число совпадает
     let matched = false;
     packBtns.forEach(btn => {
       const val = parseInt(btn.getAttribute('data-stars'));
-      if (val === stars) {
+      if (val === stars && stars !== 0) {
         btn.classList.add('active');
         matched = true;
       } else {
         btn.classList.remove('active');
       }
     });
-    if (!matched) {
-      // если не совпало — убираем активные со всех
-      packBtns.forEach(btn => btn.classList.remove('active'));
-    }
+    if (!matched) packBtns.forEach(btn => btn.classList.remove('active'));
   }
 
-  // Обработка кнопок packs (50,100,...)
   packBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const stars = parseInt(btn.getAttribute('data-stars'));
       starsInput.value = stars;
       updateTotal();
-      // Визуально: убрать активный класс со всех и добавить текущему
       packBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
 
-  // Ручной ввод звёзд
   starsInput.addEventListener('input', updateTotal);
+  starsInput.addEventListener('blur', () => {
+    if (starsInput.value === '' || isNaN(parseFloat(starsInput.value))) {
+      starsInput.value = '';
+      updateTotal();
+    }
+  });
 
-  // Переключение Себе / Другому
   function setTarget(target) {
     if (target === 'self') {
       usernameField.disabled = true;
@@ -211,46 +225,33 @@
   selfBtn.addEventListener('click', () => setTarget('self'));
   otherBtn.addEventListener('click', () => setTarget('other'));
 
-  // Выбор способа оплаты (СБП / TON)
   let selectedPayment = null;
-  const currencyLabel = document.getElementById('currencyLabel');
-  
   payCards.forEach(card => {
     card.addEventListener('click', () => {
-      // Снимаем выделение со всех
       payCards.forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedPayment = card.getAttribute('data-method');
-      
-      // Меняем валюту отображения (не влияет на расчёт, только метка)
-      if (selectedPayment === 'ton') {
-        currencyLabel.textContent = 'TON';
-        const stars = parseInt(starsInput.value);
-        rubOutDiv.innerHTML = `${(stars * 0.009).toFixed(3)} TON`;
-      } else {
-        currencyLabel.textContent = 'RUB';
-        updateTotal();
-      }
+      currentCurrency = selectedPayment === 'ton' ? 'ton' : 'rub';
+      currencyLabel.textContent = currentCurrency === 'ton' ? 'TON' : 'RUB';
+      updateTotal();
     });
   });
-
-  // Инициализация: выделить первую карточку СБП по умолчанию
   if (payCards.length > 0) {
     payCards[0].classList.add('selected');
     selectedPayment = payCards[0].getAttribute('data-method');
+    currentCurrency = 'rub';
+    currencyLabel.textContent = 'RUB';
   }
 
-  // Плашка подтверждения
   function showConfirmModal(onConfirm) {
     const old = document.querySelector('.modal-overlay');
     if (old) old.remove();
-
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
       <div class="modal-card">
         <h3>🛒 Подтверждение заказа</h3>
-        <p>Вы действительно хотите купить <strong>${starsInput.value}</strong> звёзд за <strong>${rubOutDiv.innerText}</strong>?</p>
+        <p>Вы действительно хотите купить <strong>${starsInput.value || 0}</strong> звёзд за <strong>${rubOutDiv.innerText}</strong>?</p>
         <div class="modal-buttons">
           <button class="modal-btn cancel" id="modalCancel">Отмена</button>
           <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
@@ -265,7 +266,6 @@
     };
   }
 
-  // Основная логика покупки
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -276,14 +276,17 @@
         return;
       }
     }
-
-    const stars = parseInt(starsInput.value);
+    const stars = parseInt(starsInput.value) || 0;
+    if (stars <= 0) {
+      alert('Введите количество звёзд (минимум 1)');
+      return;
+    }
     const totalText = rubOutDiv.innerText;
     const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
     localStorage.setItem('pendingOrder', JSON.stringify(order));
-
     showConfirmModal(async () => {
-      const amount = parseFloat(totalText.replace(/[^0-9.,]/g, '').replace(',', '.'));
+      const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
+      const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
       try {
         const res = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
           method: 'POST',
@@ -291,7 +294,6 @@
           body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
         });
         const data = await res.json();
-
         if (data.success && data.confirmation_url) {
           window.location.href = data.confirmation_url;
         } else {
@@ -303,7 +305,6 @@
     });
   };
 
-  // Запуск
   updateTotal();
   setTarget('self');
 </script>
