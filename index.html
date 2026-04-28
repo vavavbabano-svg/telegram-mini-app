@@ -43,38 +43,6 @@
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
   </style>
-  <script>
-    // Telegram WebApp синхронизация (только цвета текста и кнопок)
-    if (window.Telegram && Telegram.WebApp) {
-      const tg = Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-
-      // Применяем цвета Telegram к CSS-переменным
-      const textColor = tg.themeParams.text_color || '#E6E6E6';
-      const hintColor = tg.themeParams.hint_color || '#A0A0A0';
-      const buttonColor = tg.themeParams.button_color || '#2D6BFF';
-      const buttonTextColor = tg.themeParams.button_text_color || '#FFFFFF';
-      
-      document.documentElement.style.setProperty('--tg-theme-text-color', textColor);
-      document.documentElement.style.setProperty('--tg-theme-hint-color', hintColor);
-      document.documentElement.style.setProperty('--tg-theme-button-color', buttonColor);
-      document.documentElement.style.setProperty('--tg-theme-button-text-color', buttonTextColor);
-      
-      // Слушаем смену темы в Telegram
-      tg.onEvent('themeChanged', () => {
-        const newText = tg.themeParams.text_color || '#E6E6E6';
-        const newHint = tg.themeParams.hint_color || '#A0A0A0';
-        const newButton = tg.themeParams.button_color || '#2D6BFF';
-        const newButtonText = tg.themeParams.button_text_color || '#FFFFFF';
-        
-        document.documentElement.style.setProperty('--tg-theme-text-color', newText);
-        document.documentElement.style.setProperty('--tg-theme-hint-color', newHint);
-        document.documentElement.style.setProperty('--tg-theme-button-color', newButton);
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', newButtonText);
-      });
-    }
-  </script>
 </head>
 <body>
 
