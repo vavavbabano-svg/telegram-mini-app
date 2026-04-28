@@ -307,15 +307,15 @@
       const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
       try {
         // ========== ВЫЗОВ CLOUDFLARE WORKER (ВМЕСТО PHP) ==========
-        const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: amount,
-            description: `Покупка ${stars} звёзд для ${recipient}`,
-            orderId: `order_${Date.now()}`
-          })
-        });
+const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    amount: amount,
+    description: `Покупка ${stars} звёзд для ${recipient}`,
+    orderId: `order_${Date.now()}`
+  })
+});
         const data = await res.json();
 
         if (data.success && data.confirmation_url) {
