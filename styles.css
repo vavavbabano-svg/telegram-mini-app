@@ -32,7 +32,7 @@ body {
   justify-content: center;
 }
 
-/* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ .container ===== */
+/* ===== ОСНОВНЫЕ СТИЛИ ===== */
 .container {
   width: 100%;
   max-width: 420px;
@@ -500,10 +500,10 @@ button:hover {
 .card:nth-child(5) { animation-delay: 0.25s; }
 .card:nth-child(6) { animation-delay: 0.30s; }
 
-/* ПК версия */
+/* ПК версия (широкий экран) — теперь тёмный фон */
 @media (min-width: 1024px) {
   body {
-    background: #f0f2f5;
+    background: var(--bg); /* убираем светлый фон, оставляем тёмный */
     padding: 0;
     margin: 0;
     min-height: 100vh;
@@ -539,7 +539,7 @@ button:hover {
   }
 }
 
-/* === Активные кнопки (зелёный неон) === */
+/* Активные кнопки */
 .packs button.active,
 .btn.small.active,
 .pay-card.selected {
