@@ -306,7 +306,8 @@
       const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
       const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
       try {
-        const res = await fetch('https://fastmystars.ru/api/lava-create.php', {
+        // ========== ВЫЗОВ CLOUDFLARE WORKER (ВМЕСТО PHP) ==========
+        const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

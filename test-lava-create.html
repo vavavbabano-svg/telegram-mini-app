@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Lava Create</title>
+</head>
+<body>
+<button id="testBtn">Тест Lava API</button>
+<pre id="result"></pre>
+
+<script>
+document.getElementById('testBtn').onclick = async () => {
+    const pre = document.getElementById('result');
+    pre.innerText = 'Загрузка...';
+    
+    try {
+        const response = await fetch('https://fastmystars.ru/api/lava-create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: 100,
+                description: 'Тестовая покупка',
+                orderId: 'test_' + Date.now()
+            })
+        });
+        
+        const text = await response.text();
+        pre.innerText = 'HTTP ' + response.status + '\n\n' + text;
+        
+        try {
+            const json = JSON.parse(text);
+            pre.innerText += '\n\n✅ JSON валидный\nURL: ' + (json.confirmation_url || 'нет');
+        } catch(e) {
+            pre.innerText += '\n\n❌ Невалидный JSON: ' + e.message;
+        }
+    } catch(err) {
+        pre.innerText = 'Ошибка: ' + err.message;
+    }
+};
+</script>
+</body>
+</html>
