@@ -13,16 +13,6 @@
   --fw-bold: 700;
 }
 
-/* Telegram WebApp синхронизация */
-body {
-  background: var(--tg-theme-bg-color, var(--bg)) !important;
-  color: var(--tg-theme-text-color, var(--text)) !important;
-}
-
-.app, .container, .card, .topbar {
-  background: var(--tg-theme-bg-color, var(--card)) !important;
-}
-
 /* RESET */
 * {
   box-sizing: border-box;
@@ -32,6 +22,8 @@ body {
 body {
   margin: 0;
   min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, sans-serif;
   font-weight: var(--fw-regular);
   touch-action: manipulation;
@@ -40,7 +32,7 @@ body {
   justify-content: center;
 }
 
-/* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ .container ===== */
+/* ===== ОСНОВНЫЕ СТИЛИ ===== */
 .container {
   width: 100%;
   max-width: 420px;
@@ -65,12 +57,12 @@ body {
   align-items: center;
   padding: 6px 0;
   font-size: 12px;
-  color: var(--tg-theme-hint-color, var(--muted));
+  color: var(--muted);
 }
 
 #userId {
   font-weight: 700;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   padding: 4px 10px;
   font-size: 12px;
@@ -78,7 +70,7 @@ body {
   width: fit-content;
   justify-self: start;
   margin-left: 4px;
-  background: var(--tg-theme-secondary-bg-color, var(--card));
+  background: var(--card);
 }
 
 .topbar-right {
@@ -89,9 +81,9 @@ body {
 }
 
 .admin-btn {
-  background: var(--tg-theme-secondary-bg-color, var(--btn));
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
-  color: var(--tg-theme-text-color, var(--text));
+  background: var(--btn);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text);
   padding: 5px 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -116,10 +108,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--tg-theme-secondary-bg-color, var(--btn));
+  background: var(--btn);
   border-radius: 8px;
   text-decoration: none;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.2s ease;
 }
 
@@ -135,7 +127,7 @@ body {
 
 /* CARD */
 .card {
-  background: var(--tg-theme-secondary-bg-color, var(--card));
+  background: var(--card);
   border-radius: var(--r);
   padding: 10px;
   margin: 0;
@@ -180,10 +172,10 @@ input {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   outline: none;
-  background: var(--tg-theme-bg-color, var(--input));
-  color: var(--tg-theme-text-color, var(--text));
+  background: var(--input);
+  color: var(--text);
   transition: all 0.2s ease;
 }
 
@@ -204,9 +196,9 @@ input:focus {
 .btn.small {
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
-  background: var(--tg-theme-secondary-bg-color, var(--btn));
-  color: var(--tg-theme-hint-color, var(--muted));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--btn);
+  color: var(--muted);
   font-size: 13px;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
@@ -241,10 +233,10 @@ input:focus {
   text-align: center;
   padding: 8px 4px;
   border-radius: 10px;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   outline: none;
-  background: var(--tg-theme-bg-color, var(--input));
-  color: var(--tg-theme-text-color, var(--text));
+  background: var(--input);
+  color: var(--text);
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
@@ -257,7 +249,7 @@ input:focus {
 
 .price-label {
   font-size: 11px;
-  color: var(--tg-theme-hint-color, var(--muted));
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -271,7 +263,7 @@ input:focus {
 }
 
 #rubOut {
-  color: var(--tg-theme-hint-color, var(--muted));
+  color: var(--muted);
   font-weight: var(--fw-bold);
   font-size: 14px;
   white-space: nowrap;
@@ -289,9 +281,9 @@ input:focus {
 .packs button {
   padding: 8px;
   border-radius: 10px;
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.15));
-  background: var(--tg-theme-secondary-bg-color, var(--btn));
-  color: var(--tg-theme-hint-color, var(--muted));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--btn);
+  color: var(--muted);
   font-size: 13px;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
@@ -320,7 +312,7 @@ input:focus {
 }
 
 .pay-card {
-  background: var(--tg-theme-secondary-bg-color, #1c1c1e);
+  background: #1c1c1e;
   border-radius: 18px;
   aspect-ratio: 1 / 1;
   display: flex;
@@ -331,7 +323,7 @@ input:focus {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--tg-theme-hint-color, rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
 }
 
@@ -395,7 +387,7 @@ input:focus {
 }
 
 .payment-name {
-  color: var(--tg-theme-text-color, #ffffff);
+  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -413,12 +405,12 @@ input:focus {
 /* TERMS */
 .terms {
   font-size: 11px;
-  color: var(--tg-theme-hint-color, var(--muted));
+  color: var(--muted);
   text-align: center;
 }
 
 .terms a {
-  color: var(--tg-theme-hint-color, var(--muted));
+  color: var(--muted);
   text-decoration: none;
 }
 
@@ -459,8 +451,8 @@ button:active {
 }
 
 button {
-  background: var(--tg-theme-secondary-bg-color, #2c2c2c);
-  color: var(--tg-theme-button-text-color, white);
+  background: #2c2c2c;
+  color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 12px;
@@ -541,13 +533,9 @@ button:hover {
   .seller-info {
     text-align: left;
   }
-
-  .card {
-    animation: fadeSlideUp 0.4s ease forwards;
-  }
 }
 
-/* Активные кнопки */
+/* Активные кнопки (неон) */
 .packs button.active,
 .btn.small.active,
 .pay-card.selected {
@@ -575,4 +563,42 @@ button:hover {
 
 .packs button {
   transition: all 0.2s ease;
+}
+
+/* Telegram WebApp синхронизация (только цвета текста и кнопок, фон остаётся оригинальным) */
+body {
+  background: var(--bg) !important;
+  color: var(--tg-theme-text-color, var(--text)) !important;
+}
+
+.topbar, .card, .app {
+  background: var(--card) !important;
+}
+
+.btn.small, .packs button, .admin-btn, .tg-btn {
+  background: var(--btn) !important;
+  color: var(--tg-theme-text-color, var(--text)) !important;
+}
+
+input {
+  background: var(--input) !important;
+  color: var(--tg-theme-text-color, var(--text)) !important;
+}
+
+.buy {
+  background: #5ef57c !important;
+  color: #000 !important;
+}
+
+.modal-btn.confirm {
+  background: var(--tg-theme-button-color, #2C6EDB) !important;
+  color: var(--tg-theme-button-text-color, white) !important;
+}
+
+.currency-tag, .payment-name {
+  color: var(--tg-theme-text-color, #ffffff) !important;
+}
+
+.terms a {
+  color: var(--tg-theme-hint-color, var(--muted)) !important;
 }

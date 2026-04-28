@@ -169,13 +169,58 @@
 </div>
 
 <script>
-  // --- Telegram WebApp ---
-  let tg = null;
-  if (window.Telegram && window.Telegram.WebApp) {
-    tg = window.Telegram.WebApp;
+  if (window.Telegram && Telegram.WebApp) {
+    const tg = Telegram.WebApp;
     tg.ready();
     tg.expand();
+
+    // Используем тему Telegram, но если что-то не пришло — ставим твои цвета
+    const bgColor = tg.themeParams.bg_color || '#1E1E1E';
+    const secondaryBgColor = tg.themeParams.secondary_bg_color || '#242424';
+    const textColor = tg.themeParams.text_color || '#E6E6E6';
+    const hintColor = tg.themeParams.hint_color || '#A0A0A0';
+    const buttonColor = tg.themeParams.button_color || '#2D6BFF';
+    const buttonTextColor = tg.themeParams.button_text_color || '#FFFFFF';
+    const headerBg = tg.themeParams.header_bg_color || bgColor;
+
+    document.documentElement.style.setProperty('--tg-theme-bg-color', bgColor);
+    document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', secondaryBgColor);
+    document.documentElement.style.setProperty('--tg-theme-text-color', textColor);
+    document.documentElement.style.setProperty('--tg-theme-hint-color', hintColor);
+    document.documentElement.style.setProperty('--tg-theme-button-color', buttonColor);
+    document.documentElement.style.setProperty('--tg-theme-button-text-color', buttonTextColor);
+    document.documentElement.style.setProperty('--tg-theme-header-bg-color', headerBg);
+    
+    document.body.style.backgroundColor = bgColor;
+    document.documentElement.style.backgroundColor = bgColor;
+    tg.setHeaderColor(headerBg);
+    tg.setBackgroundColor(bgColor);
+
+    // Если тема меняется в Telegram
+    tg.onEvent('themeChanged', () => {
+      const newBg = tg.themeParams.bg_color || '#1E1E1E';
+      const newSecondaryBg = tg.themeParams.secondary_bg_color || '#242424';
+      const newText = tg.themeParams.text_color || '#E6E6E6';
+      const newHint = tg.themeParams.hint_color || '#A0A0A0';
+      const newButton = tg.themeParams.button_color || '#2D6BFF';
+      const newButtonText = tg.themeParams.button_text_color || '#FFFFFF';
+      const newHeader = tg.themeParams.header_bg_color || newBg;
+      
+      document.documentElement.style.setProperty('--tg-theme-bg-color', newBg);
+      document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', newSecondaryBg);
+      document.documentElement.style.setProperty('--tg-theme-text-color', newText);
+      document.documentElement.style.setProperty('--tg-theme-hint-color', newHint);
+      document.documentElement.style.setProperty('--tg-theme-button-color', newButton);
+      document.documentElement.style.setProperty('--tg-theme-button-text-color', newButtonText);
+      document.documentElement.style.setProperty('--tg-theme-header-bg-color', newHeader);
+      
+      document.body.style.backgroundColor = newBg;
+      document.documentElement.style.backgroundColor = newBg;
+      tg.setHeaderColor(newHeader);
+      tg.setBackgroundColor(newBg);
+    });
   }
+</script>
 
   // --- DOM ---
   const starsInput = document.getElementById('stars');
