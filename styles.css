@@ -32,7 +32,7 @@ body {
   justify-content: center;
 }
 
-/* ===== ОСНОВНЫЕ СТИЛИ ===== */
+/* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ .container ===== */
 .container {
   width: 100%;
   max-width: 420px;
@@ -533,9 +533,13 @@ button:hover {
   .seller-info {
     text-align: left;
   }
+
+  .card {
+    animation: fadeSlideUp 0.4s ease forwards;
+  }
 }
 
-/* Активные кнопки (неон) */
+/* === Активные кнопки (зелёный неон) === */
 .packs button.active,
 .btn.small.active,
 .pay-card.selected {
@@ -563,42 +567,4 @@ button:hover {
 
 .packs button {
   transition: all 0.2s ease;
-}
-
-/* Telegram WebApp синхронизация (только цвета текста и кнопок, фон остаётся оригинальным) */
-body {
-  background: var(--bg) !important;
-  color: var(--tg-theme-text-color, var(--text)) !important;
-}
-
-.topbar, .card, .app {
-  background: var(--card) !important;
-}
-
-.btn.small, .packs button, .admin-btn, .tg-btn {
-  background: var(--btn) !important;
-  color: var(--tg-theme-text-color, var(--text)) !important;
-}
-
-input {
-  background: var(--input) !important;
-  color: var(--tg-theme-text-color, var(--text)) !important;
-}
-
-.buy {
-  background: #5ef57c !important;
-  color: #000 !important;
-}
-
-.modal-btn.confirm {
-  background: var(--tg-theme-button-color, #2C6EDB) !important;
-  color: var(--tg-theme-button-text-color, white) !important;
-}
-
-.currency-tag, .payment-name {
-  color: var(--tg-theme-text-color, #ffffff) !important;
-}
-
-.terms a {
-  color: var(--tg-theme-hint-color, var(--muted)) !important;
 }
