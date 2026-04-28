@@ -42,25 +42,6 @@
     }
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
-    .btn-loading {
-      opacity: 0.7;
-      cursor: wait;
-      pointer-events: none;
-    }
-    .loader-icon {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
   <script>
     if (window.Telegram && Telegram.WebApp) {
@@ -195,6 +176,7 @@
       rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(2)} ${unit}`;
     }
     
+    // Подсветка кнопки packs, если число совпадает
     let matched = false;
     packBtns.forEach(btn => {
       const val = parseInt(btn.getAttribute('data-stars'));
@@ -284,19 +266,6 @@
     };
   }
 
-  // Функция для показа загрузки на кнопке
-  function setButtonLoading(loading) {
-    if (loading) {
-      buyButton.disabled = true;
-      buyButton.classList.add('btn-loading');
-      buyButton.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
-    } else {
-      buyButton.disabled = false;
-      buyButton.classList.remove('btn-loading');
-      buyButton.innerHTML = 'Купить звёзды';
-    }
-  }
-
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -312,17 +281,10 @@
       alert('Введите количество звёзд (минимум 1)');
       return;
     }
-    if (!selectedPayment) {
-      alert('Выберите способ оплаты');
-      return;
-    }
-
     const totalText = rubOutDiv.innerText;
     const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
     localStorage.setItem('pendingOrder', JSON.stringify(order));
-
     showConfirmModal(async () => {
-      setButtonLoading(true);
       const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
       const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
       try {
@@ -336,11 +298,9 @@
           window.location.href = data.confirmation_url;
         } else {
           alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
-          setButtonLoading(false);
         }
       } catch (err) {
         alert('Ошибка соединения: ' + err.message);
-        setButtonLoading(false);
       }
     });
   };
