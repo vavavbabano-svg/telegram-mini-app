@@ -43,6 +43,25 @@
     .modal-btn.confirm { background: #2C6EDB; color: white; }
     .modal-btn.cancel { background: #2A2A35; color: white; }
   </style>
+  <script>
+    // Telegram синхронизация только цветов (фон не трогаем)
+    if (window.Telegram && Telegram.WebApp) {
+      const tg = Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+
+      const setColors = () => {
+        const textColor = tg.themeParams.text_color || '#E6E6E6';
+        const hintColor = tg.themeParams.hint_color || '#A0A0A0';
+        const buttonColor = tg.themeParams.button_color || '#2C6EDB';
+        document.documentElement.style.setProperty('--tg-text', textColor);
+        document.documentElement.style.setProperty('--tg-hint', hintColor);
+        document.documentElement.style.setProperty('--tg-button', buttonColor);
+      };
+      setColors();
+      tg.onEvent('themeChanged', setColors);
+    }
+  </script>
 </head>
 <body>
 
@@ -124,24 +143,57 @@
     tg.expand();
   }
 
-  // --- DOM ---
+  // --- DOM элементы ---
   const starsInput = document.getElementById('stars');
   const rubOutDiv = document.getElementById('rubOut');
   const selfBtn = document.getElementById('selfBtn');
   const otherBtn = document.getElementById('otherBtn');
   const usernameField = document.getElementById('username');
   const buyButton = document.getElementById('buyButton');
-  const packButtons = document.querySelectorAll('.packs button');
+  const packBtns = document.querySelectorAll('.packs button');
+  const payCards = document.querySelectorAll('.pay-card');
 
   const RUB_PER_STAR = 1.64;
 
+  // Обновление цены
   function updateTotal() {
     let stars = parseInt(starsInput.value);
     if (isNaN(stars) || stars < 1) stars = 1;
     starsInput.value = stars;
     rubOutDiv.innerHTML = `${(stars * RUB_PER_STAR).toFixed(2)} ₽`;
+    // Подсветить кнопку packs, если число совпадает с каким-то preset
+    let matched = false;
+    packBtns.forEach(btn => {
+      const val = parseInt(btn.getAttribute('data-stars'));
+      if (val === stars) {
+        btn.classList.add('active');
+        matched = true;
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    if (!matched) {
+      // если не совпало — убираем активные со всех
+      packBtns.forEach(btn => btn.classList.remove('active'));
+    }
   }
 
+  // Обработка кнопок packs (50,100,...)
+  packBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const stars = parseInt(btn.getAttribute('data-stars'));
+      starsInput.value = stars;
+      updateTotal();
+      // Визуально: убрать активный класс со всех и добавить текущему
+      packBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Ручной ввод звёзд
+  starsInput.addEventListener('input', updateTotal);
+
+  // Переключение Себе / Другому
   function setTarget(target) {
     if (target === 'self') {
       usernameField.disabled = true;
@@ -156,19 +208,37 @@
       otherBtn.classList.add('active');
     }
   }
-
   selfBtn.addEventListener('click', () => setTarget('self'));
   otherBtn.addEventListener('click', () => setTarget('other'));
-  starsInput.addEventListener('input', updateTotal);
-  packButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const stars = btn.getAttribute('data-stars');
-      if (stars) starsInput.value = stars;
-      updateTotal();
+
+  // Выбор способа оплаты (СБП / TON)
+  let selectedPayment = null;
+  const currencyLabel = document.getElementById('currencyLabel');
+  
+  payCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Снимаем выделение со всех
+      payCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPayment = card.getAttribute('data-method');
+      
+      // Меняем валюту отображения (не влияет на расчёт, только метка)
+      if (selectedPayment === 'ton') {
+        currencyLabel.textContent = 'TON';
+        const stars = parseInt(starsInput.value);
+        rubOutDiv.innerHTML = `${(stars * 0.009).toFixed(3)} TON`;
+      } else {
+        currencyLabel.textContent = 'RUB';
+        updateTotal();
+      }
     });
   });
-  updateTotal();
-  setTarget('self');
+
+  // Инициализация: выделить первую карточку СБП по умолчанию
+  if (payCards.length > 0) {
+    payCards[0].classList.add('selected');
+    selectedPayment = payCards[0].getAttribute('data-method');
+  }
 
   // Плашка подтверждения
   function showConfirmModal(onConfirm) {
@@ -195,7 +265,7 @@
     };
   }
 
-  // ГЛАВНОЕ: покупка → запрос к API → открытие ссылки от ЮKassa
+  // Основная логика покупки
   buyButton.onclick = () => {
     let recipient = usernameField.value.trim();
     if (!recipient) {
@@ -232,6 +302,10 @@
       }
     });
   };
+
+  // Запуск
+  updateTotal();
+  setTarget('self');
 </script>
 </body>
 </html>
