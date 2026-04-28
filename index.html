@@ -69,7 +69,7 @@
     <div class="logo"></div>
     <div class="topbar-right">
       <button id="adminBtn" class="admin-btn hidden">Admin</button>
-      <a class="tg-btn" href="https://t.me/MyStars812support_bot?start=help" target="_blank">
+      <a class="tg-btn" href="https://t.me/MyStarsSupport812_bot?start=help" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
       </a>
     </div>
@@ -276,6 +276,7 @@ buyButton.onclick = () => {
       return;
     }
   }
+
   const stars = parseInt(starsInput.value) || 0;
   if (stars <= 0) {
     alert('Введите количество звёзд (минимум 1)');
@@ -287,38 +288,44 @@ buyButton.onclick = () => {
   }
 
   const totalText = rubOutDiv.innerText;
-  const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
+  const order = {
+    recipient,
+    stars,
+    total: totalText,
+    target: selfBtn.classList.contains('active') ? 'self' : 'other',
+    timestamp: Date.now()
+  };
   localStorage.setItem('pendingOrder', JSON.stringify(order));
 
   showConfirmModal(async () => {
     setButtonLoading(true);
     const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
     const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
+
     try {
-      const res = await fetch('https://yookassa-api.vavavbabano.workers.dev/', {
+      const res = await fetch('https://fastmystars.ru/api/lava-create.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}` })
+        body: JSON.stringify({
+          amount: amount,
+          description: `Покупка ${stars} звёзд для ${recipient}`,
+          orderId: `order_${Date.now()}`
+        })
       });
+
       const data = await res.json();
 
       if (data.success && data.confirmation_url) {
+        // Редирект на страницу оплаты Lava
         window.location.href = data.confirmation_url;
       } else {
-        // ЛЮБУЮ ОШИБКУ ЮKassa превращаем в понятное сообщение
+        alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
         setButtonLoading(false);
-        alert('Платёжная система временно недоступна. Попробуйте позже.');
       }
     } catch (err) {
-      console.error('err', err);
+      console.error('Ошибка:', err);
+      alert('Ошибка соединения с сервером оплаты');
       setButtonLoading(false);
-      alert('Не удалось соединиться с платёжным сервером. Проверьте интернет.');
     }
   });
 };
-
-  updateTotal();
-  setTarget('self');
-</script>
-</body>
-</html>
