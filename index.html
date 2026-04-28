@@ -69,7 +69,7 @@
     <div class="logo"></div>
     <div class="topbar-right">
       <button id="adminBtn" class="admin-btn hidden">Admin</button>
-      <a class="tg-btn" href="https://t.me/MyStarsSupport812_bot?start=help" target="_blank">
+      <a class="tg-btn" href="https://t.me/MyStars812support_bot?start=help" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
       </a>
     </div>
@@ -91,7 +91,7 @@
 
   <div class="card">
     <div class="price-line">
-      <input id="stars" type="number" placeholder="0" value="50">
+      <input id="stars" type="number" placeholder="50" value="50">
       <span class="price-label">Stars</span>
       <img src="img/стрелка2.png" alt="→" class="arrow-icon">
       <div id="rubOut">82.00 ₽</div>
@@ -176,7 +176,6 @@
       rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(2)} ${unit}`;
     }
     
-    // Подсветка кнопки packs, если число совпадает
     let matched = false;
     packBtns.forEach(btn => {
       const val = parseInt(btn.getAttribute('data-stars'));
@@ -266,66 +265,73 @@
     };
   }
 
-buyButton.onclick = () => {
-  let recipient = usernameField.value.trim();
-  if (!recipient) {
-    if (selfBtn.classList.contains('active')) {
-      recipient = 'свой аккаунт';
+  function setButtonLoading(loading) {
+    if (loading) {
+      buyButton.disabled = true;
+      buyButton.classList.add('btn-loading');
+      buyButton.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
     } else {
-      alert('Укажите @username получателя');
+      buyButton.disabled = false;
+      buyButton.classList.remove('btn-loading');
+      buyButton.innerHTML = 'Купить звёзды';
+    }
+  }
+
+  buyButton.onclick = () => {
+    let recipient = usernameField.value.trim();
+    if (!recipient) {
+      if (selfBtn.classList.contains('active')) {
+        recipient = 'свой аккаунт';
+      } else {
+        alert('Укажите @username получателя');
+        return;
+      }
+    }
+    const stars = parseInt(starsInput.value) || 0;
+    if (stars <= 0) {
+      alert('Введите количество звёзд (минимум 1)');
       return;
     }
-  }
+    if (!selectedPayment) {
+      alert('Выберите способ оплаты');
+      return;
+    }
 
-  const stars = parseInt(starsInput.value) || 0;
-  if (stars <= 0) {
-    alert('Введите количество звёзд (минимум 1)');
-    return;
-  }
-  if (!selectedPayment) {
-    alert('Выберите способ оплаты');
-    return;
-  }
+    const totalText = rubOutDiv.innerText;
+    const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
+    localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-  const totalText = rubOutDiv.innerText;
-  const order = {
-    recipient,
-    stars,
-    total: totalText,
-    target: selfBtn.classList.contains('active') ? 'self' : 'other',
-    timestamp: Date.now()
-  };
-  localStorage.setItem('pendingOrder', JSON.stringify(order));
+    showConfirmModal(async () => {
+      setButtonLoading(true);
+      const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
+      const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
+      try {
+        const res = await fetch('https://fastmystars.ru/api/lava-create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: amount,
+            description: `Покупка ${stars} звёзд для ${recipient}`,
+            orderId: `order_${Date.now()}`
+          })
+        });
+        const data = await res.json();
 
-  showConfirmModal(async () => {
-    setButtonLoading(true);
-    const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
-    const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
-
-    try {
-      const res = await fetch('https://fastmystars.ru/api/lava-create.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: amount,
-          description: `Покупка ${stars} звёзд для ${recipient}`,
-          orderId: `order_${Date.now()}`
-        })
-      });
-
-      const data = await res.json();
-
-      if (data.success && data.confirmation_url) {
-        // Редирект на страницу оплаты Lava
-        window.location.href = data.confirmation_url;
-      } else {
-        alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+        if (data.success && data.confirmation_url) {
+          window.location.href = data.confirmation_url;
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+          setButtonLoading(false);
+        }
+      } catch (err) {
+        alert('Ошибка соединения: ' + err.message);
         setButtonLoading(false);
       }
-    } catch (err) {
-      console.error('Ошибка:', err);
-      alert('Ошибка соединения с сервером оплаты');
-      setButtonLoading(false);
-    }
-  });
-};
+    });
+  };
+
+  updateTotal();
+  setTarget('self');
+</script>
+</body>
+</html>
