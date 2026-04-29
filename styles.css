@@ -391,3 +391,51 @@ body {
     87%{ transform: translateX(-1px); }
 }
 .shake { animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+/* Добавьте в конец файла styles.css */
+
+/* Розово‑синий неон за звездой */
+.star-container {
+    position: relative;
+}
+.star-glow--outer {
+    background: radial-gradient(circle at 30% 30%, rgba(255, 94, 158, 0.9), rgba(61, 126, 255, 0.9));
+    filter: blur(28px);
+    animation: neonPulse 3s ease-in-out infinite;
+}
+.star-glow--inner {
+    background: radial-gradient(circle at 60% 70%, rgba(61, 126, 255, 0.9), rgba(255, 94, 158, 0.9));
+    filter: blur(18px);
+}
+@keyframes neonPulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.6; transform: scale(1); }
+}
+
+/* Частицы — розовые и синие */
+.spark {
+    background: radial-gradient(circle, #ff5e9e, #3d7eff);
+}
+.spark--1, .spark--3, .spark--5 { background: radial-gradient(circle, #ff5e9e, #ff1e6e); }
+.spark--2, .spark--4 { background: radial-gradient(circle, #3d7eff, #1a4fcc); }
+
+/* Кнопки футера — вся ширина, серые, без подчёркивания */
+.footer-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0 12px;
+    width: 100%;
+}
+.footer-link {
+    color: #8e8e93;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    white-space: nowrap;
+}
+.footer-link:hover {
+    color: #3d7eff;
+}

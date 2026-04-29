@@ -12,6 +12,7 @@
     // DOM элементы
     const usernameInput = document.getElementById('username');
     const quantityDisplay = document.getElementById('quantityDisplay');
+    const starCountInput = document.getElementById('star-count');
     const summaryQty = document.getElementById('summaryQty');
     const totalPriceSpan = document.getElementById('totalPrice');
     const btnText = document.getElementById('btnText');
@@ -30,8 +31,10 @@
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
 
+    // Главная функция обновления UI
     function updateUI() {
         quantityDisplay.innerText = quantity;
+        if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
         summaryQty.innerText = quantity;
         const total = quantity * RUB_PER_STAR;
         totalPriceSpan.innerText = formatPrice(total);
@@ -39,6 +42,7 @@
         btnMinus.classList.toggle('quantity__btn--disabled', quantity <= 10);
     }
 
+    // Изменение кнопками +/-
     function changeQuantity(delta) {
         let newVal = quantity + delta;
         if (newVal < 10) return;
@@ -47,8 +51,44 @@
         updateUI();
     }
 
+    // Ручной ввод в поле star-count
+    function handleManualInput() {
+        if (!starCountInput) return;
+        let raw = starCountInput.value.trim();
+        if (raw === '') {
+            quantity = 0;
+        } else {
+            let val = parseInt(raw);
+            if (isNaN(val)) val = 0;
+            if (val < 0) val = 0;
+            if (val > 999999) val = 999999;
+            quantity = val;
+        }
+        updateUI();
+    }
+
     btnMinus.addEventListener('click', () => changeQuantity(-10));
     btnPlus.addEventListener('click', () => changeQuantity(10));
+
+    // Ограничение на 5 символов и ручной ввод
+    if (starCountInput) {
+        // Разрешаем только цифры
+        starCountInput.addEventListener('input', (e) => {
+            let val = e.target.value;
+            // Ограничиваем длину 5 символами
+            if (val.length > 5) {
+                e.target.value = val.slice(0, 5);
+            }
+            handleManualInput();
+        });
+        // При потере фокуса, если поле пустое – ставим 0
+        starCountInput.addEventListener('blur', () => {
+            if (starCountInput.value === '') {
+                quantity = 0;
+                updateUI();
+            }
+        });
+    }
 
     // валидация username
     function validateUsername() {
@@ -64,7 +104,7 @@
         return true;
     }
 
-    // Плашка подтверждения (как в старом дизайне)
+    // Плашка подтверждения
     function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
@@ -94,12 +134,11 @@
             purchaseBtn.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
         } else {
             purchaseBtn.disabled = false;
-            purchaseBtn.innerHTML = '<span class="button__icon">⭐</span> <span id="btnText">Купить ' + quantity + ' звёзд</span> <span class="button__icon">⭐</span>';
-            document.getElementById('btnText').innerText = `Купить ${quantity} звёзд`;
+            purchaseBtn.innerHTML = '<img src="img/R.png" class="button__icon" style="width:20px;height:20px;"> <span id="btnText">Купить ' + quantity + ' звёзд</span> <img src="img/R.png" class="button__icon" style="width:20px;height:20px;">';
         }
     }
 
-    // Lava API (полностью тот же, что работал)
+    // Lava API
     async function createLavaPayment(amount, stars, recipient) {
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
