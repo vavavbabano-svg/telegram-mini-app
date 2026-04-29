@@ -1,3 +1,5 @@
+// Полностью исправленный app.js (кнопки +/– работают, клавиатура обычная, только цифры)
+
 (function() {
     // ---------- КОНФИГ ----------
     const RUB_PER_STAR = 1.59;
@@ -39,7 +41,7 @@
         const total = quantity * RUB_PER_STAR;
         totalPriceSpan.innerText = formatPrice(total);
         btnText.innerText = `Купить ${quantity} звёзд`;
-        btnMinus.classList.toggle('quantity__btn--disabled', quantity <= 10);
+        if (btnMinus) btnMinus.classList.toggle('quantity__btn--disabled', quantity <= 10);
     }
 
     // Изменение кнопками +/-
@@ -67,16 +69,18 @@
         updateUI();
     }
 
-    btnMinus.addEventListener('click', () => changeQuantity(-10));
-    btnPlus.addEventListener('click', () => changeQuantity(10));
+    // Обработчики кнопок +/–
+    if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
+    if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
 
     // Ограничение на 5 символов и ручной ввод
     if (starCountInput) {
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            if (val.length > 5) {
-                e.target.value = val.slice(0, 5);
-            }
+            // Разрешаем только цифры
+            val = val.replace(/[^0-9]/g, '');
+            if (val.length > 5) val = val.slice(0, 5);
+            e.target.value = val;
             handleManualInput();
         });
         starCountInput.addEventListener('blur', () => {
@@ -84,28 +88,6 @@
                 quantity = 0;
                 updateUI();
             }
-        });
-    }
-
-    // ========== БЛОКИРОВКА ЛЮБЫХ СИМВОЛОВ, КРОМЕ ЦИФР ==========
-    if (starCountInput) {
-        // Запрещаем ввод букв и спецсимволов через beforeinput
-        starCountInput.addEventListener('beforeinput', (e) => {
-            if (!/^[0-9]*$/.test(e.data) && e.data !== null) {
-                e.preventDefault();
-            }
-        });
-        
-        // Разрешаем только цифры при нажатии клавиш
-        starCountInput.addEventListener('keypress', (e) => {
-            if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                e.preventDefault();
-            }
-        });
-        
-        // Запрещаем вставку текста (чтобы не вставить буквы)
-        starCountInput.addEventListener('paste', (e) => {
-            e.preventDefault();
         });
     }
 
@@ -211,7 +193,7 @@
         if (e.key === 'Enter') purchaseBtn.click();
     });
 
-    // ========== ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
+    // Закрытие клавиатуры
     if (starCountInput) {
         starCountInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
