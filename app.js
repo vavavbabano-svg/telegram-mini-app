@@ -6,15 +6,6 @@
         tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        
-        // Сохраняем данные о текущем пользователе
-        try {
-            const params = new URLSearchParams(tg.initData);
-            const userStr = params.get('user');
-            if (userStr) {
-                window.TG_USER = JSON.parse(userStr);
-            }
-        } catch(e) {}
     }
 
     const usernameInput = document.getElementById('username');
@@ -26,9 +17,11 @@
     const btnPlus = document.getElementById('btnPlus');
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
-    const usernamePreview = document.getElementById('usernamePreview');
-    const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
+
+    // Запрещаем ввод @ — она уже снаружи
+    usernameInput.addEventListener('input', () => {
+        usernameInput.value = usernameInput.value.replace(/@/g, '');
+    });
 
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
@@ -71,31 +64,6 @@
     });
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
-
-// Показ аватарки и имени при вводе username (через Workers)
-usernameInput.addEventListener('input', () => {
-    usernameCard.style.borderColor = '';
-    const val = usernameInput.value.trim();
-    
-    if (val.length > 0) {
-        // Проверяем своё имя
-        if (window.TG_USER && val.toLowerCase() === (window.TG_USER.username || '').toLowerCase()) {
-            userName.textContent = window.TG_USER.first_name || 'Вы';
-            userAvatar.src = `https://telegram-photo.vavavbabano.workers.dev/photo?user_id=${window.TG_USER.id}`;
-            userAvatar.onerror = () => {
-                userAvatar.src = 'img/R.png';
-            };
-            usernamePreview.style.display = 'flex';
-        } else {
-            // Для чужих — показываем @username, аватарку не грузим
-            userName.textContent = '@' + val;
-            userAvatar.src = 'img/R.png';
-            usernamePreview.style.display = 'flex';
-        }
-    } else {
-        usernamePreview.style.display = 'none';
-    }
-});
 
     function validateUsername() {
         const val = usernameInput.value.trim();
