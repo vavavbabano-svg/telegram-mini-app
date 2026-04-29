@@ -33,12 +33,8 @@
             usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
         }
         
-        // Полная синхронизация с темой Telegram
-        const bgColor = tg.themeParams?.bg_color || '#0F0F11';
-        const headerColor = tg.themeParams?.header_bg_color || bgColor;
-        document.body.style.backgroundColor = bgColor;
-        tg.setHeaderColor(headerColor);
-        tg.setBackgroundColor(bgColor);
+        // Шапка под цвет фона мини-аппа
+        tg.setHeaderColor('#0F0F11');
     }
     
     // Форматирование цены
