@@ -7,21 +7,19 @@
         tg.ready();
         tg.expand();
         
-        // Проверка данных через API
+        // Пробуем взять username из initData
         if (tg.initData) {
-            fetch('https://telegram-auth.vavavbabano.workers.dev', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ initData: tg.initData })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && data.user && !usernameInput.dataset.filled) {
-                    usernameInput.value = data.user.username || '';
-                    usernameInput.dataset.filled = '1';
+            try {
+                const params = new URLSearchParams(tg.initData);
+                const userStr = params.get('user');
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    if (user.username && !usernameInput.dataset.filled) {
+                        usernameInput.value = user.username;
+                        usernameInput.dataset.filled = '1';
+                    }
                 }
-            })
-            .catch(() => {});
+            } catch(e) {}
         }
     }
 
