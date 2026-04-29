@@ -6,6 +6,23 @@
         tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        
+        // Проверка данных через API
+        if (tg.initData) {
+            fetch('https://telegram-auth.vavavbabano.workers.dev', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ initData: tg.initData })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.user && !usernameInput.dataset.filled) {
+                    usernameInput.value = data.user.username || '';
+                    usernameInput.dataset.filled = '1';
+                }
+            })
+            .catch(() => {});
+        }
     }
 
     const usernameInput = document.getElementById('username');
@@ -63,27 +80,26 @@
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
-// Показ имени при вводе username
-usernameInput.addEventListener('input', () => {
-    usernameCard.style.borderColor = '';
-    const val = usernameInput.value.trim();
-    
-    if (val.length > 0) {
-        const ownUsername = tg?.initDataUnsafe?.user?.username;
-        const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
+    // Показ имени при вводе username
+    usernameInput.addEventListener('input', () => {
+        usernameCard.style.borderColor = '';
+        const val = usernameInput.value.trim();
         
-        if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
-            userName.textContent = ownFirstName;
+        if (val.length > 0) {
+            const ownUsername = tg?.initDataUnsafe?.user?.username;
+            const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
+            
+            if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
+                userName.textContent = ownFirstName;
+            } else {
+                userName.textContent = '@' + val;
+            }
+            
+            usernamePreview.style.display = 'flex';
         } else {
-            userName.textContent = '@' + val;
+            usernamePreview.style.display = 'none';
         }
-        
-        // Принудительно показываем
-        usernamePreview.style.display = 'flex';
-    } else {
-        usernamePreview.style.display = 'none';
-    }
-});
+    });
 
     function validateUsername() {
         const val = usernameInput.value.trim();
