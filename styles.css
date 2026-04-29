@@ -1,18 +1,18 @@
 :root {
-    --bg-color: #07070b;
-    --card-bg: #0e0e12;
-    --card-border: #1a1a24;
+    --bg-color: #0a0a14;
+    --card-bg: #0f0f18;
+    --card-border: #1f1f2e;
     --text-main: #ffffff;
-    --text-secondary: #a1a1b0;
+    --text-secondary: #b8b8d0;
+    --accent-pink: #ff5e9e;
     --accent-purple: #b77eff;
     --accent-blue: #3d7eff;
-    --accent-pink: #ff6b9d;
-    --button-gradient: linear-gradient(105deg, #3d7eff, #b77eff);
-    --border-radius-card: 32px;
-    --border-radius-input: 20px;
+    --button-gradient: linear-gradient(105deg, #ff5e9e, #b77eff);
+    --border-radius-card: 48px;
+    --border-radius-input: 28px;
     --border-radius-button: 60px;
-    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
-    --shadow-focus: 0 0 0 3px rgba(61, 126, 255, 0.3);
+    --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-focus: 0 0 0 4px rgba(255, 94, 158, 0.4);
 }
 
 * {
@@ -23,7 +23,7 @@
 }
 
 body {
-    background: radial-gradient(circle at 20% 30%, #0a0a1a, #020205 90%);
+    background: radial-gradient(circle at 10% 20%, #1a1a3a, #03030a 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -35,239 +35,119 @@ body {
 .app-container {
     max-width: 440px;
     width: 100%;
-    background: rgba(8, 8, 12, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 15, 24, 0.7);
+    backdrop-filter: blur(12px);
     border-radius: var(--border-radius-card);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    padding: 24px 20px 32px;
-    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 28px 20px 36px;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-/* ГРАДИЕНТНЫЙ ЗАГОЛОВОК */
+/* сердечко-декор (задний план) */
+.app-container::before {
+    content: "❤️";
+    position: absolute;
+    bottom: -30px;
+    right: -20px;
+    font-size: 180px;
+    opacity: 0.04;
+    pointer-events: none;
+    transform: rotate(-15deg);
+    font-family: monospace;
+}
+
+/* заголовок с градиентом + сердечко */
 .header h1 {
-    font-size: 24px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ffffff, #b77eff, #3d7eff);
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #ff5e9e, #b77eff);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     text-align: center;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
     white-space: nowrap;
+    position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
 .header h1 span {
-    background: linear-gradient(135deg, #b77eff, #3d7eff);
+    background: linear-gradient(135deg, #ff5e9e, #b77eff);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+}
+
+.header h1::after {
+    content: "✨";
+    font-size: 20px;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: #ff5e9e;
+    position: absolute;
+    right: -28px;
+    top: 0;
+    opacity: 0.7;
 }
 
 .subhead {
     text-align: center;
     color: var(--text-secondary);
     font-size: 13px;
-    margin-top: 8px;
+    margin-top: 10px;
     font-weight: 400;
+    letter-spacing: 0.3px;
 }
 
-/* ЧАСТИЦЫ */
-.image-container {
-    width: 90px;
-    height: 90px;
-    margin: 0 auto 16px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.main-image {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    position: relative;
-    z-index: 2;
-}
-
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    opacity: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-.particle.pink {
-    background: radial-gradient(circle, #ff6b9d, #ff3b7e);
-    box-shadow: 0 0 4px #ff6b9d;
-}
-.particle.blue {
-    background: radial-gradient(circle, #3d7eff, #1a4fcc);
-    box-shadow: 0 0 4px #3d7eff;
-}
-.particle.purple {
-    background: radial-gradient(circle, #b77eff, #8a4fcc);
-    box-shadow: 0 0 4px #b77eff;
-}
-
-/* Анимации частиц */
-@keyframes floatParticle1 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(45px, -70px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle2 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-50px, -60px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle3 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(35px, -80px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle4 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-40px, -65px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle5 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(20px, -90px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle6 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-60px, -45px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle7 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(55px, -50px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle8 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-30px, -85px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle9 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(65px, -35px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle10 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-70px, -40px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle11 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(25px, -95px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle12 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-55px, -55px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle13 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(40px, -75px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle14 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-45px, -75px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle15 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(50px, -60px) scale(0); opacity: 0; }
-}
-@keyframes floatParticle16 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    15% { opacity: 0.9; }
-    85% { opacity: 0.6; }
-    100% { transform: translate(-20px, -100px) scale(0); opacity: 0; }
-}
-
-.image-container .particle:nth-child(1) { animation: floatParticle1 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(2) { animation: floatParticle2 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(3) { animation: floatParticle3 3.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(4) { animation: floatParticle4 4.0s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(5) { animation: floatParticle5 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(6) { animation: floatParticle6 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(7) { animation: floatParticle7 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(8) { animation: floatParticle8 4.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(9) { animation: floatParticle9 3.4s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(10) { animation: floatParticle10 3.7s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(11) { animation: floatParticle11 4.1s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(12) { animation: floatParticle12 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(13) { animation: floatParticle13 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(14) { animation: floatParticle14 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(15) { animation: floatParticle15 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-.image-container .particle:nth-child(16) { animation: floatParticle16 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
-
-/* ПОЛЯ ВВОДА И КНОПКИ */
+/* поле ввода с сердечком на фокус */
 .input-group {
-    background: #0a0a0f;
-    border: 1px solid #1e1e2a;
+    background: #0c0c14;
+    border: 1px solid #222232;
     border-radius: var(--border-radius-input);
-    padding: 8px 16px;
-    margin-bottom: 14px;
+    padding: 10px 18px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    transition: all 0.2s;
+    transition: all 0.25s;
 }
+
 .input-group:focus-within {
-    border-color: var(--accent-blue);
+    border-color: var(--accent-pink);
     box-shadow: var(--shadow-focus);
-    background: #0c0c12;
+    background: #11111a;
 }
+
 .input-icon {
     width: 32px;
     height: 32px;
-    margin-right: 12px;
+    margin-right: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.8;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px rgba(255, 94, 158, 0.3));
 }
+
 .input-content {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
+
 .input-label {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
-    margin-bottom: 2px;
+    letter-spacing: 0.8px;
+    color: #a0a0c0;
+    margin-bottom: 4px;
 }
+
 input {
     background: transparent;
     border: none;
@@ -275,42 +155,46 @@ input {
     font-size: 16px;
     font-weight: 500;
     outline: none;
-    padding: 8px 0;
+    padding: 6px 0;
     width: 100%;
 }
+
 input::placeholder {
-    color: #3a3a44;
+    color: #4a4a60;
     font-weight: 400;
 }
 
 .price-section {
-    background: linear-gradient(115deg, #0c0c12, #08080c);
-    border-radius: 24px;
-    padding: 16px 20px;
-    margin: 16px 0 24px;
+    background: linear-gradient(115deg, #11111c, #080810);
+    border-radius: 36px;
+    padding: 18px 22px;
+    margin: 20px 0 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 1px solid rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(4px);
 }
+
 .price-label {
     font-size: 13px;
     color: var(--text-secondary);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
 }
+
 .price-value {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
-    background: linear-gradient(115deg, #ffffff, #b77eff);
+    background: linear-gradient(115deg, #ffffff, #ff5e9e);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
+
 .price-subtext {
     display: block;
     font-size: 10px;
-    color: #5a5a70;
+    color: #7a7a9a;
     margin-top: 4px;
 }
 
@@ -319,61 +203,77 @@ input::placeholder {
     background: var(--button-gradient);
     border: none;
     border-radius: var(--border-radius-button);
-    padding: 14px 20px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: 700;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 6px 16px rgba(61, 126, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(255, 94, 158, 0.4);
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
-.buy-button img {
-    width: 20px;
-    height: 20px;
+
+.buy-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
 }
+
+.buy-button:hover::before {
+    left: 100%;
+}
+
 .buy-button:active {
-    transform: scale(0.98);
-}
-.buy-button:disabled {
-    opacity: 0.6;
+    transform: scale(0.97);
 }
 
 .footer-links {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin: 28px 0 12px;
+    gap: 24px;
+    margin: 32px 0 16px;
 }
+
 .footer-link {
-    color: #5a5a70;
+    color: #6a6a8a;
     font-size: 12px;
     text-decoration: none;
     transition: color 0.2s;
     font-weight: 500;
 }
+
 .footer-link:hover {
-    color: var(--accent-blue);
+    color: var(--accent-pink);
 }
 
 .footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    color: #5a5a70;
+    gap: 10px;
+    color: #6a6a8a;
     font-size: 12px;
 }
+
 .lock-icon {
-    width: 11px;
-    height: 11px;
-    border: 1.5px solid #5a5a70;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid #6a6a8a;
     border-radius: 3px;
     position: relative;
 }
+
 .lock-icon::after {
     content: '';
     position: absolute;
@@ -381,10 +281,66 @@ input::placeholder {
     left: 2px;
     width: 4px;
     height: 5px;
-    border: 1.5px solid #5a5a70;
+    border: 1.5px solid #6a6a8a;
     border-bottom: none;
     border-radius: 3px 3px 0 0;
 }
+
+/* частицы — быстрые и яркие */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.particle.pink {
+    background: radial-gradient(circle, #ff5e9e, #ff1e6e);
+    box-shadow: 0 0 6px #ff5e9e;
+}
+.particle.blue {
+    background: radial-gradient(circle, #3d7eff, #1a4fcc);
+    box-shadow: 0 0 6px #3d7eff;
+}
+.particle.purple {
+    background: radial-gradient(circle, #b77eff, #7a3fcc);
+    box-shadow: 0 0 6px #b77eff;
+}
+
+@keyframes floatParticle {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 0.6; }
+    100% { transform: translate(var(--tx, 50px), var(--ty, -80px)) scale(0); opacity: 0; }
+}
+
+.image-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    z-index: 2;
+}
+
+.image-container .particle:nth-child(1) { --tx: 40px; --ty: -70px; animation: floatParticle 3s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(2) { --tx: -50px; --ty: -60px; animation: floatParticle 3.4s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(3) { --tx: 55px; --ty: -50px; animation: floatParticle 3.8s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(4) { --tx: -45px; --ty: -75px; animation: floatParticle 3.2s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(5) { --tx: 30px; --ty: -90px; animation: floatParticle 3.6s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(6) { --tx: -60px; --ty: -45px; animation: floatParticle 4s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(7) { --tx: 65px; --ty: -35px; animation: floatParticle 3.1s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
+.image-container .particle:nth-child(8) { --tx: -35px; --ty: -85px; animation: floatParticle 3.7s infinite; left: 50%; top: 50%; margin: -3px 0 0 -3px; }
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -407,29 +363,33 @@ input::placeholder {
     right: 0;
     bottom: 0;
     background: rgba(5, 5, 10, 0.9);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2000;
 }
 .modal-card {
-    background: #12121a;
-    border-radius: 36px;
-    padding: 28px 24px;
+    background: #14141e;
+    border-radius: 48px;
+    padding: 32px 24px;
     max-width: 320px;
     width: 85%;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 94, 158, 0.3);
     box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
 }
 .modal-card h3 {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     margin-bottom: 12px;
+    background: linear-gradient(135deg, #ff5e9e, #b77eff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 .modal-card p {
-    color: #aaa;
+    color: #b0b0c8;
     margin-bottom: 24px;
     font-size: 14px;
 }
@@ -447,11 +407,11 @@ input::placeholder {
     transition: all 0.2s;
 }
 .modal-btn.confirm {
-    background: #3d7eff;
+    background: linear-gradient(105deg, #ff5e9e, #b77eff);
     color: white;
 }
 .modal-btn.cancel {
-    background: #1e1e28;
+    background: #1e1e2e;
     color: white;
 }
 
