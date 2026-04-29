@@ -1,4 +1,4 @@
-// app.js (исправлен: клавиатура как в поле username, фильтрация цифр)
+// Полностью рабочий app.js – Enter закрывает клаву, сумма обновляется при вводе
 
 (function() {
     // ---------- КОНФИГ ----------
@@ -51,6 +51,7 @@
         updateUI();
     }
 
+    // Обработка ручного ввода
     function handleManualInput() {
         if (!starCountInput) return;
         let raw = starCountInput.value.trim();
@@ -66,29 +67,39 @@
         updateUI();
     }
 
+    // Кнопки +/–
     if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
     if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
 
+    // Поле ввода: только цифры + обновление суммы
     if (starCountInput) {
-        // Фильтруем только цифры, но клавиатура остаётся обычной (как в username)
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            // Удаляем всё, кроме цифр
+            // Оставляем только цифры
             val = val.replace(/[^0-9]/g, '');
             if (val.length > 5) val = val.slice(0, 5);
             e.target.value = val;
             handleManualInput();
         });
+        
+        // При потере фокуса, если поле пустое – ставим 0
         starCountInput.addEventListener('blur', () => {
             if (starCountInput.value === '') {
                 quantity = 0;
                 updateUI();
             }
         });
-        // Разрешаем обычную клавиатуру (ничего не меняем, type="text")
-        // Убираем inputmode, pattern – чтобы была такая же клавиатура, как у username
+        
+        // Закрытие клавиатуры по Enter
+        starCountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                starCountInput.blur();
+            }
+        });
     }
 
+    // Валидация username
     function validateUsername() {
         const val = usernameInput.value.trim();
         if (!val) {
@@ -102,6 +113,7 @@
         return true;
     }
 
+    // Плашка подтверждения
     function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
@@ -181,19 +193,12 @@
 
     updateUI();
 
+    // Enter в поле username
     usernameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') purchaseBtn.click();
     });
 
-    if (starCountInput) {
-        starCountInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                starCountInput.blur();
-            }
-        });
-    }
-    
+    // Закрытие клавиатуры при клике вне полей
     document.addEventListener('click', (e) => {
         const isUsernameInput = e.target === usernameInput;
         const isStarCountInput = e.target === starCountInput;
