@@ -19,7 +19,6 @@
     --gradient-button: linear-gradient(135deg, #9333EA 0%, #C026D3 50%, #D946EF 100%);
     --gradient-button-hover: linear-gradient(135deg, #A855F7 0%, #D946EF 50%, #E879F9 100%);
     
-    --star-glow-color: rgba(245, 158, 11, 0.7);
     --shadow-button: 0 4px 24px rgba(147, 51, 234, 0.32);
     
     --radius-card: 18px;
@@ -71,20 +70,7 @@ body {
     gap: var(--spacing-section);
 }
 
-/* HEADER */
-.header {
-    text-align: center;
-    padding: 8px 0 4px;
-}
-.header__title {
-    font-size: var(--font-size-header);
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    color: rgba(255,255,255,0.92);
-    text-transform: uppercase;
-}
-
-/* STAR SECTION */
+/* STAR SECTION – розово‑синий неон */
 .star-section {
     display: flex;
     justify-content: center;
@@ -107,21 +93,35 @@ body {
 .star-glow--outer {
     width: 104px;
     height: 104px;
-    background: rgba(251, 191, 36, 0.28);
+    background: radial-gradient(circle at 30% 30%, rgba(255, 94, 158, 0.45), rgba(61, 126, 255, 0.45));
     filter: blur(28px);
-    animation: glowPulse 2.8s ease-in-out infinite;
+    animation: gentleNeon 3.2s ease-in-out infinite;
 }
 .star-glow--inner {
     width: 72px;
     height: 72px;
-    background: rgba(251, 146, 60, 0.18);
+    background: radial-gradient(circle at 60% 70%, rgba(61, 126, 255, 0.4), rgba(255, 94, 158, 0.4));
     filter: blur(18px);
 }
+@keyframes gentleNeon {
+    0% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.05); }
+    100% { opacity: 0.5; transform: scale(1); }
+}
+
+/* Частицы — розовые и синие */
 .spark {
     position: absolute;
     border-radius: 50%;
     pointer-events: none;
-    background: #FDE68A;
+}
+.spark--1, .spark--3, .spark--5 {
+    background: radial-gradient(circle, #ff5e9e, #ff1e6e);
+    box-shadow: 0 0 2px #ff5e9e;
+}
+.spark--2, .spark--4 {
+    background: radial-gradient(circle, #3d7eff, #1a4fcc);
+    box-shadow: 0 0 2px #3d7eff;
 }
 .spark--1 { width: 5px; height: 5px; top: 14px; left: 28px; animation: sparkFloat1 3.2s ease-in-out infinite; }
 .spark--2 { width: 4px; height: 4px; top: 18px; right: 22px; animation: sparkFloat2 2.9s ease-in-out infinite; }
@@ -134,7 +134,6 @@ body {
     height: 88px;
     position: relative;
     z-index: 10;
-    filter: drop-shadow(0px 4px 20px var(--star-glow-color));
 }
 
 /* TEXT SECTION */
@@ -214,16 +213,19 @@ body {
     gap: 8px;
 }
 .quantity__btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     background: var(--bg-quaternary);
     border: none;
     border-radius: var(--radius-quantity-btn);
     color: var(--text-primary);
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.15s;
+    transition: 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .quantity__btn:active {
     background: var(--bg-quaternary-active);
@@ -234,10 +236,17 @@ body {
     pointer-events: none;
 }
 .quantity__value {
-    font-size: 18px;
-    font-weight: 700;
-    flex: 1;
+    background: transparent;
+    border: none;
     text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    width: 80px;
+    outline: none;
+}
+.quantity__value:focus {
+    outline: none;
 }
 
 /* SUMMARY */
@@ -285,7 +294,27 @@ body {
     transform: scale(0.975);
 }
 
-/* FOOTER */
+/* FOOTER LINKS */
+.footer-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0 12px;
+    width: 100%;
+}
+.footer-link {
+    color: #8e8e93;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    white-space: nowrap;
+}
+.footer-link:hover {
+    color: #3d7eff;
+}
+
 .footer {
     display: flex;
     align-items: center;
@@ -295,7 +324,7 @@ body {
     font-size: 13px;
 }
 
-/* MODAL (ПЛАШКА ПОДТВЕРЖДЕНИЯ) */
+/* MODAL */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -308,7 +337,6 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    font-family: var(--font-family);
 }
 .modal-card {
     background: var(--bg-secondary);
@@ -344,7 +372,6 @@ body {
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: 0.2s;
 }
 .modal-btn.confirm {
     background: linear-gradient(135deg, #9333EA, #C026D3);
@@ -364,12 +391,8 @@ body {
     animation: spin 0.8s linear infinite;
     margin-right: 8px;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes glowPulse {
-    0%, 100% { opacity: 0.55; transform: scale(1); }
-    50% { opacity: 0.85; transform: scale(1.12); }
-}
+
 @keyframes sparkFloat1 {
     0%,100% { opacity: 0; transform: translate(0,0) scale(0); }
     18% { opacity: 0.9; transform: translate(5px,-10px) scale(1.3); }
@@ -391,63 +414,3 @@ body {
     87%{ transform: translateX(-1px); }
 }
 .shake { animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
-/* Добавьте в конец файла styles.css */
-
-/* ===== УМЕРЕННЫЙ РОЗОВО‑СИНИЙ НЕОН И ЧАСТИЦЫ ===== */
-.star-container {
-    position: relative;
-}
-.star-glow--outer {
-    width: 104px;
-    height: 104px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 94, 158, 0.45), rgba(61, 126, 255, 0.45));
-    filter: blur(28px);
-    animation: gentleNeon 3.2s ease-in-out infinite;
-}
-.star-glow--inner {
-    width: 72px;
-    height: 72px;
-    background: radial-gradient(circle at 60% 70%, rgba(61, 126, 255, 0.4), rgba(255, 94, 158, 0.4));
-    filter: blur(18px);
-}
-@keyframes gentleNeon {
-    0% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.85; transform: scale(1.05); }
-    100% { opacity: 0.5; transform: scale(1); }
-}
-
-/* Частицы — розовые и синие, умеренные */
-.spark {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-}
-.spark--1, .spark--3, .spark--5 {
-    background: radial-gradient(circle, #ff5e9e, #ff1e6e);
-    box-shadow: 0 0 2px #ff5e9e;
-}
-.spark--2, .spark--4 {
-    background: radial-gradient(circle, #3d7eff, #1a4fcc);
-    box-shadow: 0 0 2px #3d7eff;
-}
-
-/* Кнопки футера (серые, без подчёркивания, на всю ширину) */
-.footer-links {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin: 20px 0 12px;
-    width: 100%;
-}
-.footer-link {
-    color: #8e8e93;
-    font-size: 13px;
-    text-decoration: none;
-    font-weight: 500;
-    text-align: center;
-    flex: 1;
-    white-space: nowrap;
-}
-.footer-link:hover {
-    color: #3d7eff;
-}

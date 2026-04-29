@@ -10,8 +10,6 @@
 <body>
 
 <main class="app">
-    <!-- Убрали заголовок MyStars -->
-
     <section class="star-section">
         <div class="star-container">
             <div class="star-glow star-glow--outer"></div>
@@ -40,15 +38,14 @@
             <div class="card__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Укажите username получателя звёзд</div>
         </div>
 
-    <!-- В index.html убедитесь, что поле ввода количества имеет id="star-count" -->
-<div class="card">
-    <div class="card__label"><img src="img/R.png" alt="Stars" style="width: 18px; height: 18px; object-fit: contain;"><span class="card__label-text">Количество звёзд</span></div>
-    <div class="quantity">
-        <button class="quantity__btn" id="btnMinus">−</button>
-        <input type="text" id="star-count" class="quantity__value" value="100" inputmode="numeric" pattern="[0-9]*" style="background: transparent; border: none; color: white; text-align: center; font-size: 18px; font-weight: 700; width: 80px;">
-        <button class="quantity__btn" id="btnPlus">+</button>
-    </div>
-</div>
+        <div class="card">
+            <div class="card__label"><img src="img/R.png" alt="Stars" style="width: 18px; height: 18px; object-fit: contain;"><span class="card__label-text">Количество звёзд</span></div>
+            <div class="quantity">
+                <button class="quantity__btn" id="btnMinus">−</button>
+                <input type="text" id="star-count" class="quantity__value" value="100" inputmode="numeric" pattern="[0-9]*">
+                <button class="quantity__btn" id="btnPlus">+</button>
+            </div>
+        </div>
     </section>
 
     <div class="summary">
