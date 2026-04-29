@@ -63,14 +63,12 @@
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
-// Показ аватарки и имени при вводе username
+// Показ имени при вводе username
 usernameInput.addEventListener('input', () => {
     usernameCard.style.borderColor = '';
     const val = usernameInput.value.trim();
     
     if (val.length > 0) {
-        userAvatar.src = `https://t.me/i/userpic/${val}.jpg`;
-        
         const ownUsername = tg?.initDataUnsafe?.user?.username;
         const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
         
@@ -80,13 +78,8 @@ usernameInput.addEventListener('input', () => {
             userName.textContent = '@' + val;
         }
         
-        userAvatar.onerror = () => {
-            userAvatar.src = 'img/R.png';
-            usernamePreview.style.display = 'flex';
-        };
-        userAvatar.onload = () => {
-            usernamePreview.style.display = 'flex';
-        };
+        // Принудительно показываем
+        usernamePreview.style.display = 'flex';
     } else {
         usernamePreview.style.display = 'none';
     }
