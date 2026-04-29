@@ -33,13 +33,20 @@ if (tg) {
         usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
     }
     
-    // Шапка под цвет фона (множественные попытки для мобилок)
-    const setHeader = () => tg.setHeaderColor('#0F0F11');
-    setHeader();
-    setTimeout(setHeader, 50);
-    setTimeout(setHeader, 200);
-    setTimeout(setHeader, 500);
-    tg.onEvent('themeChanged', setHeader);
+    // Шапка и фон под цвет мини-аппа (работает на всех устройствах)
+    const bgColor = '#0F0F11';
+    const setColors = () => {
+        try {
+            tg.setHeaderColor(bgColor);
+            tg.setBackgroundColor(bgColor);
+            document.body.style.backgroundColor = bgColor;
+        } catch(e) {}
+    };
+    
+    setColors();
+    setTimeout(setColors, 100);
+    setTimeout(setColors, 500);
+    tg.onEvent('themeChanged', setColors);
 }
     
     // Форматирование цены
