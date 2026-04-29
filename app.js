@@ -9,6 +9,34 @@
         tg.expand();
     }
 
+    // ========== СИНХРОНИЗАЦИЯ ТЕМЫ TELEGRAM ==========
+    function syncTelegramTheme() {
+        if (!tg) return;
+        
+        const bgColor = tg.themeParams.bg_color || '#0F0F11';
+        const headerColor = tg.themeParams.header_bg_color || bgColor;
+        
+        // Устанавливаем цвет фона мини-аппа
+        document.body.style.backgroundColor = bgColor;
+        // Устанавливаем цвет верхней плашки Telegram
+        tg.setHeaderColor(headerColor);
+        // Цвет фона самого WebView
+        tg.setBackgroundColor(bgColor);
+        
+        // Дополнительно: меняем фон контейнера, если нужно
+        const appContainer = document.querySelector('.app');
+        if (appContainer) appContainer.style.backgroundColor = 'transparent';
+    }
+    
+    // Применяем тему при загрузке
+    if (tg) {
+        syncTelegramTheme();
+        // Слушаем изменение темы в Telegram
+        tg.onEvent('themeChanged', () => {
+            syncTelegramTheme();
+        });
+    }
+
     // DOM элементы
     const usernameInput = document.getElementById('username');
     const starCountInput = document.getElementById('star-count');
