@@ -1,4 +1,4 @@
-// Полностью исправленный app.js (кнопки +/– работают, клавиатура обычная, только цифры)
+// app.js (исправлен: клавиатура как в поле username, фильтрация цифр)
 
 (function() {
     // ---------- КОНФИГ ----------
@@ -33,7 +33,6 @@
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
 
-    // Главная функция обновления UI
     function updateUI() {
         quantityDisplay.innerText = quantity;
         if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
@@ -44,7 +43,6 @@
         if (btnMinus) btnMinus.classList.toggle('quantity__btn--disabled', quantity <= 10);
     }
 
-    // Изменение кнопками +/-
     function changeQuantity(delta) {
         let newVal = quantity + delta;
         if (newVal < 10) return;
@@ -53,7 +51,6 @@
         updateUI();
     }
 
-    // Ручной ввод в поле star-count
     function handleManualInput() {
         if (!starCountInput) return;
         let raw = starCountInput.value.trim();
@@ -69,15 +66,14 @@
         updateUI();
     }
 
-    // Обработчики кнопок +/–
     if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
     if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
 
-    // Ограничение на 5 символов и ручной ввод
     if (starCountInput) {
+        // Фильтруем только цифры, но клавиатура остаётся обычной (как в username)
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            // Разрешаем только цифры
+            // Удаляем всё, кроме цифр
             val = val.replace(/[^0-9]/g, '');
             if (val.length > 5) val = val.slice(0, 5);
             e.target.value = val;
@@ -89,9 +85,10 @@
                 updateUI();
             }
         });
+        // Разрешаем обычную клавиатуру (ничего не меняем, type="text")
+        // Убираем inputmode, pattern – чтобы была такая же клавиатура, как у username
     }
 
-    // валидация username
     function validateUsername() {
         const val = usernameInput.value.trim();
         if (!val) {
@@ -105,7 +102,6 @@
         return true;
     }
 
-    // Плашка подтверждения
     function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
@@ -139,7 +135,6 @@
         }
     }
 
-    // Lava API
     async function createLavaPayment(amount, stars, recipient) {
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
@@ -157,9 +152,7 @@
 
     purchaseBtn.onclick = () => {
         let recipient = usernameInput.value.trim();
-        if (!recipient) {
-            recipient = 'свой аккаунт';
-        }
+        if (!recipient) recipient = 'свой аккаунт';
         if (!validateUsername()) return;
         let stars = quantity;
         if (stars <= 0) { alert('Введите количество звёзд (минимум 1)'); return; }
@@ -188,12 +181,10 @@
 
     updateUI();
 
-    // Enter в поле username
     usernameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') purchaseBtn.click();
     });
 
-    // Закрытие клавиатуры
     if (starCountInput) {
         starCountInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
