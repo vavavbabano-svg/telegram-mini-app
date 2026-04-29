@@ -63,33 +63,34 @@
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
-    // Показ аватарки и имени при вводе username
-    usernameInput.addEventListener('input', () => {
-        usernameCard.style.borderColor = '';
-        const val = usernameInput.value.trim();
+// Показ аватарки и имени при вводе username
+usernameInput.addEventListener('input', () => {
+    usernameCard.style.borderColor = '';
+    const val = usernameInput.value.trim();
+    
+    if (val.length > 0) {
+        userAvatar.src = `https://t.me/i/userpic/${val}.jpg`;
         
-        if (val.length > 0) {
-            userAvatar.src = `https://t.me/i/userpic/${val}`;
-            
-            const ownUsername = tg?.initDataUnsafe?.user?.username;
-            const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
-            
-            if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
-                userName.textContent = ownFirstName;
-            } else {
-                userName.textContent = '@' + val;
-            }
-            
-            userAvatar.onerror = () => {
-                usernamePreview.style.display = 'none';
-            };
-            userAvatar.onload = () => {
-                usernamePreview.style.display = 'flex';
-            };
+        const ownUsername = tg?.initDataUnsafe?.user?.username;
+        const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
+        
+        if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
+            userName.textContent = ownFirstName;
         } else {
-            usernamePreview.style.display = 'none';
+            userName.textContent = '@' + val;
         }
-    });
+        
+        userAvatar.onerror = () => {
+            userAvatar.src = 'img/R.png';
+            usernamePreview.style.display = 'flex';
+        };
+        userAvatar.onload = () => {
+            usernamePreview.style.display = 'flex';
+        };
+    } else {
+        usernamePreview.style.display = 'none';
+    }
+});
 
     function validateUsername() {
         const val = usernameInput.value.trim();
