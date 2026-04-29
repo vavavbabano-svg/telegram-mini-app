@@ -20,12 +20,12 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const u = tg.initDataUnsafe.user;
-    usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
-} else {
-    usernameInput.placeholder = '@username';
-}
+    // Telegram — автозаполнение username
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+    }
+
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
