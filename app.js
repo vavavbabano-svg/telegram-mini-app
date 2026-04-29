@@ -6,23 +6,6 @@
         tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        
-        // Отладка на экране
-        const debug = document.createElement('div');
-        debug.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;font-size:11px;padding:8px;z-index:9999;max-height:50%;overflow:auto;';
-        document.body.appendChild(debug);
-        debug.innerHTML += 'tg: OK<br>';
-        debug.innerHTML += 'initDataUnsafe: ' + JSON.stringify(tg.initDataUnsafe) + '<br>';
-        debug.innerHTML += 'user: ' + JSON.stringify(tg.initDataUnsafe?.user) + '<br>';
-        debug.innerHTML += 'username: ' + (tg.initDataUnsafe?.user?.username || 'нет') + '<br>';
-        
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const u = tg.initDataUnsafe.user;
-            usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
-            debug.innerHTML += 'ЗАПОЛНЕНО: ' + usernameInput.value + '<br>';
-        } else {
-            debug.innerHTML += 'НЕТ ДАННЫХ<br>';
-        }
     }
 
     const usernameInput = document.getElementById('username');
@@ -34,6 +17,17 @@
     const btnPlus = document.getElementById('btnPlus');
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
+
+    // По умолчанию @ уже в поле
+    usernameInput.value = '@';
+    usernameInput.placeholder = 'username';
+
+    // Не даём удалить @
+    usernameInput.addEventListener('input', () => {
+        if (!usernameInput.value.startsWith('@')) {
+            usernameInput.value = '@' + usernameInput.value.replace(/@/g, '');
+        }
+    });
 
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
@@ -78,7 +72,8 @@
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
     function validateUsername() {
-        if (!usernameInput.value.trim()) {
+        const val = usernameInput.value.trim();
+        if (val === '@' || val === '') {
             usernameCard.style.borderColor = 'rgba(239, 68, 68, 0.7)';
             usernameCard.classList.add('shake');
             setTimeout(() => usernameCard.classList.remove('shake'), 600);
@@ -131,7 +126,7 @@
         showConfirmModal(async () => {
             setButtonLoading(true);
             try {
-                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, usernameInput.value.trim() || 'свой аккаунт');
+                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, usernameInput.value.trim());
                 if (data.success && data.confirmation_url) window.location.href = data.confirmation_url;
                 else { alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); setButtonLoading(false); }
             } catch (err) {
