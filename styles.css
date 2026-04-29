@@ -44,10 +44,10 @@ body {
     transition: all 0.2s ease;
 }
 
-/* Стильный хедер с градиентным текстом */
 .header {
     text-align: center;
     margin-bottom: 32px;
+    position: relative;
 }
 
 .image-container {
@@ -58,24 +58,161 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at 30% 20%, rgba(183, 126, 255, 0.25), rgba(61, 126, 255, 0.05));
-    border-radius: 50%;
-    animation: subtlePulse 3s infinite;
-}
-
-@keyframes subtlePulse {
-    0% { box-shadow: 0 0 0 0 rgba(61, 126, 255, 0.2); }
-    50% { box-shadow: 0 0 0 10px rgba(61, 126, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(61, 126, 255, 0); }
 }
 
 .main-image {
     width: 70px;
     height: 70px;
     object-fit: contain;
-    filter: drop-shadow(0 0 12px rgba(61, 126, 255, 0.4));
+    position: relative;
+    z-index: 2;
     transition: filter 0.3s;
 }
+
+/* Быстрые частицы — 16 штук, разлетаются быстрее, ярче */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Розовые частицы */
+.particle.pink {
+    background: radial-gradient(circle, #ff6b9d, #ff3b7e);
+    box-shadow: 0 0 4px #ff6b9d;
+}
+
+/* Синие частицы */
+.particle.blue {
+    background: radial-gradient(circle, #3d7eff, #1a4fcc);
+    box-shadow: 0 0 4px #3d7eff;
+}
+
+/* Фиолетовые частицы */
+.particle.purple {
+    background: radial-gradient(circle, #b77eff, #8a4fcc);
+    box-shadow: 0 0 4px #b77eff;
+}
+
+/* Анимации для разных направлений — быстрые */
+@keyframes floatParticle1 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(45px, -70px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle2 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-50px, -60px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle3 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(35px, -80px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle4 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-40px, -65px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle5 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(20px, -90px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle6 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-60px, -45px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle7 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(55px, -50px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle8 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-30px, -85px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle9 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(65px, -35px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle10 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-70px, -40px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle11 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(25px, -95px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle12 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-55px, -55px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle13 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(40px, -75px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle14 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-45px, -75px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle15 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(50px, -60px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle16 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-20px, -100px) scale(0); opacity: 0; }
+}
+
+/* Применяем разные анимации к частицам */
+.image-container .particle:nth-child(1) { animation: floatParticle1 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(2) { animation: floatParticle2 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(3) { animation: floatParticle3 3.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(4) { animation: floatParticle4 4.0s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(5) { animation: floatParticle5 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(6) { animation: floatParticle6 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(7) { animation: floatParticle7 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(8) { animation: floatParticle8 4.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(9) { animation: floatParticle9 3.4s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(10) { animation: floatParticle10 3.7s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(11) { animation: floatParticle11 4.1s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(12) { animation: floatParticle12 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(13) { animation: floatParticle13 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(14) { animation: floatParticle14 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(15) { animation: floatParticle15 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(16) { animation: floatParticle16 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
 
 .header h1 {
     font-size: 28px;
@@ -101,7 +238,6 @@ body {
     font-weight: 400;
 }
 
-/* Поля ввода — минималистичный гламур */
 .input-group {
     background: #0a0a0f;
     border: 1px solid #1e1e2a;
@@ -161,7 +297,6 @@ input::placeholder {
     font-weight: 400;
 }
 
-/* Блок цены — стильно и минимально */
 .price-section {
     background: linear-gradient(115deg, #0c0c12, #08080c);
     border-radius: 24px;
@@ -196,7 +331,6 @@ input::placeholder {
     margin-top: 4px;
 }
 
-/* Кнопка — смелая, с неон-эффектом */
 .buy-button {
     width: 100%;
     background: var(--button-gradient);
@@ -231,7 +365,6 @@ input::placeholder {
     transform: none;
 }
 
-/* Футер ссылки — в стиле приложения */
 .footer-links {
     display: flex;
     justify-content: center;
@@ -280,7 +413,6 @@ input::placeholder {
     border-radius: 3px 3px 0 0;
 }
 
-/* Плавная анимация появления */
 @keyframes fadeUp {
     from {
         opacity: 0;
@@ -296,7 +428,6 @@ input::placeholder {
     animation: fadeUp 0.5s ease-out;
 }
 
-/* Переопределяем фон тела в стиле мини-аппа (как в приложении) */
 @media (min-width: 1024px) {
     body {
         background: radial-gradient(circle at 30% 20%, #12122a, #030308 90%);
@@ -381,20 +512,3 @@ input::placeholder {
     to { transform: rotate(360deg); }
 }
 
-/* Частицы сзади (дополнительный стиль) */
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: radial-gradient(circle, #b77eff, #3d7eff);
-    border-radius: 50%;
-    opacity: 0;
-    animation: floatParticle 4s infinite ease-in-out;
-}
-
-@keyframes floatParticle {
-    0% { transform: translate(0, 0) scale(1); opacity: 0; }
-    20% { opacity: 0.8; }
-    80% { opacity: 0.5; }
-    100% { transform: translate(var(--tx, 30px), var(--ty, -40px)) scale(0); opacity: 0; }
-}
