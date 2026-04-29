@@ -1,5 +1,3 @@
-// Полностью рабочий app.js – Enter закрывает клаву, сумма обновляется при вводе
-
 (function() {
     // ---------- КОНФИГ ----------
     const RUB_PER_STAR = 1.59;
@@ -33,64 +31,80 @@
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
 
-    function updateUI() {
+    // ========== ЕДИНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ВСЕГО UI ==========
+    function updateAll() {
+        // Обновляем все поля с количеством
         quantityDisplay.innerText = quantity;
         if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
         summaryQty.innerText = quantity;
+        // Пересчитываем цену
         const total = quantity * RUB_PER_STAR;
         totalPriceSpan.innerText = formatPrice(total);
+        // Кнопка покупки
         btnText.innerText = `Купить ${quantity} звёзд`;
-        if (btnMinus) btnMinus.classList.toggle('quantity__btn--disabled', quantity <= 10);
+        // Кнопка минус (блокируем если <= 10)
+        if (btnMinus) {
+            if (quantity <= 10) {
+                btnMinus.classList.add('quantity__btn--disabled');
+            } else {
+                btnMinus.classList.remove('quantity__btn--disabled');
+            }
+        }
+        console.log('updateAll вызвана, quantity =', quantity, 'цена =', total); // для отладки
     }
 
+    // ========== ИЗМЕНЕНИЕ КОЛИЧЕСТВА КНОПКАМИ ==========
     function changeQuantity(delta) {
         let newVal = quantity + delta;
         if (newVal < 10) return;
         if (newVal > 999999) return;
         quantity = newVal;
-        updateUI();
+        updateAll();
     }
 
-    // Обработка ручного ввода
+    // ========== РУЧНОЙ ВВОД В ПОЛЕ (ЦИФРЫ, ОГРАНИЧЕНИЕ) ==========
     function handleManualInput() {
         if (!starCountInput) return;
         let raw = starCountInput.value.trim();
+        let newQuantity;
         if (raw === '') {
-            quantity = 0;
+            newQuantity = 0;
         } else {
             let val = parseInt(raw);
-            if (isNaN(val)) val = 0;
-            if (val < 0) val = 0;
-            if (val > 999999) val = 999999;
-            quantity = val;
+            if (isNaN(val)) {
+                newQuantity = quantity;
+            } else {
+                newQuantity = val;
+            }
         }
-        updateUI();
+        if (newQuantity < 0) newQuantity = 0;
+        if (newQuantity > 999999) newQuantity = 999999;
+        
+        if (quantity !== newQuantity) {
+            quantity = newQuantity;
+            updateAll();
+        }
     }
 
-    // Кнопки +/–
+    // ========== ПОДКЛЮЧАЕМ ОБРАБОТЧИКИ ==========
     if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
     if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
 
-    // Поле ввода: только цифры + обновление суммы
     if (starCountInput) {
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            // Оставляем только цифры
+            // Удаляем всё, кроме цифр
             val = val.replace(/[^0-9]/g, '');
             if (val.length > 5) val = val.slice(0, 5);
             e.target.value = val;
             handleManualInput();
         });
-        
-        // При потере фокуса, если поле пустое – ставим 0
         starCountInput.addEventListener('blur', () => {
             if (starCountInput.value === '') {
                 quantity = 0;
-                updateUI();
+                updateAll();
             }
         });
-        
-        // Закрытие клавиатуры по Enter
         starCountInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -99,7 +113,7 @@
         });
     }
 
-    // Валидация username
+    // ========== ВАЛИДАЦИЯ USERNAME ==========
     function validateUsername() {
         const val = usernameInput.value.trim();
         if (!val) {
@@ -113,7 +127,7 @@
         return true;
     }
 
-    // Плашка подтверждения
+    // ========== ПЛАШКА ПОДТВЕРЖДЕНИЯ ==========
     function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
@@ -147,6 +161,7 @@
         }
     }
 
+    // ========== LAVA API ==========
     async function createLavaPayment(amount, stars, recipient) {
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
@@ -162,6 +177,7 @@
         return res.json();
     }
 
+    // ========== ОБРАБОТЧИК КНОПКИ "КУПИТЬ" ==========
     purchaseBtn.onclick = () => {
         let recipient = usernameInput.value.trim();
         if (!recipient) recipient = 'свой аккаунт';
@@ -191,19 +207,17 @@
         });
     };
 
-    updateUI();
+    // ========== ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
+    if (usernameInput) {
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') purchaseBtn.click();
+        });
+    }
 
-    // Enter в поле username
-    usernameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') purchaseBtn.click();
-    });
-
-    // Закрытие клавиатуры при клике вне полей
     document.addEventListener('click', (e) => {
         const isUsernameInput = e.target === usernameInput;
         const isStarCountInput = e.target === starCountInput;
         const isQuantityBtn = e.target.closest('.quantity__btn');
-        
         if (!isUsernameInput && !isStarCountInput && !isQuantityBtn) {
             if (usernameInput) usernameInput.blur();
             if (starCountInput) starCountInput.blur();
@@ -213,4 +227,7 @@
     usernameInput.addEventListener('input', () => {
         usernameCard.style.borderColor = '';
     });
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    updateAll();
 })();
