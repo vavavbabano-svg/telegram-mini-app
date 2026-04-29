@@ -20,6 +20,8 @@
     const btnPlus = $('btnPlus');
     const purchaseBtn = $('purchaseBtn');
     const usernameCard = $('usernameCard');
+    const btnSelf = $('btnSelf');
+    const btnOther = $('btnOther');
     
     // Telegram WebApp
     const tg = window.Telegram?.WebApp;
@@ -30,17 +32,35 @@
         // Автозаполнение username
         const user = tg.initDataUnsafe?.user;
         if (user) {
-            usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
+            const ownUsername = user.username ? `@${user.username}` : `@${user.id}`;
+            usernameInput.value = ownUsername;
+            usernameInput.dataset.own = ownUsername;
         }
-        
-        // Полная синхронизация с темой Telegram
-        const bgColor = tg.themeParams?.bg_color || '#0F0F11';
-        const headerColor = tg.themeParams?.header_bg_color || bgColor;
-
-        document.body.style.backgroundColor = bgColor;
-        tg.setHeaderColor(headerColor);
-        tg.setBackgroundColor(bgColor);
     }
+    
+    // Переключение "Себе" / "Другому"
+    function setSelfMode() {
+        btnSelf.classList.add('self-btn--active');
+        btnOther.classList.remove('self-btn--active');
+        usernameInput.value = usernameInput.dataset.own || '';
+        usernameInput.readOnly = true;
+        usernameCard.style.borderColor = '';
+    }
+    
+    function setOtherMode() {
+        btnOther.classList.add('self-btn--active');
+        btnSelf.classList.remove('self-btn--active');
+        usernameInput.value = '';
+        usernameInput.readOnly = false;
+        usernameInput.focus();
+        usernameCard.style.borderColor = '';
+    }
+    
+    btnSelf?.addEventListener('click', setSelfMode);
+    btnOther?.addEventListener('click', setOtherMode);
+    
+    // Изначально поле только для чтения
+    usernameInput.readOnly = true;
     
     // Форматирование цены
     const formatPrice = (value) => `${value.toFixed(2).replace('.', ',')} ₽`;
@@ -179,45 +199,6 @@
             starCountInput?.blur();
         }
     });
-    // Кнопка "Себе"
-const btnSelf = document.getElementById('btnSelf');
-let isSelfMode = true; // По умолчанию включено
-
-// Автозаполнение при загрузке
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const u = tg.initDataUnsafe.user;
-    const ownUsername = u.username ? '@' + u.username : '@' + u.id;
-    usernameInput.value = ownUsername;
-    
-    // Сохраняем свой username для переключения
-    usernameInput.dataset.ownUsername = ownUsername;
-}
-
-// Переключение режима
-btnSelf.addEventListener('click', () => {
-    isSelfMode = !isSelfMode;
-    
-    if (isSelfMode) {
-        // Включаем "Себе"
-        btnSelf.classList.add('self-btn--active');
-        btnSelf.textContent = 'Себе';
-        usernameInput.value = usernameInput.dataset.ownUsername || '';
-        usernameInput.readOnly = true;
-    } else {
-        // Выключаем "Себе" — можно ввести любой username
-        btnSelf.classList.remove('self-btn--active');
-        btnSelf.textContent = 'Другу';
-        usernameInput.value = '';
-        usernameInput.readOnly = false;
-        usernameInput.focus();
-    }
-    
-    // Сбрасываем ошибку если была
-    usernameCard.style.borderColor = '';
-});
-
-// Изначально поле только для чтения
-usernameInput.readOnly = true;
     
     // Инициализация
     updateUI();
