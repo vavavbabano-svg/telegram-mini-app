@@ -20,12 +20,15 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // Telegram — автозаполнение username
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
-    }
-
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    const u = tg.initDataUnsafe.user;
+    usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+} else {
+    // Временная отладка
+    console.log('TG:', !!tg);
+    console.log('initDataUnsafe:', tg?.initDataUnsafe);
+    usernameInput.value = 'Нет доступа к данным';
+}
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
