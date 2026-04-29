@@ -30,9 +30,6 @@
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
 
-    // BOT TOKEN (публичная часть, только для API запросов)
-    const BOT_TOKEN = '8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE';
-
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
@@ -75,39 +72,25 @@
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
-    // Показ аватарки и имени при вводе username (как в видео)
+    // Показ аватарки и имени при вводе username (без токена в коде)
     usernameInput.addEventListener('input', () => {
         usernameCard.style.borderColor = '';
         const val = usernameInput.value.trim();
         
         if (val.length > 0) {
-            // Сначала проверяем своё имя
+            // Проверяем своё имя
             if (window.TG_USER && val.toLowerCase() === (window.TG_USER.username || '').toLowerCase()) {
                 userName.textContent = window.TG_USER.first_name || 'Вы';
                 if (window.TG_USER.id) {
-                    userAvatar.src = `https://api.telegram.org/bot${BOT_TOKEN}/getUserProfilePhotos?user_id=${window.TG_USER.id}&limit=1`;
-                    fetch(userAvatar.src)
-                        .then(r => r.json())
-                        .then(data => {
-                            if (data.ok && data.result.photos.length > 0) {
-                                const fileId = data.result.photos[0][0].file_id;
-                                return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
-                            }
-                            throw new Error('No photo');
-                        })
-                        .then(r => r.json())
-                        .then(data => {
-                            if (data.ok) {
-                                userAvatar.src = `https://api.telegram.org/file/bot${BOT_TOKEN}/${data.result.file_path}`;
-                            }
-                        })
-                        .catch(() => {
-                            userAvatar.src = 'img/R.png';
-                        });
+                    // Аватарка через Workers (токен скрыт)
+                    userAvatar.src = `https://telegram-photo.vavavbabano.workers.dev?user_id=${window.TG_USER.id}`;
+                    userAvatar.onerror = () => {
+                        userAvatar.src = 'img/tip1.png';
+                    };
                 }
             } else {
                 userName.textContent = '@' + val;
-                userAvatar.src = 'img/R.png';
+                userAvatar.src = 'img/tip1.png';
             }
             
             usernamePreview.style.display = 'flex';
