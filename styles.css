@@ -53,7 +53,7 @@ input {
 
 body {
     font-family: var(--font-family);
-    background-color: var(--bg-primary);
+    background: linear-gradient(180deg, #0F0F11 0%, #131318 60%, #15151C 100%);
     color: var(--text-primary);
     display: flex;
     align-items: center;
