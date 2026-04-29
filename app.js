@@ -1,6 +1,6 @@
 (function() {
     // ---------- КОНФИГ ----------
-    const RUB_PER_STAR = 0.05;
+    const RUB_PER_STAR = 1.40;
     let quantity = 100;
     let tg = null;
     if (window.Telegram && window.Telegram.WebApp) {
