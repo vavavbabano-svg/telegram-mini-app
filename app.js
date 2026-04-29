@@ -123,8 +123,17 @@
             setButtonLoading(true);
             try {
                 const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
-                if (data.success && data.confirmation_url) window.location.href = data.confirmation_url;
-                else { alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); setButtonLoading(false); }
+                if (data.success && data.confirmation_url) {
+                    // Открываем в браузере, а не в WebView
+                    if (tg) {
+                        tg.openLink(data.confirmation_url);
+                    } else {
+                        window.open(data.confirmation_url, '_blank');
+                    }
+                } else { 
+                    alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); 
+                    setButtonLoading(false); 
+                }
             } catch (err) {
                 alert('Ошибка соединения: ' + err.message);
                 setButtonLoading(false);
