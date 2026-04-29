@@ -87,6 +87,28 @@
         });
     }
 
+    // ========== БЛОКИРОВКА ЛЮБЫХ СИМВОЛОВ, КРОМЕ ЦИФР ==========
+    if (starCountInput) {
+        // Запрещаем ввод букв и спецсимволов через beforeinput
+        starCountInput.addEventListener('beforeinput', (e) => {
+            if (!/^[0-9]*$/.test(e.data) && e.data !== null) {
+                e.preventDefault();
+            }
+        });
+        
+        // Разрешаем только цифры при нажатии клавиш
+        starCountInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                e.preventDefault();
+            }
+        });
+        
+        // Запрещаем вставку текста (чтобы не вставить буквы)
+        starCountInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+        });
+    }
+
     // валидация username
     function validateUsername() {
         const val = usernameInput.value.trim();
@@ -189,8 +211,7 @@
         if (e.key === 'Enter') purchaseBtn.click();
     });
 
-    // ========== ДОБАВЛЕНО: ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
-    // Закрытие по Enter для поля количества звёзд
+    // ========== ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
     if (starCountInput) {
         starCountInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -200,7 +221,6 @@
         });
     }
     
-    // Закрытие клавиатуры при клике на любое место вне полей ввода
     document.addEventListener('click', (e) => {
         const isUsernameInput = e.target === usernameInput;
         const isStarCountInput = e.target === starCountInput;
@@ -212,7 +232,6 @@
         }
     });
 
-    // сброс ошибки при вводе
     usernameInput.addEventListener('input', () => {
         usernameCard.style.borderColor = '';
     });
