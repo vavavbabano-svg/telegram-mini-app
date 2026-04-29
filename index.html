@@ -22,20 +22,22 @@
         <p class="text-section__subtitle">Быстрая и безопасная покупка звёзд<br>для вас или вашего друга</p>
     </section>
 
-<div class="card" id="usernameCard">
-    <label class="card__label">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span class="card__label-text">Имя пользователя</span>
-    </label>
-    <div style="display: flex; gap: 8px; align-items: center;">
-        <input type="text" id="username" class="card__input" placeholder="@username" autocomplete="off" maxlength="32" style="flex: 1;">
-        <button id="btnSelf" class="self-btn self-btn--active" style="white-space: nowrap; padding: 8px 14px; border-radius: 10px; border: none; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.15s;">Себе</button>
-    </div>
-    <div class="card__hint">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        Укажите username получателя или нажмите «Себе»
-    </div>
-</div>
+    <section class="form-section">
+        <div class="card" id="usernameCard">
+            <label class="card__label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="card__label-text">Имя пользователя</span>
+            </label>
+            <input type="text" id="username" class="card__input" placeholder="@username" autocomplete="off" maxlength="32">
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button id="btnSelf" class="self-btn self-btn--active">Себе</button>
+                <button id="btnOther" class="self-btn">Другому</button>
+            </div>
+            <div class="card__hint">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Выберите получателя звёзд
+            </div>
+        </div>
 
         <div class="card">
             <div class="card__label">
