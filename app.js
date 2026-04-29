@@ -33,20 +33,9 @@ if (tg) {
         usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
     }
     
-    // Шапка и фон под цвет мини-аппа (работает на всех устройствах)
-    const bgColor = '#0F0F11';
-    const setColors = () => {
-        try {
-            tg.setHeaderColor(bgColor);
-            tg.setBackgroundColor(bgColor);
-            document.body.style.backgroundColor = bgColor;
-        } catch(e) {}
-    };
-    
-    setColors();
-    setTimeout(setColors, 100);
-    setTimeout(setColors, 500);
-    tg.onEvent('themeChanged', setColors);
+    // Берём цвет из самой темы Telegram
+    const headerColor = tg.themeParams?.bg_color || tg.themeParams?.secondary_bg_color || '#0F0F11';
+    tg.setHeaderColor(headerColor);
 }
     
     // Форматирование цены
