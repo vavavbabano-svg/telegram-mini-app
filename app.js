@@ -18,13 +18,6 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // Не даём удалить @
-    usernameInput.addEventListener('input', () => {
-        if (!usernameInput.value.startsWith('@')) {
-            usernameInput.value = '@' + usernameInput.value.replace(/@/g, '');
-        }
-    });
-
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
@@ -69,7 +62,7 @@
 
     function validateUsername() {
         const val = usernameInput.value.trim();
-        if (val === '@' || val === '') {
+        if (val === '') {
             usernameCard.style.borderColor = 'rgba(239, 68, 68, 0.7)';
             usernameCard.classList.add('shake');
             setTimeout(() => usernameCard.classList.remove('shake'), 600);
@@ -119,10 +112,16 @@
         if (!validateUsername()) return;
         if (quantity < 50) { alert('Минимальное количество звёзд: 50'); return; }
         
+        const recipient = '@' + usernameInput.value.trim();
+        
+        // ПРОВЕРКА: покажет что отправляется, платёж не уйдёт
+        alert('Отправка на: ' + recipient + '\nСумма: ' + formatPrice(quantity * RUB_PER_STAR));
+        return;
+        
         showConfirmModal(async () => {
             setButtonLoading(true);
             try {
-                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, usernameInput.value.trim());
+                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
                 if (data.success && data.confirmation_url) window.location.href = data.confirmation_url;
                 else { alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); setButtonLoading(false); }
             } catch (err) {
