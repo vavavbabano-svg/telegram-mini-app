@@ -21,22 +21,18 @@
     const purchaseBtn = $('purchaseBtn');
     const usernameCard = $('usernameCard');
     
-// Telegram WebApp
-const tg = window.Telegram?.WebApp;
-if (tg) {
-    tg.ready();
-    tg.expand();
-    
-    // Автозаполнение username
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-        usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
+    // Telegram WebApp
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+        
+        // Автозаполнение username
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            usernameInput.value = user.username ? `@${user.username}` : `@${user.id}`;
+        }
     }
-    
-    // Берём цвет из самой темы Telegram
-    const headerColor = tg.themeParams?.bg_color || tg.themeParams?.secondary_bg_color || '#0F0F11';
-    tg.setHeaderColor(headerColor);
-}
     
     // Форматирование цены
     const formatPrice = (value) => `${value.toFixed(2).replace('.', ',')} ₽`;
