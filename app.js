@@ -72,16 +72,13 @@
 
     // Ограничение на 5 символов и ручной ввод
     if (starCountInput) {
-        // Разрешаем только цифры
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            // Ограничиваем длину 5 символами
             if (val.length > 5) {
                 e.target.value = val.slice(0, 5);
             }
             handleManualInput();
         });
-        // При потере фокуса, если поле пустое – ставим 0
         starCountInput.addEventListener('blur', () => {
             if (starCountInput.value === '') {
                 quantity = 0;
@@ -191,6 +188,30 @@
     usernameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') purchaseBtn.click();
     });
+
+    // ========== ДОБАВЛЕНО: ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
+    // Закрытие по Enter для поля количества звёзд
+    if (starCountInput) {
+        starCountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                starCountInput.blur();
+            }
+        });
+    }
+    
+    // Закрытие клавиатуры при клике на любое место вне полей ввода
+    document.addEventListener('click', (e) => {
+        const isUsernameInput = e.target === usernameInput;
+        const isStarCountInput = e.target === starCountInput;
+        const isQuantityBtn = e.target.closest('.quantity__btn');
+        
+        if (!isUsernameInput && !isStarCountInput && !isQuantityBtn) {
+            if (usernameInput) usernameInput.blur();
+            if (starCountInput) starCountInput.blur();
+        }
+    });
+
     // сброс ошибки при вводе
     usernameInput.addEventListener('input', () => {
         usernameCard.style.borderColor = '';
