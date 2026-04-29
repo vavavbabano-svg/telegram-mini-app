@@ -26,10 +26,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Закрытие по Enter
+    starCountInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            starCountInput.blur();
+        }
+    });
+
+    usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            usernameInput.blur();
+        }
+    });
+
     // Telegram тема
     function applyTelegramTheme() {
         if (!tg) return;
-        const bg = tg.themeParams.bg_color || '#000000';
+        const bg = tg.themeParams.bg_color || '#0a0a0c';
         const card = tg.themeParams.secondary_bg_color || '#1c1c1e';
         const text = tg.themeParams.text_color || '#ffffff';
         const buttonText = tg.themeParams.button_text_color || '#ffffff';
@@ -38,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.color = text;
         
         const container = document.querySelector('.app-container');
-        if (container) container.style.backgroundColor = bg;
+        if (container) container.style.backgroundColor = 'radial-gradient(circle at 100% 0%, rgba(159, 101, 255, 0.12), rgba(0, 0, 0, 0) 70%), radial-gradient(circle at 0% 100%, rgba(44, 110, 219, 0.08), rgba(0, 0, 0, 0) 70%), ' + card;
         
         document.querySelectorAll('.input-group').forEach(el => {
             el.style.backgroundColor = card;
         });
         
         if (buyButton) {
-            buyButton.style.background = `linear-gradient(90deg, #51a1ff, #a164ff)`;
+            buyButton.style.background = `linear-gradient(90deg, #2c6edb, #9f65ff)`;
             buyButton.style.color = buttonText;
         }
         

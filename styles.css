@@ -35,7 +35,6 @@ body {
     border-radius: 32px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    /* Градиент в правом верхнем углу */
     background: radial-gradient(circle at 100% 0%, rgba(159, 101, 255, 0.12), rgba(0, 0, 0, 0) 70%),
                 radial-gradient(circle at 0% 100%, rgba(44, 110, 219, 0.08), rgba(0, 0, 0, 0) 70%),
                 var(--card-bg);
@@ -44,24 +43,115 @@ body {
 .header {
     text-align: center;
     margin-bottom: 32px;
+    position: relative;
 }
 
 .image-container {
     width: 100px;
     height: 100px;
     margin: 0 auto 16px;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at 30% 30%, rgba(159, 101, 255, 0.2), rgba(44, 110, 219, 0.05));
-    border-radius: 50%;
 }
 
 .main-image {
     width: 70px;
     height: 70px;
     object-fit: contain;
+    position: relative;
+    z-index: 2;
 }
+
+/* Летающие частицы */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #9f65ff;
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatParticle 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+.particle:nth-child(2) {
+    width: 3px;
+    height: 3px;
+    background: #2c6edb;
+    animation-delay: 0.5s;
+    animation-duration: 3.5s;
+}
+.particle:nth-child(3) {
+    width: 5px;
+    height: 5px;
+    background: #9f65ff;
+    animation-delay: 1s;
+    animation-duration: 5s;
+}
+.particle:nth-child(4) {
+    width: 3px;
+    height: 3px;
+    background: #2c6edb;
+    animation-delay: 1.5s;
+    animation-duration: 4s;
+}
+.particle:nth-child(5) {
+    width: 4px;
+    height: 4px;
+    background: #9f65ff;
+    animation-delay: 2s;
+    animation-duration: 4.5s;
+}
+.particle:nth-child(6) {
+    width: 2px;
+    height: 2px;
+    background: #2c6edb;
+    animation-delay: 2.5s;
+    animation-duration: 3s;
+}
+.particle:nth-child(7) {
+    width: 4px;
+    height: 4px;
+    background: #9f65ff;
+    animation-delay: 3s;
+    animation-duration: 5.5s;
+}
+.particle:nth-child(8) {
+    width: 3px;
+    height: 3px;
+    background: #2c6edb;
+    animation-delay: 3.5s;
+    animation-duration: 4.2s;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(var(--tx, 40px), var(--ty, -50px)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Разные направления для частиц */
+.image-container .particle:nth-child(1) { --tx: 30px; --ty: -40px; left: 50%; top: 50%; margin-left: -2px; margin-top: -2px; }
+.image-container .particle:nth-child(2) { --tx: -35px; --ty: -35px; left: 50%; top: 50%; margin-left: -1.5px; margin-top: -1.5px; }
+.image-container .particle:nth-child(3) { --tx: 45px; --ty: -25px; left: 50%; top: 50%; margin-left: -2.5px; margin-top: -2.5px; }
+.image-container .particle:nth-child(4) { --tx: -25px; --ty: -45px; left: 50%; top: 50%; margin-left: -1.5px; margin-top: -1.5px; }
+.image-container .particle:nth-child(5) { --tx: 20px; --ty: -60px; left: 50%; top: 50%; margin-left: -2px; margin-top: -2px; }
+.image-container .particle:nth-child(6) { --tx: -45px; --ty: -20px; left: 50%; top: 50%; margin-left: -1px; margin-top: -1px; }
+.image-container .particle:nth-child(7) { --tx: 55px; --ty: -15px; left: 50%; top: 50%; margin-left: -2px; margin-top: -2px; }
+.image-container .particle:nth-child(8) { --tx: -55px; --ty: -30px; left: 50%; top: 50%; margin-left: -1.5px; margin-top: -1.5px; }
 
 .header h1 {
     font-size: 26px;
@@ -85,7 +175,6 @@ body {
     font-size: 14px;
 }
 
-/* Сетка для инпутов — вертикально */
 .input-group {
     width: 100%;
     background: #1c1c1e;
@@ -132,7 +221,6 @@ input::placeholder {
     color: #5a5a60;
 }
 
-/* Цена — сеткой */
 .price-section {
     width: 100%;
     display: flex;
@@ -162,7 +250,6 @@ input::placeholder {
     margin-top: 4px;
 }
 
-/* Кнопка */
 .buy-button {
     width: 100%;
     background: var(--button-gradient);
@@ -184,7 +271,6 @@ input::placeholder {
     transform: scale(0.98);
 }
 
-/* Футер ссылки сеткой */
 .footer-links {
     display: flex;
     justify-content: center;
@@ -208,7 +294,6 @@ input::placeholder {
     font-size: 13px;
 }
 
-/* Модалка */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -265,7 +350,6 @@ input::placeholder {
     color: white;
 }
 
-/* Загрузка */
 .loader-icon {
     display: inline-block;
     width: 18px;
