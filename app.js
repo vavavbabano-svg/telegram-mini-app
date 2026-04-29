@@ -72,32 +72,30 @@
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
-    // Показ аватарки и имени при вводе username (без токена в коде)
-    usernameInput.addEventListener('input', () => {
-        usernameCard.style.borderColor = '';
-        const val = usernameInput.value.trim();
-        
-        if (val.length > 0) {
-            // Проверяем своё имя
-            if (window.TG_USER && val.toLowerCase() === (window.TG_USER.username || '').toLowerCase()) {
-                userName.textContent = window.TG_USER.first_name || 'Вы';
-                if (window.TG_USER.id) {
-                    // Аватарка через Workers (токен скрыт)
-                    userAvatar.src = `https://telegram-photo.vavavbabano.workers.dev?user_id=${window.TG_USER.id}`;
-                    userAvatar.onerror = () => {
-                        userAvatar.src = 'img/tip1.png';
-                    };
-                }
-            } else {
-                userName.textContent = '@' + val;
-                userAvatar.src = 'img/tip1.png';
-            }
-            
+// Показ аватарки и имени при вводе username (через Workers)
+usernameInput.addEventListener('input', () => {
+    usernameCard.style.borderColor = '';
+    const val = usernameInput.value.trim();
+    
+    if (val.length > 0) {
+        // Проверяем своё имя
+        if (window.TG_USER && val.toLowerCase() === (window.TG_USER.username || '').toLowerCase()) {
+            userName.textContent = window.TG_USER.first_name || 'Вы';
+            userAvatar.src = `https://telegram-photo.vavavbabano.workers.dev/photo?user_id=${window.TG_USER.id}`;
+            userAvatar.onerror = () => {
+                userAvatar.src = 'img/R.png';
+            };
             usernamePreview.style.display = 'flex';
         } else {
-            usernamePreview.style.display = 'none';
+            // Для чужих — показываем @username, аватарку не грузим
+            userName.textContent = '@' + val;
+            userAvatar.src = 'img/R.png';
+            usernamePreview.style.display = 'flex';
         }
-    });
+    } else {
+        usernamePreview.style.display = 'none';
+    }
+});
 
     function validateUsername() {
         const val = usernameInput.value.trim();
