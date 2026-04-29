@@ -1,5 +1,5 @@
 (function() {
-    const RUB_PER_STAR = 1.45;
+    const RUB_PER_STAR = 0.05;
     let quantity = 100;
     let tg = null;
     if (window.Telegram && window.Telegram.WebApp) {
