@@ -13,6 +13,11 @@
         <div class="star-container">
             <div class="star-glow star-glow--outer"></div>
             <div class="star-glow star-glow--inner"></div>
+            <div class="spark spark--1"></div>
+            <div class="spark spark--2"></div>
+            <div class="spark spark--3"></div>
+            <div class="spark spark--4"></div>
+            <div class="spark spark--5"></div>
             <img src="img/R.png" alt="Stars" class="star-icon" width="72" height="72">
         </div>
     </section>
@@ -28,14 +33,13 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span class="card__label-text">Имя пользователя</span>
             </label>
-            <input type="text" id="username" class="card__input" placeholder="@username" autocomplete="off" maxlength="32">
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button id="btnSelf" class="self-btn self-btn--active">Себе</button>
-                <button id="btnOther" class="self-btn">Другому</button>
+            <div class="username-wrapper">
+                <span class="username-at">@</span>
+                <input type="text" id="username" class="card__input username-input" placeholder="ваш username" autocomplete="off" maxlength="32">
             </div>
             <div class="card__hint">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                Выберите получателя звёзд
+                Укажите username получателя звёзд
             </div>
         </div>
 

@@ -18,10 +18,6 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // По умолчанию @ уже в поле
-    usernameInput.value = '@';
-    usernameInput.placeholder = 'username';
-
     // Не даём удалить @
     usernameInput.addEventListener('input', () => {
         if (!usernameInput.value.startsWith('@')) {
