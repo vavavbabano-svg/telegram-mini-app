@@ -1,97 +1,71 @@
 (function() {
-    'use strict';
-    
     const RUB_PER_STAR = 1.45;
-    const MIN_QUANTITY = 50;
-    const MAX_QUANTITY = 999999;
-    const STEP = 10;
-    
     let quantity = 100;
-    let isLoading = false;
-    
-    // Кэшируем DOM элементы
-    const $ = (id) => document.getElementById(id);
-    const usernameInput = $('username');
-    const starCountInput = $('star-count');
-    const summaryQty = $('summaryQty');
-    const totalPriceSpan = $('totalPrice');
-    const btnText = $('btnText');
-    const btnMinus = $('btnMinus');
-    const btnPlus = $('btnPlus');
-    const purchaseBtn = $('purchaseBtn');
-    const usernameCard = $('usernameCard');
-    const btnSelf = $('btnSelf');
-    const btnOther = $('btnOther');
-    
-    // Telegram WebApp
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
+    let tg = null;
+    if (window.Telegram && window.Telegram.WebApp) {
+        tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        
-        // Автозаполнение username
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            const ownUsername = user.username ? `@${user.username}` : `@${user.id}`;
-            usernameInput.value = ownUsername;
-            usernameInput.dataset.own = ownUsername;
+    }
+
+    const usernameInput = document.getElementById('username');
+    const starCountInput = document.getElementById('star-count');
+    const summaryQty = document.getElementById('summaryQty');
+    const totalPriceSpan = document.getElementById('totalPrice');
+    const btnText = document.getElementById('btnText');
+    const btnMinus = document.getElementById('btnMinus');
+    const btnPlus = document.getElementById('btnPlus');
+    const purchaseBtn = document.getElementById('purchaseBtn');
+    const usernameCard = document.getElementById('usernameCard');
+
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+    }
+
+    function formatPrice(value) {
+        return value.toFixed(2).replace('.', ',') + ' ₽';
+    }
+
+    function updateUI() {
+        if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
+        summaryQty.innerText = quantity;
+        totalPriceSpan.innerText = formatPrice(quantity * RUB_PER_STAR);
+        btnText.innerText = `Купить ${quantity} звёзд`;
+        if (btnMinus) {
+            if (quantity <= 50) btnMinus.classList.add('quantity__btn--disabled');
+            else btnMinus.classList.remove('quantity__btn--disabled');
         }
     }
-    
-    // Переключение "Себе" / "Другому"
-    function setSelfMode() {
-        btnSelf.classList.add('self-btn--active');
-        btnOther.classList.remove('self-btn--active');
-        usernameInput.value = usernameInput.dataset.own || '';
-        usernameInput.readOnly = true;
-        usernameCard.style.borderColor = '';
-    }
-    
-    function setOtherMode() {
-        btnOther.classList.add('self-btn--active');
-        btnSelf.classList.remove('self-btn--active');
-        usernameInput.value = '';
-        usernameInput.readOnly = false;
-        usernameInput.focus();
-        usernameCard.style.borderColor = '';
-    }
-    
-    btnSelf?.addEventListener('click', setSelfMode);
-    btnOther?.addEventListener('click', setOtherMode);
-    
-    // Изначально поле только для чтения
-    usernameInput.readOnly = true;
-    
-    // Форматирование цены
-    const formatPrice = (value) => `${value.toFixed(2).replace('.', ',')} ₽`;
-    
-    // Единая функция обновления UI
-    const updateUI = () => {
-        if (starCountInput) starCountInput.value = quantity || '';
-        summaryQty.textContent = quantity;
-        totalPriceSpan.textContent = formatPrice(quantity * RUB_PER_STAR);
-        btnText.textContent = `Купить ${quantity} звёзд`;
-        btnMinus?.classList.toggle('quantity__btn--disabled', quantity <= MIN_QUANTITY);
-    };
-    
-    // Изменение количества
-    const changeQuantity = (delta) => {
-        const newVal = quantity + delta;
-        if (newVal < MIN_QUANTITY || newVal > MAX_QUANTITY) return;
+
+    function changeQuantity(delta) {
+        let newVal = quantity + delta;
+        if (newVal < 50 || newVal > 999999) return;
         quantity = newVal;
         updateUI();
-    };
-    
-    // Обработка ручного ввода
-    const handleInput = () => {
-        const raw = starCountInput.value.replace(/\D/g, '').slice(0, 5);
-        starCountInput.value = raw;
-        quantity = raw === '' ? 0 : Math.min(parseInt(raw) || 0, MAX_QUANTITY);
-        updateUI();
-    };
-    
-    // Валидация username
-    const validateUsername = () => {
+    }
+
+    btnMinus?.addEventListener('click', () => changeQuantity(-10));
+    btnPlus?.addEventListener('click', () => changeQuantity(10));
+
+    function handleManualInput() {
+        if (!starCountInput) return;
+        let raw = starCountInput.value.trim();
+        let newQuantity = raw === '' ? 0 : parseInt(raw) || quantity;
+        if (newQuantity < 0) newQuantity = 0;
+        if (newQuantity > 999999) newQuantity = 999999;
+        if (quantity !== newQuantity) { quantity = newQuantity; updateUI(); }
+    }
+
+    starCountInput?.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/[^0-9]/g, '').slice(0, 5);
+        e.target.value = val;
+        handleManualInput();
+    });
+    starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
+    starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
+
+    function validateUsername() {
         if (!usernameInput.value.trim()) {
             usernameCard.style.borderColor = 'rgba(239, 68, 68, 0.7)';
             usernameCard.classList.add('shake');
@@ -100,13 +74,11 @@
             return false;
         }
         return true;
-    };
-    
-    // Модальное окно подтверждения
-    const showConfirmModal = () => new Promise((resolve) => {
+    }
+
+    function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
-        
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
         modal.innerHTML = `
@@ -120,86 +92,52 @@
             </div>
         `;
         document.body.appendChild(modal);
-        
-        modal.querySelector('.cancel').onclick = () => { modal.remove(); resolve(false); };
-        modal.querySelector('.confirm').onclick = () => { modal.remove(); resolve(true); };
-    });
-    
-    // Состояние загрузки кнопки
-    const setLoading = (loading) => {
-        isLoading = loading;
+        modal.querySelector('.cancel').onclick = () => modal.remove();
+        modal.querySelector('.confirm').onclick = () => { modal.remove(); onConfirm(); };
+    }
+
+    function setButtonLoading(loading) {
         purchaseBtn.disabled = loading;
         purchaseBtn.innerHTML = loading 
             ? '<span class="loader-icon"></span> Создание платежа...'
-            : `<img src="img/R.png" class="button__icon" width="20" height="20"> <span id="btnText">Купить ${quantity} звёзд</span> <img src="img/R.png" class="button__icon" width="20" height="20">`;
-    };
-    
-    // Создание платежа через API
-    const createPayment = async (amount, stars, recipient) => {
+            : `<img src="img/R.png" width="20" height="20"> <span>Купить ${quantity} звёзд</span> <img src="img/R.png" width="20" height="20">`;
+    }
+
+    async function createLavaPayment(amount, stars, recipient) {
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount,
-                description: `Покупка ${stars} звёзд для ${recipient}`,
-                orderId: `order_${Date.now()}`,
-                username: recipient,
-                stars
-            })
+            body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}`, orderId: `order_${Date.now()}`, username: recipient, stars })
         });
         return res.json();
-    };
-    
-    // Обработчик покупки
-    const handlePurchase = async () => {
-        if (isLoading) return;
-        
-        const recipient = usernameInput.value.trim() || 'свой аккаунт';
+    }
+
+    purchaseBtn.onclick = async () => {
         if (!validateUsername()) return;
+        if (quantity < 50) { alert('Минимальное количество звёзд: 50'); return; }
         
-        if (quantity < MIN_QUANTITY) {
-            alert(`Минимальное количество звёзд: ${MIN_QUANTITY}`);
-            return;
-        }
-        
-        const confirmed = await showConfirmModal();
-        if (!confirmed) return;
-        
-        setLoading(true);
-        try {
-            const data = await createPayment(quantity * RUB_PER_STAR, quantity, recipient);
-            if (data.success && data.confirmation_url) {
-                window.location.href = data.confirmation_url;
-            } else {
-                alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
-                setLoading(false);
+        showConfirmModal(async () => {
+            setButtonLoading(true);
+            try {
+                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, usernameInput.value.trim() || 'свой аккаунт');
+                if (data.success && data.confirmation_url) window.location.href = data.confirmation_url;
+                else { alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); setButtonLoading(false); }
+            } catch (err) {
+                alert('Ошибка соединения: ' + err.message);
+                setButtonLoading(false);
             }
-        } catch (err) {
-            alert('Ошибка соединения: ' + err.message);
-            setLoading(false);
-        }
+        });
     };
+
+    usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
+    usernameInput.addEventListener('input', () => { usernameCard.style.borderColor = ''; });
     
-    // Обработчики событий
-    btnMinus?.addEventListener('click', () => changeQuantity(-STEP));
-    btnPlus?.addEventListener('click', () => changeQuantity(STEP));
-    purchaseBtn?.addEventListener('click', handlePurchase);
-    
-    starCountInput?.addEventListener('input', handleInput);
-    starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
-    starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
-    
-    usernameInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
-    usernameInput?.addEventListener('input', () => { usernameCard.style.borderColor = ''; });
-    
-    // Закрытие клавиатуры
     document.addEventListener('click', (e) => {
         if (e.target !== usernameInput && e.target !== starCountInput && !e.target.closest('.quantity__btn')) {
             usernameInput?.blur();
             starCountInput?.blur();
         }
     });
-    
-    // Инициализация
+
     updateUI();
 })();
