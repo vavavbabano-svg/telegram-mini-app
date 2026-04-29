@@ -22,9 +22,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* ФОН ТЕЛА — как на главном экране (тёмный радиальный градиент) */
 body {
-    background: radial-gradient(circle at 20% 30%, #111128, #05050a 80%);
+    background: radial-gradient(circle at 20% 30%, #0a0a1a, #020205 90%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -33,29 +32,52 @@ body {
     padding: 20px;
 }
 
-/* МИНИ-АПП — такой же тёмный, с лёгким стеклом, но без фонового градиента, который конфликтует */
 .app-container {
     max-width: 440px;
     width: 100%;
-    background: rgba(14, 14, 18, 0.85);
-    backdrop-filter: blur(12px);
+    background: rgba(8, 8, 12, 0.85);
+    backdrop-filter: blur(10px);
     border-radius: var(--border-radius-card);
     border: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     padding: 24px 20px 32px;
     transition: all 0.2s ease;
-}
-
-/* Остальные стили (поля, кнопки, частицы) — без изменений, они уже стильные */
-.header {
-    text-align: center;
-    margin-bottom: 32px;
     position: relative;
+    overflow: hidden;
 }
 
+/* ГРАДИЕНТНЫЙ ЗАГОЛОВОК */
+.header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #b77eff, #3d7eff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+}
+
+.header h1 span {
+    background: linear-gradient(135deg, #b77eff, #3d7eff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.subhead {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 8px;
+    font-weight: 400;
+}
+
+/* ЧАСТИЦЫ */
 .image-container {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     margin: 0 auto 16px;
     position: relative;
     display: flex;
@@ -64,14 +86,13 @@ body {
 }
 
 .main-image {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
     position: relative;
     z-index: 2;
 }
 
-/* Частицы — быстрые, цветные */
 .particle {
     position: absolute;
     width: 4px;
@@ -94,17 +115,122 @@ body {
     box-shadow: 0 0 4px #b77eff;
 }
 
-/* Анимации частиц (оставлены как были, 16 направлений) */
+/* Анимации частиц */
 @keyframes floatParticle1 {
     0% { transform: translate(0, 0) scale(1); opacity: 0; }
     15% { opacity: 0.9; }
     85% { opacity: 0.6; }
     100% { transform: translate(45px, -70px) scale(0); opacity: 0; }
 }
-/* ... (здесь все 16 анимаций, они у тебя уже есть в твоём текущем styles.css, я их не трогаю) ... */
-/* Чтобы не занимать место, оставлю как есть — они у тебя уже работают */
+@keyframes floatParticle2 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-50px, -60px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle3 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(35px, -80px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle4 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-40px, -65px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle5 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(20px, -90px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle6 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-60px, -45px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle7 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(55px, -50px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle8 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-30px, -85px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle9 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(65px, -35px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle10 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-70px, -40px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle11 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(25px, -95px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle12 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-55px, -55px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle13 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(40px, -75px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle14 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-45px, -75px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle15 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(50px, -60px) scale(0); opacity: 0; }
+}
+@keyframes floatParticle16 {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    15% { opacity: 0.9; }
+    85% { opacity: 0.6; }
+    100% { transform: translate(-20px, -100px) scale(0); opacity: 0; }
+}
 
-/* Поля ввода и кнопки — стильные, современные */
+.image-container .particle:nth-child(1) { animation: floatParticle1 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(2) { animation: floatParticle2 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(3) { animation: floatParticle3 3.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(4) { animation: floatParticle4 4.0s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(5) { animation: floatParticle5 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(6) { animation: floatParticle6 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(7) { animation: floatParticle7 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(8) { animation: floatParticle8 4.2s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(9) { animation: floatParticle9 3.4s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(10) { animation: floatParticle10 3.7s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(11) { animation: floatParticle11 4.1s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(12) { animation: floatParticle12 3.5s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(13) { animation: floatParticle13 3.9s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(14) { animation: floatParticle14 3.3s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(15) { animation: floatParticle15 3.6s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+.image-container .particle:nth-child(16) { animation: floatParticle16 3.8s infinite ease-out; left: 50%; top: 50%; margin: -2px 0 0 -2px; }
+
+/* ПОЛЯ ВВОДА И КНОПКИ */
 .input-group {
     background: #0a0a0f;
     border: 1px solid #1e1e2a;
@@ -121,13 +247,12 @@ body {
     background: #0c0c12;
 }
 .input-icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     margin-right: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent-blue);
     opacity: 0.8;
 }
 .input-content {
@@ -194,30 +319,27 @@ input::placeholder {
     background: var(--button-gradient);
     border: none;
     border-radius: var(--border-radius-button);
-    padding: 16px 20px;
-    font-size: 17px;
-    font-weight: 700;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 600;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    box-shadow: 0 8px 20px rgba(61, 126, 255, 0.3);
-    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    box-shadow: 0 6px 16px rgba(61, 126, 255, 0.3);
 }
-.buy-button:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.05);
-    box-shadow: 0 12px 28px rgba(61, 126, 255, 0.4);
+.buy-button img {
+    width: 20px;
+    height: 20px;
 }
 .buy-button:active {
-    transform: translateY(1px);
+    transform: scale(0.98);
 }
 .buy-button:disabled {
     opacity: 0.6;
-    transform: none;
 }
 
 .footer-links {
@@ -346,3 +468,4 @@ input::placeholder {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+

@@ -26,80 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // --- СИНХРОНИЗАЦИЯ С ВЕРХНЕЙ ПЛАШКОЙ TELEGRAM ---
-    function syncTelegramHeader() {
-        if (!tg) return;
-        
-        // Получаем цвет фона шапки из темы Telegram
-        const headerColor = tg.themeParams.header_bg_color || tg.themeParams.bg_color || '#0a0a0c';
-        // Устанавливаем цвет шапки Telegram
-        tg.setHeaderColor(headerColor);
-        
-        // Дополнительно синхронизируем цвет фона самого приложения
-        const bgColor = tg.themeParams.bg_color || '#07070b';
-        tg.setBackgroundColor(bgColor);
-        
-        // Применяем тот же цвет к body (чтобы не было резкого перехода)
-        document.body.style.backgroundColor = bgColor;
-        
-        // Если нужно, можно применить к контейнеру
-        const container = document.querySelector('.app-container');
-        if (container) {
-            container.style.background = `radial-gradient(circle at 100% 0%, rgba(159, 101, 255, 0.12), rgba(0, 0, 0, 0) 70%),
-                                        radial-gradient(circle at 0% 100%, rgba(44, 110, 219, 0.08), rgba(0, 0, 0, 0) 70%),
-                                        ${bgColor}`;
-        }
-    }
-
-    // Применяем синхронизацию при загрузке
-    if (tg) {
-        syncTelegramHeader();
-        // Слушаем изменение темы в Telegram (если пользователь переключит)
-        tg.onEvent('themeChanged', () => {
-            syncTelegramHeader();
-            applyTelegramTheme(); // дополнительно обновляем карточки и кнопки
-        });
-    }
-
-    // Telegram тема для карточек и кнопок
-    function applyTelegramTheme() {
-        if (!tg) return;
-        const bg = tg.themeParams.bg_color || '#0a0a0c';
-        const card = tg.themeParams.secondary_bg_color || '#0e0e12';
-        const text = tg.themeParams.text_color || '#ffffff';
-        const buttonText = tg.themeParams.button_text_color || '#ffffff';
-        
-        document.body.style.backgroundColor = bg;
-        document.body.style.color = text;
-        
-        const container = document.querySelector('.app-container');
-        if (container) {
-            container.style.background = `radial-gradient(circle at 100% 0%, rgba(159, 101, 255, 0.12), rgba(0, 0, 0, 0) 70%),
-                                        radial-gradient(circle at 0% 100%, rgba(44, 110, 219, 0.08), rgba(0, 0, 0, 0) 70%),
-                                        ${card}`;
-        }
-        
-        document.querySelectorAll('.input-group').forEach(el => {
-            el.style.backgroundColor = '#0a0a0f';
-            el.style.borderColor = '#1e1e2a';
-        });
-        
-        if (buyButton) {
-            buyButton.style.background = `linear-gradient(105deg, #3d7eff, #b77eff)`;
-            buyButton.style.color = buttonText;
-        }
-    }
-
-    if (tg) {
-        applyTelegramTheme();
-    }
-
-    // Автозаполнение username
-    if (usernameInput && tg && tg.initDataUnsafe?.user) {
-        const u = tg.initDataUnsafe.user;
-        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
-    }
-
     // Закрытие по Enter
     starCountInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -114,6 +40,57 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.blur();
         }
     });
+
+    // Telegram тема и цвет шапки
+    function syncTelegramHeader() {
+        if (!tg) return;
+        const headerColor = tg.themeParams.header_bg_color || tg.themeParams.bg_color || '#07070b';
+        tg.setHeaderColor(headerColor);
+        const bgColor = tg.themeParams.bg_color || '#07070b';
+        tg.setBackgroundColor(bgColor);
+        document.body.style.backgroundColor = bgColor;
+    }
+
+    function applyTelegramTheme() {
+        if (!tg) return;
+        const bg = tg.themeParams.bg_color || '#07070b';
+        const card = tg.themeParams.secondary_bg_color || '#0e0e12';
+        const text = tg.themeParams.text_color || '#ffffff';
+        const buttonText = tg.themeParams.button_text_color || '#ffffff';
+        
+        document.body.style.backgroundColor = bg;
+        document.body.style.color = text;
+        
+        const container = document.querySelector('.app-container');
+        if (container) {
+            container.style.background = `rgba(8, 8, 12, 0.85)`;
+        }
+        
+        document.querySelectorAll('.input-group').forEach(el => {
+            el.style.backgroundColor = '#0a0a0f';
+            el.style.borderColor = '#1e1e2a';
+        });
+        
+        if (buyButton) {
+            buyButton.style.background = `linear-gradient(105deg, #3d7eff, #b77eff)`;
+            buyButton.style.color = buttonText;
+        }
+    }
+
+    if (tg) {
+        syncTelegramHeader();
+        applyTelegramTheme();
+        tg.onEvent('themeChanged', () => {
+            syncTelegramHeader();
+            applyTelegramTheme();
+        });
+    }
+
+    // Автозаполнение username
+    if (usernameInput && tg && tg.initDataUnsafe?.user) {
+        const u = tg.initDataUnsafe.user;
+        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+    }
 
     // Обновление цены
     function updateTotal() {
@@ -168,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             buyButton.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
         } else {
             buyButton.disabled = false;
-            buyButton.innerHTML = '<img src="img/R.png" style="width:18px;height:18px;object-fit:contain;"> Купить ' + starCountInput.value + ' звёзд';
+            buyButton.innerHTML = '<img src="img/R.png" style="width:20px;height:20px;object-fit:contain;"> Купить ' + starCountInput.value + ' звёзд';
         }
     }
 
