@@ -6,6 +6,23 @@
         tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        
+        // Отладка на экране
+        const debug = document.createElement('div');
+        debug.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;font-size:11px;padding:8px;z-index:9999;max-height:50%;overflow:auto;';
+        document.body.appendChild(debug);
+        debug.innerHTML += 'tg: OK<br>';
+        debug.innerHTML += 'initDataUnsafe: ' + JSON.stringify(tg.initDataUnsafe) + '<br>';
+        debug.innerHTML += 'user: ' + JSON.stringify(tg.initDataUnsafe?.user) + '<br>';
+        debug.innerHTML += 'username: ' + (tg.initDataUnsafe?.user?.username || 'нет') + '<br>';
+        
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const u = tg.initDataUnsafe.user;
+            usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+            debug.innerHTML += 'ЗАПОЛНЕНО: ' + usernameInput.value + '<br>';
+        } else {
+            debug.innerHTML += 'НЕТ ДАННЫХ<br>';
+        }
     }
 
     const usernameInput = document.getElementById('username');
@@ -17,11 +34,6 @@
     const btnPlus = document.getElementById('btnPlus');
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
-
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
-    }
 
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
