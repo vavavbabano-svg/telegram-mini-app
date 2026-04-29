@@ -1,338 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Stars App</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(4px);
-    }
-    .modal-card {
-      background: #0F0F14;
-      border-radius: 32px;
-      padding: 24px 20px;
-      max-width: 320px;
-      width: 85%;
-      text-align: center;
-      border: 1px solid #2A2A35;
-    }
-    .modal-card h3 { font-size: 20px; margin-bottom: 12px; color: white; }
-    .modal-card p { font-size: 14px; color: #aaa; margin-bottom: 20px; }
-    .modal-buttons { display: flex; gap: 12px; }
-    .modal-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 60px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-    }
-    .modal-btn.confirm { background: #2C6EDB; color: white; }
-    .modal-btn.cancel { background: #2A2A35; color: white; }
-  </style>
-  <script>
-    if (window.Telegram && Telegram.WebApp) {
-      const tg = Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-      const setColors = () => {
-        const textColor = tg.themeParams.text_color || '#E6E6E6';
-        const hintColor = tg.themeParams.hint_color || '#A0A0A0';
-        const buttonColor = tg.themeParams.button_color || '#2C6EDB';
-        document.documentElement.style.setProperty('--tg-text', textColor);
-        document.documentElement.style.setProperty('--tg-hint', hintColor);
-        document.documentElement.style.setProperty('--tg-button', buttonColor);
-      };
-      setColors();
-      tg.onEvent('themeChanged', setColors);
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Stars App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-<div class="app">
-  <div class="topbar">
-    <div id="userId">#----</div>
-    <div class="logo"></div>
-    <div class="topbar-right">
-      <button id="adminBtn" class="admin-btn hidden">Admin</button>
-      <a class="tg-btn" href="https://t.me/MyStars812support_bot?start=help" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Telegram_X_2019_Logo.svg" />
-      </a>
+<div class="app-container">
+    <div class="header">
+        <div class="image-container">
+            <img src="img/R.png" alt="Telegram Stars" class="main-image">
+        </div>
+        <h1>Купить <span>Telegram Stars</span></h1>
+        <p>Быстрая и безопасная покупка звёзд для вас или вашего друга</p>
     </div>
-  </div>
 
-  <div class="card hero">
-    <div class="hero-img">
-      <img src="img/звездаглав2.png" alt="Stars">
+    <div class="input-group">
+        <div class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-blue)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="input-content">
+            <span class="input-label">Имя пользователя</span>
+            <input type="text" id="username" placeholder="@username">
+        </div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="row">
-      <input id="username" placeholder="@username">
-      <button id="selfBtn" class="btn small active">Себе</button>
-      <button id="otherBtn" class="btn small">Другому</button>
+    <div class="input-group">
+        <div class="input-icon">
+            <img src="img/tgstars.png" alt="Stars" style="width: 24px; height: 24px; object-fit: contain;">
+        </div>
+        <div class="input-content">
+            <span class="input-label">Количество звёзд</span>
+            <input type="number" id="star-count" class="quantity-value" value="100" min="50" step="50">
+        </div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="price-line">
-      <input id="stars" type="number" placeholder="50" value="50">
-      <span class="price-label">Stars</span>
-      <img src="img/стрелка2.png" alt="→" class="arrow-icon">
-      <div id="rubOut">82.00 ₽</div>
-      <span class="price-label" id="currencyLabel">RUB</span>
+    <div class="price-section">
+        <div>
+            <span class="price-label">К оплате</span><br>
+            <span style="font-size: 12px; color: var(--text-secondary);" id="summary-label">100 звёзд</span>
+        </div>
+        <div class="price-value">
+            <span id="total-price">159.00</span> ₽
+            <span class="price-subtext">1 звезда ≈ 1.59 ₽</span>
+        </div>
     </div>
-    <div class="packs">
-      <button data-stars="50">50</button>
-      <button data-stars="100">100</button>
-      <button data-stars="500">500</button>
-      <button data-stars="1000">1K</button>
-      <button data-stars="5000">5K</button>
+
+    <button id="buyButton" class="buy-button">
+        <img src="img/R.png" style="width:18px;height:18px;object-fit:contain;"> Купить <span id="btn-count">100</span> звёзд
+    </button>
+
+    <div class="footer-links">
+        <a href="terms.html" class="footer-link">Правила</a>
+        <a href="privacy.html" class="footer-link">Политика</a>
+        <a href="refund.html" class="footer-link">Возврат</a>
+        <a href="requirements.html" class="footer-link">О магазине</a>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="payment-grid">
-      <div class="pay-card" data-method="sbp">
-        <div class="currency-tag">₽ RUB</div>
-        <div class="payment-logo"><img src="img/СБП.png" alt="СБП"></div>
-        <div class="payment-name">СБП</div>
-      </div>
-      <div class="pay-card" data-method="ton">
-        <div class="currency-tag">TON</div>
-        <div class="payment-logo"><img src="img/TON12.png" alt="TON"></div>
-        <div class="payment-name">TON</div>
-      </div>
+    <div class="footer">
+        <div class="lock-icon"></div>
+        Безопасная оплата
     </div>
-  </div>
-
-  <div class="terms">
-    <a href="terms.html">Правила</a> ·
-    <a href="privacy.html">Политика</a> ·
-    <a href="refund.html">Возврат</a> ·
-    <a href="requirements.html">О магазине</a>
-  </div>
-
-  <button id="buyButton" class="buy" style="display:flex;align-items:center;justify-content:center;width:100%; border:none;">Купить звёзды</button>
 </div>
 
-<script>
-  let tg = null;
-  if (window.Telegram && window.Telegram.WebApp) {
-    tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-  }
-
-  const starsInput = document.getElementById('stars');
-  const rubOutDiv = document.getElementById('rubOut');
-  const selfBtn = document.getElementById('selfBtn');
-  const otherBtn = document.getElementById('otherBtn');
-  const usernameField = document.getElementById('username');
-  const buyButton = document.getElementById('buyButton');
-  const packBtns = document.querySelectorAll('.packs button');
-  const payCards = document.querySelectorAll('.pay-card');
-
-  const RUB_PER_STAR = 1.64;
-  const TON_PER_STAR = 0.009;
-
-  let currentCurrency = 'rub';
-  const currencyLabel = document.getElementById('currencyLabel');
-
-  function updateTotal() {
-    const rawValue = starsInput.value;
-    let stars = 0;
-    if (rawValue !== null && rawValue !== '' && !isNaN(parseFloat(rawValue))) {
-      stars = parseFloat(rawValue);
-      if (stars < 0) stars = 0;
-    } else {
-      stars = 0;
-    }
-    starsInput.value = stars === 0 ? '' : stars;
-    
-    let total, unit;
-    if (currentCurrency === 'ton') {
-      total = stars * TON_PER_STAR;
-      unit = 'TON';
-      rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(3)} ${unit}`;
-    } else {
-      total = stars * RUB_PER_STAR;
-      unit = '₽';
-      rubOutDiv.innerHTML = total === 0 ? `0 ${unit}` : `${total.toFixed(2)} ${unit}`;
-    }
-    
-    let matched = false;
-    packBtns.forEach(btn => {
-      const val = parseInt(btn.getAttribute('data-stars'));
-      if (val === stars && stars !== 0) {
-        btn.classList.add('active');
-        matched = true;
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-    if (!matched) packBtns.forEach(btn => btn.classList.remove('active'));
-  }
-
-  packBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const stars = parseInt(btn.getAttribute('data-stars'));
-      starsInput.value = stars;
-      updateTotal();
-      packBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  starsInput.addEventListener('input', updateTotal);
-  starsInput.addEventListener('blur', () => {
-    if (starsInput.value === '' || isNaN(parseFloat(starsInput.value))) {
-      starsInput.value = '';
-      updateTotal();
-    }
-  });
-
-  function setTarget(target) {
-    if (target === 'self') {
-      usernameField.disabled = true;
-      if (tg && tg.initDataUnsafe?.user?.username) {
-        usernameField.value = `@${tg.initDataUnsafe.user.username}`;
-      }
-      selfBtn.classList.add('active');
-      otherBtn.classList.remove('active');
-    } else {
-      usernameField.disabled = false;
-      selfBtn.classList.remove('active');
-      otherBtn.classList.add('active');
-    }
-  }
-  selfBtn.addEventListener('click', () => setTarget('self'));
-  otherBtn.addEventListener('click', () => setTarget('other'));
-
-  let selectedPayment = null;
-  payCards.forEach(card => {
-    card.addEventListener('click', () => {
-      payCards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedPayment = card.getAttribute('data-method');
-      currentCurrency = selectedPayment === 'ton' ? 'ton' : 'rub';
-      currencyLabel.textContent = currentCurrency === 'ton' ? 'TON' : 'RUB';
-      updateTotal();
-    });
-  });
-  if (payCards.length > 0) {
-    payCards[0].classList.add('selected');
-    selectedPayment = payCards[0].getAttribute('data-method');
-    currentCurrency = 'rub';
-    currencyLabel.textContent = 'RUB';
-  }
-
-  function showConfirmModal(onConfirm) {
-    const old = document.querySelector('.modal-overlay');
-    if (old) old.remove();
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-      <div class="modal-card">
-        <h3>🛒 Подтверждение заказа</h3>
-        <p>Вы действительно хотите купить <strong>${starsInput.value || 0}</strong> звёзд за <strong>${rubOutDiv.innerText}</strong>?</p>
-        <div class="modal-buttons">
-          <button class="modal-btn cancel" id="modalCancel">Отмена</button>
-          <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    document.getElementById('modalCancel').onclick = () => modal.remove();
-    document.getElementById('modalConfirm').onclick = () => {
-      modal.remove();
-      onConfirm();
-    };
-  }
-
-  function setButtonLoading(loading) {
-    if (loading) {
-      buyButton.disabled = true;
-      buyButton.classList.add('btn-loading');
-      buyButton.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
-    } else {
-      buyButton.disabled = false;
-      buyButton.classList.remove('btn-loading');
-      buyButton.innerHTML = 'Купить звёзды';
-    }
-  }
-
-  buyButton.onclick = () => {
-    let recipient = usernameField.value.trim();
-    if (!recipient) {
-      if (selfBtn.classList.contains('active')) {
-        recipient = 'свой аккаунт';
-      } else {
-        alert('Укажите @username получателя');
-        return;
-      }
-    }
-    const stars = parseInt(starsInput.value) || 0;
-    if (stars <= 0) {
-      alert('Введите количество звёзд (минимум 1)');
-      return;
-    }
-    if (!selectedPayment) {
-      alert('Выберите способ оплаты');
-      return;
-    }
-
-    const totalText = rubOutDiv.innerText;
-    const order = { recipient, stars, total: totalText, target: selfBtn.classList.contains('active') ? 'self' : 'other', timestamp: Date.now() };
-    localStorage.setItem('pendingOrder', JSON.stringify(order));
-
-    showConfirmModal(async () => {
-      setButtonLoading(true);
-      const amountMatch = totalText.match(/(\d+(?:[.,]\d+)?)/);
-      const amount = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : 0;
-      try {
-        // ========== ВЫЗОВ CLOUDFLARE WORKER (ВМЕСТО PHP) ==========
-const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    amount: amount,
-    description: `Покупка ${stars} звёзд для ${recipient}`,
-    orderId: `order_${Date.now()}`
-  })
-});
-        const data = await res.json();
-
-        if (data.success && data.confirmation_url) {
-          window.location.href = data.confirmation_url;
-        } else {
-          alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
-          setButtonLoading(false);
-        }
-      } catch (err) {
-        alert('Ошибка соеднения: ' + err.message);
-        setButtonLoading(false);
-      }
-    });
-  };
-
-  updateTotal();
-  setTarget('self');
-</script>
+<script type="module" src="app.js"></script>
 </body>
 </html>

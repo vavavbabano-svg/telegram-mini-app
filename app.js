@@ -1,277 +1,180 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const RATE_RUB = 1.64;
-const RATE_TON = 0.015;
-
+const RUB_PER_STAR = 1.59;
 const supabase = createClient(
-  "https://naxxslgxyelefzdxjhze.supabase.co",
-  "sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF"
+    "https://naxxslgxyelefzdxjhze.supabase.co",
+    "sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF"
 );
 
-const tg = window.Telegram.WebApp;
-
-const el = {
-  userId: document.getElementById("userId"),
-  stars: document.getElementById("stars"),
-  rub: document.getElementById("rubOut"),
-  username: document.getElementById("username"),
-  buy: document.querySelector(".buy"),
-  self: document.getElementById("selfBtn"),
-  other: document.getElementById("otherBtn"),
-  admin: document.getElementById("adminBtn")
-};
-
-tg.ready();
-tg.expand();
-
-// --- СИНХРОНИЗАЦИЯ ТЕМЫ С TELEGRAM ---
-function syncTelegramTheme() {
-  if (!tg) return;
-
-  const bgColor = tg.themeParams.bg_color || '#16161a';
-  const textColor = tg.themeParams.text_color || '#E6E6E6';
-  const buttonColor = tg.themeParams.button_color || '#2D6BFF';
-  const headerBg = tg.themeParams.header_bg_color || bgColor;
-
-  document.documentElement.style.setProperty('--bg', bgColor);
-  document.documentElement.style.setProperty('--card', bgColor);
-  document.documentElement.style.setProperty('--text', textColor);
-  document.documentElement.style.setProperty('--muted', textColor + 'cc');
-  document.documentElement.style.setProperty('--blue', buttonColor);
-  document.documentElement.style.setProperty('--input', bgColor);
-  document.documentElement.style.setProperty('--btn', bgColor);
-
-  tg.setHeaderColor(headerBg);
-  tg.setBackgroundColor(bgColor);
-}
-
-tg.onEvent('themeChanged', syncTelegramTheme);
-syncTelegramTheme();
-
-// --- КНОПКА НАЗАД ДЛЯ СТРАНИЦЫ ОПЛАТЫ ---
-function setupBackButton() {
-  if (!tg) return;
-  if (window.location.pathname.includes('payment.html')) {
-    tg.BackButton.show();
-    tg.BackButton.onClick(() => window.history.back());
-  } else {
-    tg.BackButton.hide();
-  }
-}
-setupBackButton();
-
-// --- ОСТАЛЬНАЯ ЛОГИКА (твоя, без изменений) ---
-async function initUser() {
-  const tgUser = tg.initDataUnsafe?.user;
-  if (!tgUser) return;
-
-  const tgId = String(tgUser.id);
-  const { data: user, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("tg_id", tgId)
-    .maybeSingle();
-
-  if (error) console.error("Ошибка user:", error);
-
-  if (el.userId && user?.number) {
-    el.userId.textContent = "#" + String(user.number).padStart(4, "0");
-    el.userId.style.display = "inline-block";
-  } else if (el.userId) {
-    el.userId.textContent = "#----";
-  }
-}
-
-let currentCurrency = "RUB";
-
-function update(val) {
-  const s = Number(val) || 0;
-  const currencyLabel = document.getElementById("currencyLabel");
-  
-  if (currentCurrency === "TON") {
-    const tonAmount = (s * RATE_TON).toFixed(3);
-    el.rub.textContent = tonAmount + " TON";
-    if (currencyLabel) currencyLabel.textContent = "TON";
-  } else {
-    el.rub.textContent = (s * RATE_RUB).toFixed(2) + " ₽";
-    if (currencyLabel) currencyLabel.textContent = "RUB";
-  }
-}
-
-document.querySelectorAll(".packs button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const val = btn.dataset.stars;
-    el.stars.value = val;
-    update(val);
-    document.querySelectorAll(".packs button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  });
-});
-
-el.stars.addEventListener("input", e => {
-  let val = e.target.value;
-  if (val === "") {
-    update(0);
-    return;
-  }
-  update(Number(val));
-});
-
-el.stars.value = 50;
-update(50);
-
-el.stars.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    el.stars.blur();
-  }
-});
-
-el.username.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    el.username.blur();
-  }
-});
-
-el.self.onclick = () => {
-  el.self.classList.add("active");
-  el.other.classList.remove("active");
-  const u = tg.initDataUnsafe?.user;
-  el.username.value = u?.username ? "@" + u.username : "@" + u?.id;
-};
-
-el.other.onclick = () => {
-  el.other.classList.add("active");
-  el.self.classList.remove("active");
-  el.username.value = "@";
-  el.username.focus();
-};
-
-(function setDefaultUsername() {
-  const u = tg.initDataUnsafe?.user;
-  if (u) {
-    el.username.value = u.username ? "@" + u.username : "@" + u.id;
-    el.self.classList.add("active");
-    el.other.classList.remove("active");
-  }
-})();
-
-const buyBtn = el.buy;
-buyBtn.style.transition = "none";
-
-el.stars.addEventListener("focus", () => {
-  buyBtn.style.position = "relative";
-  buyBtn.style.bottom = "auto";
-  buyBtn.style.marginTop = "12px";
-  buyBtn.style.width = "100%";
-  buyBtn.style.maxWidth = "100%";
-  buyBtn.style.transform = "none";
-  buyBtn.style.left = "auto";
-});
-
-el.username.addEventListener("focus", () => {
-  buyBtn.style.position = "relative";
-  buyBtn.style.bottom = "auto";
-  buyBtn.style.marginTop = "12px";
-  buyBtn.style.width = "100%";
-  buyBtn.style.maxWidth = "100%";
-  buyBtn.style.transform = "none";
-  buyBtn.style.left = "auto";
-});
-
-el.stars.addEventListener("blur", () => {
-  setTimeout(() => {
-    buyBtn.style.position = "fixed";
-    buyBtn.style.bottom = "12px";
-    buyBtn.style.left = "50%";
-    buyBtn.style.transform = "translateX(-50%)";
-    buyBtn.style.marginTop = "0";
-    buyBtn.style.width = "calc(100% - 24px)";
-    buyBtn.style.maxWidth = "420px";
-  }, 200);
-});
-
-el.username.addEventListener("blur", () => {
-  setTimeout(() => {
-    buyBtn.style.position = "fixed";
-    buyBtn.style.bottom = "12px";
-    buyBtn.style.left = "50%";
-    buyBtn.style.transform = "translateX(-50%)";
-    buyBtn.style.marginTop = "0";
-    buyBtn.style.width = "calc(100% - 24px)";
-    buyBtn.style.maxWidth = "420px";
-  }, 200);
-});
-
-let selectedPayment = null;
-
-document.querySelectorAll(".pay-card").forEach(card => {
-  card.addEventListener("click", () => {
-    document.querySelectorAll(".pay-card").forEach(c => c.classList.remove("selected"));
-    card.classList.add("selected");
-    selectedPayment = card.dataset.method;
-    currentCurrency = selectedPayment === "ton" ? "TON" : "RUB";
-    update(Number(el.stars.value));
-  });
-});
-
-el.buy.onclick = () => {
-  const stars = Number(el.stars.value);
-  const username = el.username.value.trim();
-  
-  if (!username) {
-    alert("Введите username получателя");
-    return;
-  }
-  if (!stars || stars < 50) {
-    alert("Минимальное количество звёзд: 50");
-    return;
-  }
-  if (!selectedPayment) {
-    alert("Пожалуйста, выберите способ оплаты");
-    return;
-  }
-
-  let total, currency;
-  if (selectedPayment === "ton") {
-    total = (stars * RATE_TON).toFixed(3) + " TON";
-    currency = "TON";
-  } else {
-    total = (stars * RATE_RUB).toFixed(2) + " ₽";
-    currency = "RUB";
-  }
-
-  const order = {
-    recipient: username,
-    stars: stars,
-    total: total,
-    currency: currency,
-    paymentMethod: selectedPayment,
-    timestamp: Date.now()
-  };
-  localStorage.setItem('pendingOrder', JSON.stringify(order));
-  window.location.href = 'payment.html';
-};
-
-function setupAdmin() {
-  const btn = el.admin;
-  if (!btn) return;
-  btn.classList.remove("hidden");
-  btn.style.display = "block";
-}
-
-if (el.admin) {
-  el.admin.addEventListener("click", async () => {
-    try {
-      const response = await fetch("https://paypalych-server.onrender.com/admin/stats");
-      const stats = await response.json();
-      alert(`📊 СТАТИСТИКА\n\nСегодня:\n⭐ Звёзд: ${stats.today.stars}\n💰 Сумма: ${stats.today.amount} ₽\n📦 Заказов: ${stats.today.count}\n\nВсего:\n⭐ Звёзд: ${stats.all.stars}\n💰 Сумма: ${stats.all.amount} ₽\n📦 Заказов: ${stats.all.count}\n\n🔧 Fragment: ${stats.fragment_ready ? "✅" : "❌"}\n🔧 Enot: ${stats.enot_configured ? "✅" : "❌"}`);
-    } catch (e) {
-      alert("Ошибка загрузки статистики");
+document.addEventListener('DOMContentLoaded', () => {
+    let tg = null;
+    if (window.Telegram && window.Telegram.WebApp) {
+        tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
     }
-  });
-}
 
-initUser();
-setupAdmin();
+    const usernameInput = document.getElementById('username');
+    const starCountInput = document.getElementById('star-count');
+    const btnCountSpan = document.getElementById('btn-count');
+    const summaryLabel = document.getElementById('summary-label');
+    const totalPriceSpan = document.getElementById('total-price');
+    const buyButton = document.getElementById('buyButton');
+
+    if (!starCountInput || !btnCountSpan || !summaryLabel || !totalPriceSpan || !buyButton) {
+        console.error('❌ Элементы не найдены');
+        return;
+    }
+
+    // Telegram тема
+    function applyTelegramTheme() {
+        if (!tg) return;
+        const bg = tg.themeParams.bg_color || '#000000';
+        const card = tg.themeParams.secondary_bg_color || '#1c1c1e';
+        const text = tg.themeParams.text_color || '#ffffff';
+        const buttonText = tg.themeParams.button_text_color || '#ffffff';
+        
+        document.body.style.backgroundColor = bg;
+        document.body.style.color = text;
+        
+        const container = document.querySelector('.app-container');
+        if (container) container.style.backgroundColor = bg;
+        
+        document.querySelectorAll('.input-group').forEach(el => {
+            el.style.backgroundColor = card;
+        });
+        
+        if (buyButton) {
+            buyButton.style.background = `linear-gradient(90deg, #51a1ff, #a164ff)`;
+            buyButton.style.color = buttonText;
+        }
+        
+        if (tg) {
+            tg.setHeaderColor(tg.themeParams.header_bg_color || bg);
+            tg.setBackgroundColor(bg);
+        }
+    }
+
+    if (tg) {
+        applyTelegramTheme();
+        tg.onEvent('themeChanged', applyTelegramTheme);
+    }
+
+    // Автозаполнение username
+    if (usernameInput && tg && tg.initDataUnsafe?.user) {
+        const u = tg.initDataUnsafe.user;
+        usernameInput.value = u.username ? '@' + u.username : '@' + u.id;
+    }
+
+    // Обновление цены
+    function updateTotal() {
+        let stars = parseInt(starCountInput.value);
+        if (isNaN(stars)) stars = 0;
+        if (stars < 0) stars = 0;
+        
+        starCountInput.value = stars === 0 ? '' : stars;
+        btnCountSpan.innerText = stars;
+        summaryLabel.innerText = stars + ' звёзд';
+        totalPriceSpan.innerText = (stars * RUB_PER_STAR).toFixed(2);
+    }
+
+    starCountInput.addEventListener('input', updateTotal);
+    starCountInput.addEventListener('blur', () => {
+        if (starCountInput.value === '' || starCountInput.value === null) {
+            starCountInput.value = 0;
+            updateTotal();
+        }
+    });
+
+    updateTotal();
+
+    // Плашка подтверждения
+    function showConfirmModal(onConfirm) {
+        const old = document.querySelector('.modal-overlay');
+        if (old) old.remove();
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <h3>🛒 Подтверждение заказа</h3>
+                <p>Вы действительно хотите купить <strong>${starCountInput.value}</strong> звёзд за <strong>${totalPriceSpan.innerText} ₽</strong>?</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn cancel" id="modalCancel">Отмена</button>
+                    <button class="modal-btn confirm" id="modalConfirm">Подтвердить</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('modalCancel').onclick = () => modal.remove();
+        document.getElementById('modalConfirm').onclick = () => {
+            modal.remove();
+            onConfirm();
+        };
+    }
+
+    function setButtonLoading(loading) {
+        if (!buyButton) return;
+        if (loading) {
+            buyButton.disabled = true;
+            buyButton.innerHTML = '<span class="loader-icon"></span> Создание платежа...';
+        } else {
+            buyButton.disabled = false;
+            buyButton.innerHTML = '<img src="img/R.png" style="width:18px;height:18px;object-fit:contain;"> Купить ' + starCountInput.value + ' звёзд';
+        }
+    }
+
+    // Оплата через Lava API
+    buyButton.onclick = () => {
+        let recipient = usernameInput ? usernameInput.value.trim() : '';
+        if (!recipient) recipient = 'свой аккаунт';
+        let stars = parseInt(starCountInput.value) || 0;
+        if (stars <= 0) { alert('Введите количество звёзд (минимум 1)'); return; }
+        if (stars < 50) { alert('Минимальное количество звёзд: 50'); return; }
+
+        const totalText = totalPriceSpan.innerText + ' ₽';
+        localStorage.setItem('pendingOrder', JSON.stringify({ recipient, stars, total: totalText }));
+
+        showConfirmModal(async () => {
+            setButtonLoading(true);
+            const amount = parseFloat(totalPriceSpan.innerText);
+            try {
+                const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: amount,
+                        description: `Покупка ${stars} звёзд для ${recipient}`,
+                        orderId: `order_${Date.now()}`,
+                        username: recipient,
+                        stars: stars
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.confirmation_url) {
+                    window.location.href = data.confirmation_url;
+                } else {
+                    alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+                    setButtonLoading(false);
+                }
+            } catch (err) {
+                alert('Ошибка соединения: ' + err.message);
+                setButtonLoading(false);
+            }
+        });
+    };
+
+    // Supabase user ID
+    async function initUser() {
+        const tgUser = tg?.initDataUnsafe?.user;
+        if (!tgUser) return;
+        const tgId = String(tgUser.id);
+        let { data: user } = await supabase.from("users").select("number").eq("tg_id", tgId).maybeSingle();
+        if (user?.number) {
+            const userIdEl = document.createElement('div');
+            userIdEl.style.cssText = 'position:fixed; top:10px; left:10px; background:#1c1c1e; padding:4px 12px; border-radius:20px; font-size:12px; z-index:1001;';
+            userIdEl.textContent = "#" + String(user.number).padStart(4, "0");
+            document.body.appendChild(userIdEl);
+        }
+    }
+    initUser();
+});

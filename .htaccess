@@ -1,0 +1,22 @@
+# Включаем HTTPS (перенаправление с http на https)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Убираем www (перенаправление с www на без www)
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Отключаем вывод ошибок PHP (чтобы не мешали)
+php_flag display_errors off
+
+# Запрещаем доступ к скрытым файлам
+RedirectMatch 403 /\..*$
+
+# Устанавливаем кодировку
+AddDefaultCharset UTF-8
+
+# Кэширование статики (ускоряет загрузку)
+<FilesMatch "\.(css|js|png|jpg|svg)$">
+    Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>
