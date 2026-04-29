@@ -17,6 +17,9 @@
     const btnPlus = document.getElementById('btnPlus');
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
+    const usernamePreview = document.getElementById('usernamePreview');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
 
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
@@ -59,6 +62,34 @@
     });
     starCountInput?.addEventListener('blur', () => { if (!starCountInput.value) { quantity = 0; updateUI(); } });
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
+
+    // Показ аватарки и имени при вводе username
+    usernameInput.addEventListener('input', () => {
+        usernameCard.style.borderColor = '';
+        const val = usernameInput.value.trim();
+        
+        if (val.length > 0) {
+            userAvatar.src = `https://t.me/i/userpic/${val}`;
+            
+            const ownUsername = tg?.initDataUnsafe?.user?.username;
+            const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
+            
+            if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
+                userName.textContent = ownFirstName;
+            } else {
+                userName.textContent = '@' + val;
+            }
+            
+            userAvatar.onerror = () => {
+                usernamePreview.style.display = 'none';
+            };
+            userAvatar.onload = () => {
+                usernamePreview.style.display = 'flex';
+            };
+        } else {
+            usernamePreview.style.display = 'none';
+        }
+    });
 
     function validateUsername() {
         const val = usernameInput.value.trim();
@@ -114,10 +145,6 @@
         
         const recipient = '@' + usernameInput.value.trim();
         
-        // ПРОВЕРКА: покажет что отправляется, платёж не уйдёт
-        alert('Отправка на: ' + recipient + '\nСумма: ' + formatPrice(quantity * RUB_PER_STAR));
-        return;
-        
         showConfirmModal(async () => {
             setButtonLoading(true);
             try {
@@ -132,7 +159,6 @@
     };
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
-    usernameInput.addEventListener('input', () => { usernameCard.style.borderColor = ''; });
     
     document.addEventListener('click', (e) => {
         if (e.target !== usernameInput && e.target !== starCountInput && !e.target.closest('.quantity__btn')) {
