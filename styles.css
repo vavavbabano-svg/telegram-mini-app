@@ -70,7 +70,7 @@ body {
     gap: var(--spacing-section);
 }
 
-/* STAR SECTION – розово‑синий неон */
+/* STAR SECTION – уменьшенный розово‑синий неон */
 .star-section {
     display: flex;
     justify-content: center;
@@ -79,8 +79,8 @@ body {
 }
 .star-container {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,25 +91,25 @@ body {
     pointer-events: none;
 }
 .star-glow--outer {
-    width: 104px;
-    height: 104px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 94, 158, 0.45), rgba(61, 126, 255, 0.45));
-    filter: blur(28px);
-    animation: gentleNeon 3.2s ease-in-out infinite;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 94, 158, 0.25), rgba(61, 126, 255, 0.25));
+    filter: blur(20px);
+    animation: gentleNeon 4s ease-in-out infinite;
 }
 .star-glow--inner {
-    width: 72px;
-    height: 72px;
-    background: radial-gradient(circle at 60% 70%, rgba(61, 126, 255, 0.4), rgba(255, 94, 158, 0.4));
-    filter: blur(18px);
+    width: 56px;
+    height: 56px;
+    background: radial-gradient(circle at 60% 70%, rgba(61, 126, 255, 0.22), rgba(255, 94, 158, 0.22));
+    filter: blur(14px);
 }
 @keyframes gentleNeon {
-    0% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.85; transform: scale(1.05); }
-    100% { opacity: 0.5; transform: scale(1); }
+    0% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(1.03); }
+    100% { opacity: 0.4; transform: scale(1); }
 }
 
-/* Частицы — розовые и синие */
+/* Частицы — уменьшенные */
 .spark {
     position: absolute;
     border-radius: 50%;
@@ -117,21 +117,21 @@ body {
 }
 .spark--1, .spark--3, .spark--5 {
     background: radial-gradient(circle, #ff5e9e, #ff1e6e);
-    box-shadow: 0 0 2px #ff5e9e;
+    box-shadow: 0 0 1px #ff5e9e;
 }
 .spark--2, .spark--4 {
     background: radial-gradient(circle, #3d7eff, #1a4fcc);
-    box-shadow: 0 0 2px #3d7eff;
+    box-shadow: 0 0 1px #3d7eff;
 }
-.spark--1 { width: 5px; height: 5px; top: 14px; left: 28px; animation: sparkFloat1 3.2s ease-in-out infinite; }
-.spark--2 { width: 4px; height: 4px; top: 18px; right: 22px; animation: sparkFloat2 2.9s ease-in-out infinite; }
-.spark--3 { width: 5px; height: 5px; bottom: 18px; left: 16px; animation: sparkFloat2 3.5s ease-in-out infinite; }
-.spark--4 { width: 3.5px; height: 3.5px; bottom: 22px; right: 18px; animation: sparkFloat1 2.7s ease-in-out infinite; }
-.spark--5 { width: 3px; height: 3px; top: 28px; right: 30px; animation: sparkFloat1 3.8s ease-in-out infinite; }
+.spark--1 { width: 3px; height: 3px; top: 10px; left: 20px; animation: sparkFloat1 4s ease-in-out infinite; }
+.spark--2 { width: 2.5px; height: 2.5px; top: 14px; right: 16px; animation: sparkFloat2 3.5s ease-in-out infinite; }
+.spark--3 { width: 3px; height: 3px; bottom: 14px; left: 12px; animation: sparkFloat2 4.2s ease-in-out infinite; }
+.spark--4 { width: 2px; height: 2px; bottom: 16px; right: 14px; animation: sparkFloat1 3.3s ease-in-out infinite; }
+.spark--5 { width: 2px; height: 2px; top: 22px; right: 24px; animation: sparkFloat1 4.5s ease-in-out infinite; }
 
 .star-icon {
-    width: 88px;
-    height: 88px;
+    width: 72px;
+    height: 72px;
     position: relative;
     z-index: 10;
 }
