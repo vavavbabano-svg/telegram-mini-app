@@ -2,77 +2,76 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Stars App — сердечный дизайн</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MyStars — Купить Telegram Stars</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <div class="image-container">
-            <img src="img/R.png" alt="Telegram Stars" class="main-image">
-            <div class="particle pink"></div>
-            <div class="particle blue"></div>
-            <div class="particle purple"></div>
-            <div class="particle pink"></div>
-            <div class="particle blue"></div>
-            <div class="particle purple"></div>
-            <div class="particle pink"></div>
-            <div class="particle blue"></div>
+<main class="app">
+    <header class="header">
+        <h1 class="header__title">MyStars</h1>
+    </header>
+
+    <section class="star-section">
+        <div class="star-container">
+            <div class="star-glow star-glow--outer"></div>
+            <div class="star-glow star-glow--inner"></div>
+            <div class="spark spark--1"></div>
+            <div class="spark spark--2"></div>
+            <div class="spark spark--3"></div>
+            <div class="spark spark--4"></div>
+            <div class="spark spark--5"></div>
+            <svg class="star-icon" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="starGrad" x1="12%" y1="0%" x2="88%" y2="100%">
+                        <stop offset="0%" stop-color="#FEF08A"/>
+                        <stop offset="35%" stop-color="#FBBF24"/>
+                        <stop offset="70%" stop-color="#F59E0B"/>
+                        <stop offset="100%" stop-color="#B45309"/>
+                    </linearGradient>
+                    <filter id="glow"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                </defs>
+                <polygon points="50,7 62,40 95,40 69,60 79,93 50,74 21,93 31,60 5,40 38,40" fill="url(#starGrad)" filter="url(#glow)"/>
+            </svg>
         </div>
-        <h1>Купить <span>Telegram Stars</span> ❤️</h1>
-        <p class="subhead">Быстрая, безопасная покупка звёзд с душой</p>
+    </section>
+
+    <section class="text-section">
+        <h2 class="text-section__title">Купить Telegram Stars</h2>
+        <p class="text-section__subtitle">Быстрая и безопасная покупка звёзд<br>для вас или вашего друга</p>
+    </section>
+
+    <section class="form-section">
+        <div class="card" id="usernameCard">
+            <label class="card__label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="card__label-text">Имя пользователя</span>
+            </label>
+            <input type="text" id="username" class="card__input" placeholder="@username" autocomplete="off">
+            <div class="card__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Укажите username получателя звёзд</div>
+        </div>
+
+        <div class="card">
+            <div class="card__label"><svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><span class="card__label-text">Количество звёзд</span></div>
+            <div class="quantity">
+                <button class="quantity__btn" id="btnMinus">−</button>
+                <span class="quantity__value" id="quantityDisplay">100</span>
+                <button class="quantity__btn" id="btnPlus">+</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="summary">
+        <div><span class="summary__label">К оплате <strong id="summaryQty">100</strong> звёзд</span><br><span class="summary__rate">1 звезда = 1,59 ₽</span></div>
+        <strong class="summary__price" id="totalPrice">159,00 ₽</strong>
     </div>
 
-    <div class="input-group">
-        <div class="input-icon">
-            <img src="img/tip1.png" alt="User" style="width: 32px; height: 32px; object-fit: contain;">
-        </div>
-        <div class="input-content">
-            <span class="input-label">Имя пользователя</span>
-            <input type="text" id="username" placeholder="@username">
-        </div>
-    </div>
+    <button class="button" id="purchaseBtn"><span class="button__icon">⭐</span> <span id="btnText">Купить 100 звёзд</span> <span class="button__icon">⭐</span></button>
 
-    <div class="input-group">
-        <div class="input-icon">
-            <img src="img/tgstars.png" alt="Stars" style="width: 24px; height: 24px; object-fit: contain;">
-        </div>
-        <div class="input-content">
-            <span class="input-label">Количество звёзд</span>
-            <input type="number" id="star-count" class="quantity-value" value="100" min="50" step="50">
-        </div>
-    </div>
-
-    <div class="price-section">
-        <div>
-            <span class="price-label">К оплате</span><br>
-            <span style="font-size: 12px; color: var(--text-secondary);" id="summary-label">100 звёзд</span>
-        </div>
-        <div class="price-value">
-            <span id="total-price">159.00</span> ₽
-            <span class="price-subtext">1 звезда ≈ 1.59 ₽</span>
-        </div>
-    </div>
-
-    <button id="buyButton" class="buy-button">
-        <img src="img/R.png" style="width:22px;height:22px;object-fit:contain;"> Купить <span id="btn-count">100</span> звёзд
-    </button>
-
-    <div class="footer-links">
-        <a href="terms.html" class="footer-link">Правила</a>
-        <a href="privacy.html" class="footer-link">Политика</a>
-        <a href="refund.html" class="footer-link">Возврат</a>
-        <a href="requirements.html" class="footer-link">О магазине</a>
-    </div>
-
-    <div class="footer">
-        <div class="lock-icon"></div>
-        Безопасная оплата
-    </div>
-</div>
+    <footer class="footer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Безопасная оплата</span></footer>
+</main>
 
 <script type="module" src="app.js"></script>
 </body>
