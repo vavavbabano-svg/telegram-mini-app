@@ -124,12 +124,17 @@
             try {
                 const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
                 if (data.success && data.confirmation_url) {
-                    // Открываем в браузере, а не в WebView
-                    if (tg) {
-                        tg.openLink(data.confirmation_url);
-                    } else {
-                        window.open(data.confirmation_url, '_blank');
-                    }
+                    setButtonLoading(false);
+                    
+                    // Превращаем кнопку в ссылку "Перейти к оплате"
+                    purchaseBtn.outerHTML = `
+                        <a href="${data.confirmation_url}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style="display:block;width:100%;padding:15px;background:linear-gradient(135deg,#9333EA,#C026D3);color:white;text-align:center;border-radius:18px;font-weight:700;font-size:16px;text-decoration:none;">
+                           Перейти к оплате
+                        </a>
+                    `;
                 } else { 
                     alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); 
                     setButtonLoading(false); 
