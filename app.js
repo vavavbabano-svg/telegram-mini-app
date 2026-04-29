@@ -9,32 +9,11 @@
         tg.expand();
     }
 
-    // ========== СИНХРОНИЗАЦИЯ ТЕМЫ TELEGRAM ==========
-    function syncTelegramTheme() {
-        if (!tg) return;
-        
-        const bgColor = tg.themeParams.bg_color || '#0F0F11';
-        const headerColor = tg.themeParams.header_bg_color || bgColor;
-        
-        // Устанавливаем цвет фона мини-аппа
-        document.body.style.backgroundColor = bgColor;
-        // Устанавливаем цвет верхней плашки Telegram
-        tg.setHeaderColor(headerColor);
-        // Цвет фона самого WebView
-        tg.setBackgroundColor(bgColor);
-        
-        // Дополнительно: меняем фон контейнера, если нужно
-        const appContainer = document.querySelector('.app');
-        if (appContainer) appContainer.style.backgroundColor = 'transparent';
-    }
-    
-    // Применяем тему при загрузке
+    // ========== СИНХРОНИЗАЦИЯ ТОЛЬКО ВЕРХНЕЙ ПЛАШКИ ==========
     if (tg) {
-        syncTelegramTheme();
-        // Слушаем изменение темы в Telegram
-        tg.onEvent('themeChanged', () => {
-            syncTelegramTheme();
-        });
+        const headerColor = tg.themeParams.header_bg_color || '#0F0F11';
+        tg.setHeaderColor(headerColor);
+        // Не меняем фон body – он остаётся из styles.css
     }
 
     // DOM элементы
@@ -58,17 +37,12 @@
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
 
-    // ========== ЕДИНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ==========
     function updateAll() {
-        // Обновляем поле ввода и сводку
         if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
         summaryQty.innerText = quantity;
-        // Цена
         const total = quantity * RUB_PER_STAR;
         totalPriceSpan.innerText = formatPrice(total);
-        // Текст кнопки покупки
         btnText.innerText = `Купить ${quantity} звёзд`;
-        // Кнопка минус
         if (btnMinus) {
             if (quantity <= 10) {
                 btnMinus.classList.add('quantity__btn--disabled');
@@ -78,7 +52,6 @@
         }
     }
 
-    // ========== КНОПКИ + / – ==========
     function changeQuantity(delta) {
         let newVal = quantity + delta;
         if (newVal < 10) return;
@@ -90,7 +63,6 @@
     if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
     if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
 
-    // ========== РУЧНОЙ ВВОД ==========
     function handleManualInput() {
         if (!starCountInput) return;
         let raw = starCountInput.value.trim();
@@ -136,7 +108,6 @@
         });
     }
 
-    // ========== ВАЛИДАЦИЯ USERNAME ==========
     function validateUsername() {
         const val = usernameInput.value.trim();
         if (!val) {
@@ -150,7 +121,6 @@
         return true;
     }
 
-    // ========== ПЛАШКА ПОДТВЕРЖДЕНИЯ ==========
     function showConfirmModal(onConfirm) {
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
@@ -184,7 +154,6 @@
         }
     }
 
-    // ========== LAVA API ==========
     async function createLavaPayment(amount, stars, recipient) {
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
@@ -200,7 +169,6 @@
         return res.json();
     }
 
-    // ========== КНОПКА КУПИТЬ ==========
     purchaseBtn.onclick = () => {
         let recipient = usernameInput.value.trim();
         if (!recipient) recipient = 'свой аккаунт';
@@ -230,7 +198,6 @@
         });
     };
 
-    // ========== ЗАКРЫТИЕ КЛАВИАТУРЫ ==========
     if (usernameInput) {
         usernameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') purchaseBtn.click();
@@ -251,6 +218,5 @@
         usernameCard.style.borderColor = '';
     });
 
-    // ========== СТАРТ ==========
     updateAll();
 })();
