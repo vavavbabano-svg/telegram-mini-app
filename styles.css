@@ -415,3 +415,13 @@ body {
     87%{ transform: translateX(-1px); }
 }
 .shake { animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+/* Кнопка "Себе" */
+.self-btn {
+    background: #2a2a2e;
+    color: #8e8e93;
+}
+.self-btn--active {
+    background: var(--gradient-button);
+    color: white;
+    box-shadow: 0 2px 12px rgba(147, 51, 234, 0.3);
+}

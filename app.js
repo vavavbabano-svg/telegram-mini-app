@@ -179,6 +179,45 @@
             starCountInput?.blur();
         }
     });
+    // Кнопка "Себе"
+const btnSelf = document.getElementById('btnSelf');
+let isSelfMode = true; // По умолчанию включено
+
+// Автозаполнение при загрузке
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    const u = tg.initDataUnsafe.user;
+    const ownUsername = u.username ? '@' + u.username : '@' + u.id;
+    usernameInput.value = ownUsername;
+    
+    // Сохраняем свой username для переключения
+    usernameInput.dataset.ownUsername = ownUsername;
+}
+
+// Переключение режима
+btnSelf.addEventListener('click', () => {
+    isSelfMode = !isSelfMode;
+    
+    if (isSelfMode) {
+        // Включаем "Себе"
+        btnSelf.classList.add('self-btn--active');
+        btnSelf.textContent = 'Себе';
+        usernameInput.value = usernameInput.dataset.ownUsername || '';
+        usernameInput.readOnly = true;
+    } else {
+        // Выключаем "Себе" — можно ввести любой username
+        btnSelf.classList.remove('self-btn--active');
+        btnSelf.textContent = 'Другу';
+        usernameInput.value = '';
+        usernameInput.readOnly = false;
+        usernameInput.focus();
+    }
+    
+    // Сбрасываем ошибку если была
+    usernameCard.style.borderColor = '';
+});
+
+// Изначально поле только для чтения
+usernameInput.readOnly = true;
     
     // Инициализация
     updateUI();
