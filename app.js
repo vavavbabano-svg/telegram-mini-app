@@ -11,7 +11,6 @@
 
     // DOM элементы
     const usernameInput = document.getElementById('username');
-    const quantityDisplay = document.getElementById('quantityDisplay');
     const starCountInput = document.getElementById('star-count');
     const summaryQty = document.getElementById('summaryQty');
     const totalPriceSpan = document.getElementById('totalPrice');
@@ -31,18 +30,17 @@
         return value.toFixed(2).replace('.', ',') + ' ₽';
     }
 
-    // ========== ЕДИНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ВСЕГО UI ==========
+    // ========== ЕДИНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ==========
     function updateAll() {
-        // Обновляем все поля с количеством
-        quantityDisplay.innerText = quantity;
+        // Обновляем поле ввода и сводку
         if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
         summaryQty.innerText = quantity;
-        // Пересчитываем цену
+        // Цена
         const total = quantity * RUB_PER_STAR;
         totalPriceSpan.innerText = formatPrice(total);
-        // Кнопка покупки
+        // Текст кнопки покупки
         btnText.innerText = `Купить ${quantity} звёзд`;
-        // Кнопка минус (блокируем если <= 10)
+        // Кнопка минус
         if (btnMinus) {
             if (quantity <= 10) {
                 btnMinus.classList.add('quantity__btn--disabled');
@@ -50,10 +48,9 @@
                 btnMinus.classList.remove('quantity__btn--disabled');
             }
         }
-        console.log('updateAll вызвана, quantity =', quantity, 'цена =', total); // для отладки
     }
 
-    // ========== ИЗМЕНЕНИЕ КОЛИЧЕСТВА КНОПКАМИ ==========
+    // ========== КНОПКИ + / – ==========
     function changeQuantity(delta) {
         let newVal = quantity + delta;
         if (newVal < 10) return;
@@ -62,7 +59,10 @@
         updateAll();
     }
 
-    // ========== РУЧНОЙ ВВОД В ПОЛЕ (ЦИФРЫ, ОГРАНИЧЕНИЕ) ==========
+    if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
+    if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
+
+    // ========== РУЧНОЙ ВВОД ==========
     function handleManualInput() {
         if (!starCountInput) return;
         let raw = starCountInput.value.trim();
@@ -86,14 +86,9 @@
         }
     }
 
-    // ========== ПОДКЛЮЧАЕМ ОБРАБОТЧИКИ ==========
-    if (btnMinus) btnMinus.addEventListener('click', () => changeQuantity(-10));
-    if (btnPlus) btnPlus.addEventListener('click', () => changeQuantity(10));
-
     if (starCountInput) {
         starCountInput.addEventListener('input', (e) => {
             let val = e.target.value;
-            // Удаляем всё, кроме цифр
             val = val.replace(/[^0-9]/g, '');
             if (val.length > 5) val = val.slice(0, 5);
             e.target.value = val;
@@ -177,7 +172,7 @@
         return res.json();
     }
 
-    // ========== ОБРАБОТЧИК КНОПКИ "КУПИТЬ" ==========
+    // ========== КНОПКА КУПИТЬ ==========
     purchaseBtn.onclick = () => {
         let recipient = usernameInput.value.trim();
         if (!recipient) recipient = 'свой аккаунт';
@@ -228,6 +223,6 @@
         usernameCard.style.borderColor = '';
     });
 
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    // ========== СТАРТ ==========
     updateAll();
 })();
