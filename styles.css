@@ -506,43 +506,57 @@ body {
 .username-preview {
     display: none;
 }
-/* BOTTOM NAV */
+/* BOTTOM NAV — современный стиль */
 .bottom-nav {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-primary);
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(28, 28, 31, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(147, 51, 234, 0.25);
+    border-radius: 20px;
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 4px;
     align-items: center;
-    padding: 8px 0;
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 6px;
     z-index: 100;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(147, 51, 234, 0.1);
 }
 .bottom-nav__btn {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    background: none;
+    background: transparent;
     border: none;
     color: var(--text-quaternary);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     cursor: pointer;
-    padding: 8px 20px;
-    border-radius: 12px;
-    transition: 0.15s;
+    padding: 10px 22px;
+    border-radius: 16px;
+    transition: 0.2s ease;
+    position: relative;
 }
 .bottom-nav__btn--active {
     color: #A855F7;
+    background: rgba(147, 51, 234, 0.12);
+}
+.bottom-nav__btn--active::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    width: 24px;
+    height: 2px;
+    background: #A855F7;
+    border-radius: 2px;
 }
 .bottom-nav__btn svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
 }
 
 /* SCREENS */

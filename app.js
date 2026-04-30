@@ -8,7 +8,7 @@
         tg.expand();
     }
 
-    // Supabase
+    // Supabase (только для чтения розыгрыша)
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
 
@@ -96,86 +96,25 @@
         return res.json();
     }
 
-    // Сохранение покупки в Supabase
-    async function savePurchase(userId, username, stars, amount, recipient) {
-        await fetch(`${SUPABASE_URL}/rest/v1/purchases`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({ user_id: userId, username, stars, amount, recipient })
-        });
-    }
-
-    // Обновление прогресса розыгрыша (ИСПРАВЛЕНО)
-    async function updateRaffleProgress(stars) {
-        // Получаем ВСЕ записи и берём первую
-        const getRes = await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?select=*&limit=1`, {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        const progressArr = await getRes.json();
-        const progress = progressArr[0] || { total_stars: 0, threshold: 10000, prize_pool: 500, id: 1 };
-        
-        let newTotal = (progress.total_stars || 0) + stars;
-        let winner = null;
-        let prize = progress.prize_pool || 500;
-        
-        if (newTotal >= (progress.threshold || 10000)) {
-            const buyersRes = await fetch(`${SUPABASE_URL}/rest/v1/purchases?select=username`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            });
-            const buyers = await buyersRes.json();
-            
-            if (buyers.length > 0) {
-                const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
-                winner = randomBuyer.username;
-                
-                await fetch(`${SUPABASE_URL}/rest/v1/winners`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    },
-                    body: JSON.stringify({ username: winner, prize })
-                });
-            }
-            
-            newTotal = newTotal - (progress.threshold || 10000);
-        }
-        
-        // Обновляем прогресс
-        await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?id=eq.${progress.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({ total_stars: newTotal })
-        });
-        
-        return { winner, prize };
-    }
-
-    // Загрузка розыгрыша (ИСПРАВЛЕНО)
+    // Загрузка розыгрыша (только чтение из Supabase)
     async function loadRaffle() {
-        const [progRes, winnersRes] = await Promise.all([
-            fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?select=*&limit=1`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            }),
-            fetch(`${SUPABASE_URL}/rest/v1/winners?select=*&order=created_at.desc&limit=10`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            })
-        ]);
-        
-        const progressArr = await progRes.json();
-        const winners = await winnersRes.json();
-        
-        return { progress: progressArr[0] || null, winners };
+        try {
+            const [progRes, winnersRes] = await Promise.all([
+                fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?select=*&limit=1`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                }),
+                fetch(`${SUPABASE_URL}/rest/v1/winners?select=*&order=created_at.desc&limit=10`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                })
+            ]);
+            
+            const progressArr = await progRes.json();
+            const winners = await winnersRes.json();
+            
+            return { progress: progressArr[0] || null, winners };
+        } catch(e) {
+            return { progress: null, winners: [] };
+        }
     }
 
     purchaseBtn.onclick = async () => {
@@ -207,12 +146,6 @@
             const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
             
             if (data.success && data.confirmation_url) {
-                const userId = tg?.initDataUnsafe?.user?.id?.toString() || 'anon';
-                const username = tg?.initDataUnsafe?.user?.username || '';
-                await savePurchase(userId, username, quantity, quantity * RUB_PER_STAR, recipient);
-                
-                const raffle = await updateRaffleProgress(quantity);
-                
                 const confirmBtn = modal.querySelector('#confirmBtn');
                 confirmBtn.outerHTML = `
                     <a href="${data.confirmation_url}" 
@@ -223,12 +156,6 @@
                        Перейти к оплате
                     </a>
                 `;
-                
-                if (raffle.winner) {
-                    setTimeout(() => {
-                        alert(`🎉 Розыгрыш! Победитель @${raffle.winner} получает ${raffle.prize} звёзд!`);
-                    }, 1500);
-                }
             } else {
                 alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
                 modal.remove();
