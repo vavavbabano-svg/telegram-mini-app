@@ -9,67 +9,109 @@
 </head>
 <body>
 <main class="app">
-    <section class="star-section">
-        <div class="star-container">
-            <div class="star-glow star-glow--outer"></div>
-            <div class="star-glow star-glow--inner"></div>
-            <div class="spark spark--1"></div>
-            <div class="spark spark--2"></div>
-            <div class="spark spark--3"></div>
-            <div class="spark spark--4"></div>
-            <div class="spark spark--5"></div>
-            <img src="img/R.png" alt="Stars" class="star-icon" width="72" height="72">
+    <!-- Экран Главная (Покупка) -->
+    <section class="screen active" id="screen-main">
+        <div class="star-section">
+            <div class="star-container">
+                <div class="star-glow star-glow--outer"></div>
+                <div class="star-glow star-glow--inner"></div>
+                <div class="spark spark--1"></div>
+                <div class="spark spark--2"></div>
+                <div class="spark spark--3"></div>
+                <div class="spark spark--4"></div>
+                <div class="spark spark--5"></div>
+                <img src="img/R.png" alt="Stars" class="star-icon" width="72" height="72">
+            </div>
         </div>
+
+        <div class="text-section">
+            <h2 class="text-section__title">Купить Telegram Stars</h2>
+            <p class="text-section__subtitle">Быстрая и безопасная покупка звёзд<br>для вас или вашего друга</p>
+        </div>
+
+        <div class="form-section">
+            <div class="card" id="usernameCard">
+                <label class="card__label">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="card__label-text">Имя пользователя</span>
+                </label>
+                <div class="username-wrapper">
+                    <span class="username-at">@</span>
+                    <input type="text" id="username" class="card__input username-input" placeholder="username" autocomplete="off" maxlength="32">
+                </div>
+                <div class="card__hint">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Укажите username получателя звёзд
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__label">
+                    <img src="img/R.png" alt="Stars" width="18" height="18">
+                    <span class="card__label-text">Количество звёзд</span>
+                </div>
+                <div class="quantity">
+                    <button class="quantity__btn" id="btnMinus" aria-label="Уменьшить">−</button>
+                    <input type="text" id="star-count" class="quantity__value" value="100" inputmode="numeric" maxlength="5">
+                    <button class="quantity__btn" id="btnPlus" aria-label="Увеличить">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <div>
+                <span class="summary__label">К оплате <strong id="summaryQty">100</strong> звёзд</span>
+                <br><span class="summary__rate">1 звезда = 1,45 ₽</span>
+            </div>
+            <strong class="summary__price" id="totalPrice">145,00 ₽</strong>
+        </div>
+
+        <button class="button" id="purchaseBtn">
+            <img src="img/R.png" alt="⭐" class="button__icon" width="20" height="20">
+            <span id="btnText">Купить 100 звёзд</span>
+            <img src="img/R.png" alt="⭐" class="button__icon" width="20" height="20">
+        </button>
     </section>
 
-    <section class="text-section">
-        <h2 class="text-section__title">Купить Telegram Stars</h2>
-        <p class="text-section__subtitle">Быстрая и безопасная покупка звёзд<br>для вас или вашего друга</p>
-    </section>
-
-    <section class="form-section">
-        <div class="card" id="usernameCard">
-            <label class="card__label">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span class="card__label-text">Имя пользователя</span>
-            </label>
-            <div class="username-wrapper">
-                <span class="username-at">@</span>
-                <input type="text" id="username" class="card__input username-input" placeholder="username" autocomplete="off" maxlength="32">
-            </div>
-            <div class="card__hint">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                Укажите username получателя звёзд
-            </div>
+    <!-- Экран Розыгрыш -->
+    <section class="screen" id="screen-raffle">
+        <div style="text-align:center; padding:20px 0;">
+            <span style="font-size:72px;">🎰</span>
+        </div>
+        <div class="text-section">
+            <h2 class="text-section__title">🎰 Розыгрыш звёзд</h2>
+            <p class="text-section__subtitle">Призовой фонд формируется из всех покупок</p>
         </div>
 
         <div class="card">
-            <div class="card__label">
-                <img src="img/R.png" alt="Stars" width="18" height="18">
-                <span class="card__label-text">Количество звёзд</span>
+            <p style="color: var(--text-secondary); font-size: 14px; text-align:center;">
+                Каждые <strong>10 000</strong> купленных звёзд — новый розыгрыш!
+            </p>
+            <p style="color: var(--text-quaternary); font-size: 12px; margin-top: 6px; text-align:center;">
+                Призовой фонд: <strong id="prizePool" style="color:#A855F7;">500</strong> звёзд
+            </p>
+
+            <div style="color:var(--text-tertiary); font-size:12px; margin-top:12px; text-align:center;">
+                Прогресс: <strong id="raffleProgress">0</strong> / 10 000
             </div>
-            <div class="quantity">
-                <button class="quantity__btn" id="btnMinus" aria-label="Уменьшить">−</button>
-                <input type="text" id="star-count" class="quantity__value" value="100" inputmode="numeric" maxlength="5">
-                <button class="quantity__btn" id="btnPlus" aria-label="Увеличить">+</button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%;">0%</div>
+            </div>
+
+            <p style="color: var(--text-quaternary); font-size: 11px; margin-top: 10px; text-align:center;">
+                Чтобы участвовать, купите минимум 50 звёзд
+            </p>
+        </div>
+
+        <div class="card">
+            <p style="color: var(--text-secondary); font-size: 14px; font-weight:600; text-align:center;">🏆 Победители прошлых розыгрышей</p>
+            <div class="winners-list" id="winnersList">
+                <p style="color:var(--text-quaternary);font-size:13px;text-align:center;">Розыгрышей пока не было</p>
             </div>
         </div>
     </section>
 
-    <div class="summary">
-        <div>
-            <span class="summary__label">К оплате <strong id="summaryQty">100</strong> звёзд</span>
-            <br><span class="summary__rate">1 звезда = 1,45 ₽</span>
-        </div>
-        <strong class="summary__price" id="totalPrice">145,00 ₽</strong>
-    </div>
-
-    <button class="button" id="purchaseBtn">
-        <img src="img/R.png" alt="⭐" class="button__icon" width="20" height="20">
-        <span id="btnText">Купить 100 звёзд</span>
-        <img src="img/R.png" alt="⭐" class="button__icon" width="20" height="20">
-    </button>
-
+    <!-- FOOTER LINKS -->
     <div class="footer-links">
         <a href="terms.html" class="footer-link">Правила</a>
         <a href="privacy.html" class="footer-link">Политика</a>
@@ -82,6 +124,26 @@
         <span>Безопасная оплата</span>
     </footer>
 </main>
+
+<!-- НИЖНЕЕ МЕНЮ -->
+<nav class="bottom-nav">
+    <button class="bottom-nav__btn bottom-nav__btn--active" data-screen="screen-main">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l1.5-3h15L21 9v2a3 3 0 01-3 3H6a3 3 0 01-3-3V9z"/>
+            <path d="M3 9v6a2 2 0 002 2h14a2 2 0 002-2V9"/>
+            <path d="M9 21h6"/>
+        </svg>
+        <span>Главная</span>
+    </button>
+    <button class="bottom-nav__btn" data-screen="screen-raffle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12h8M12 8v8"/>
+            <circle cx="12" cy="12" r="2"/>
+        </svg>
+        <span>Розыгрыш</span>
+    </button>
+</nav>
 
 <script src="app.js" defer></script>
 </body>

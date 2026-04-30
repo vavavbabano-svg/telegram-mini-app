@@ -8,6 +8,10 @@
         tg.expand();
     }
 
+    // Supabase
+    const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
+
     const usernameInput = document.getElementById('username');
     const starCountInput = document.getElementById('star-count');
     const summaryQty = document.getElementById('summaryQty');
@@ -18,7 +22,6 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // Запрещаем ввод @ — она уже снаружи
     usernameInput.addEventListener('input', () => {
         usernameInput.value = usernameInput.value.replace(/@/g, '');
     });
@@ -93,13 +96,87 @@
         return res.json();
     }
 
+    async function savePurchase(userId, username, stars, amount, recipient) {
+        await fetch(`${SUPABASE_URL}/rest/v1/purchases`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({ user_id: userId, username, stars, amount, recipient })
+        });
+    }
+
+    async function updateRaffleProgress(stars) {
+        const getRes = await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?id=eq.1`, {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const [progress] = await getRes.json();
+        
+        let newTotal = (progress?.total_stars || 0) + stars;
+        let winner = null;
+        let prize = progress?.prize_pool || 500;
+        
+        if (newTotal >= (progress?.threshold || 10000)) {
+            const buyersRes = await fetch(`${SUPABASE_URL}/rest/v1/purchases?select=username`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            });
+            const buyers = await buyersRes.json();
+            
+            if (buyers.length > 0) {
+                const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+                winner = randomBuyer.username;
+                
+                await fetch(`${SUPABASE_URL}/rest/v1/winners`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    },
+                    body: JSON.stringify({ username: winner, prize })
+                });
+            }
+            
+            newTotal = newTotal - (progress?.threshold || 10000);
+        }
+        
+        await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?id=eq.1`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({ total_stars: newTotal })
+        });
+        
+        return { winner, prize };
+    }
+
+    async function loadRaffle() {
+        const [progRes, winnersRes] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?id=eq.1`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            }),
+            fetch(`${SUPABASE_URL}/rest/v1/winners?order=created_at.desc&limit=10`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            })
+        ]);
+        
+        const [progress] = await progRes.json();
+        const winners = await winnersRes.json();
+        
+        return { progress, winners };
+    }
+
     purchaseBtn.onclick = async () => {
         if (!validateUsername()) return;
         if (quantity < 50) { alert('Минимальное количество звёзд: 50'); return; }
         
         const recipient = '@' + usernameInput.value.trim();
         
-        // Показываем плашку подтверждения
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
         
@@ -119,12 +196,16 @@
         
         modal.querySelector('.cancel').onclick = () => modal.remove();
         
-        // Сразу создаём платёж
         try {
             const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
             
             if (data.success && data.confirmation_url) {
-                // Меняем кнопку "Создание платежа..." на ссылку оплаты
+                const userId = tg?.initDataUnsafe?.user?.id?.toString() || 'anon';
+                const username = tg?.initDataUnsafe?.user?.username || '';
+                await savePurchase(userId, username, quantity, quantity * RUB_PER_STAR, recipient);
+                
+                const raffle = await updateRaffleProgress(quantity);
+                
                 const confirmBtn = modal.querySelector('#confirmBtn');
                 confirmBtn.outerHTML = `
                     <a href="${data.confirmation_url}" 
@@ -135,6 +216,12 @@
                        Перейти к оплате
                     </a>
                 `;
+                
+                if (raffle.winner) {
+                    setTimeout(() => {
+                        alert(`🎉 Розыгрыш! Победитель @${raffle.winner} получает ${raffle.prize} звёзд!`);
+                    }, 1500);
+                }
             } else {
                 alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
                 modal.remove();
@@ -144,6 +231,46 @@
             modal.remove();
         }
     };
+
+    // Нижнее меню
+    document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
+            btn.classList.add('bottom-nav__btn--active');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(btn.dataset.screen).classList.add('active');
+            
+            if (btn.dataset.screen === 'screen-raffle') {
+                loadRaffle().then(({ progress, winners }) => {
+                    const totalStars = progress?.total_stars || 0;
+                    const threshold = progress?.threshold || 10000;
+                    const pct = Math.min(100, Math.round((totalStars / threshold) * 100));
+                    
+                    const progressFill = document.getElementById('progressFill');
+                    if (progressFill) {
+                        progressFill.style.width = pct + '%';
+                        progressFill.textContent = pct + '%';
+                    }
+                    const raffleProgress = document.getElementById('raffleProgress');
+                    if (raffleProgress) raffleProgress.textContent = totalStars;
+                    
+                    const winnersList = document.getElementById('winnersList');
+                    if (winnersList) {
+                        winnersList.innerHTML = winners.length ? winners.map(w => `
+                            <div class="winner-item">
+                                <span class="medal">⭐</span>
+                                <div>
+                                    <div class="name">@${w.username}</div>
+                                    <div style="color:var(--text-quaternary);font-size:11px;">${new Date(w.created_at).toLocaleString('ru-RU')}</div>
+                                </div>
+                                <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
+                            </div>
+                        `).join('') : '<p style="color:var(--text-quaternary);font-size:13px;text-align:center;">Розыгрышей пока не было</p>';
+                    }
+                });
+            }
+        });
+    });
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
     
