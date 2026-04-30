@@ -109,33 +109,40 @@
             <div class="modal-card">
                 <h3>🛒 Подтверждение заказа</h3>
                 <p>Вы действительно хотите купить <strong>${quantity}</strong> звёзд за <strong>${formatPrice(quantity * RUB_PER_STAR)}</strong>?</p>
-                <div class="modal-buttons">
+                <div class="modal-buttons" id="modalButtons">
                     <button class="modal-btn cancel">Отмена</button>
-                    <button class="modal-btn confirm">Подтвердить</button>
+                    <button class="modal-btn confirm" id="confirmBtn">Создание платежа...</button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
         
         modal.querySelector('.cancel').onclick = () => modal.remove();
-        modal.querySelector('.confirm').onclick = async () => {
-            modal.remove();
-            setButtonLoading(true);
+        
+        // Сразу создаём платёж
+        try {
+            const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
             
-            try {
-                const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
-                if (data.success && data.confirmation_url) {
-                    // Сразу кидаем в браузер
-                    window.open(data.confirmation_url, '_blank');
-                } else {
-                    alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
-                    setButtonLoading(false);
-                }
-            } catch (err) {
-                alert('Ошибка соединения: ' + err.message);
-                setButtonLoading(false);
+            if (data.success && data.confirmation_url) {
+                // Меняем кнопку "Создание платежа..." на ссылку оплаты
+                const confirmBtn = modal.querySelector('#confirmBtn');
+                confirmBtn.outerHTML = `
+                    <a href="${data.confirmation_url}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="modal-btn confirm"
+                       style="text-decoration:none;display:flex;align-items:center;justify-content:center;">
+                       Перейти к оплате
+                    </a>
+                `;
+            } else {
+                alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
+                modal.remove();
             }
-        };
+        } catch (err) {
+            alert('Ошибка соединения: ' + err.message);
+            modal.remove();
+        }
     };
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
