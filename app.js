@@ -77,26 +77,6 @@
         return true;
     }
 
-    function showConfirmModal(onConfirm) {
-        const old = document.querySelector('.modal-overlay');
-        if (old) old.remove();
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-card">
-                <h3>🛒 Подтверждение заказа</h3>
-                <p>Вы действительно хотите купить <strong>${quantity}</strong> звёзд за <strong>${formatPrice(quantity * RUB_PER_STAR)}</strong>?</p>
-                <div class="modal-buttons">
-                    <button class="modal-btn cancel">Отмена</button>
-                    <button class="modal-btn confirm">Подтвердить</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        modal.querySelector('.cancel').onclick = () => modal.remove();
-        modal.querySelector('.confirm').onclick = () => { modal.remove(); onConfirm(); };
-    }
-
     function setButtonLoading(loading) {
         purchaseBtn.disabled = loading;
         purchaseBtn.innerHTML = loading 
@@ -119,31 +99,43 @@
         
         const recipient = '@' + usernameInput.value.trim();
         
-        showConfirmModal(async () => {
+        // Показываем плашку подтверждения
+        const old = document.querySelector('.modal-overlay');
+        if (old) old.remove();
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <h3>🛒 Подтверждение заказа</h3>
+                <p>Вы действительно хотите купить <strong>${quantity}</strong> звёзд за <strong>${formatPrice(quantity * RUB_PER_STAR)}</strong>?</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn cancel">Отмена</button>
+                    <button class="modal-btn confirm">Подтвердить</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        modal.querySelector('.cancel').onclick = () => modal.remove();
+        modal.querySelector('.confirm').onclick = async () => {
+            modal.remove();
             setButtonLoading(true);
+            
             try {
                 const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
                 if (data.success && data.confirmation_url) {
+                    // Сразу кидаем в браузер
+                    window.open(data.confirmation_url, '_blank');
+                } else {
+                    alert('Ошибка: ' + (data.error || 'Не удалось создать платёж'));
                     setButtonLoading(false);
-                    
-                    // Превращаем кнопку в ссылку "Перейти к оплате"
-                    purchaseBtn.outerHTML = `
-                        <a href="${data.confirmation_url}" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           style="display:block;width:100%;padding:15px;background:linear-gradient(135deg,#9333EA,#C026D3);color:white;text-align:center;border-radius:18px;font-weight:700;font-size:16px;text-decoration:none;">
-                           Перейти к оплате
-                        </a>
-                    `;
-                } else { 
-                    alert('Ошибка: ' + (data.error || 'Не удалось создать платёж')); 
-                    setButtonLoading(false); 
                 }
             } catch (err) {
                 alert('Ошибка соединения: ' + err.message);
                 setButtonLoading(false);
             }
-        });
+        };
     };
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
