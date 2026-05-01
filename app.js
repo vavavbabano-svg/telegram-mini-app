@@ -14,16 +14,14 @@
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
-    if (!MY_ID && tg?.initDataUnsafe?.user?.username) {
-        MY_ID = tg.initDataUnsafe.user.username;
-        localStorage.setItem('myStars_uid', MY_ID);
-    }
-    if (!MY_ID && tg?.initDataUnsafe?.user?.id) {
-        MY_ID = tg.initDataUnsafe.user.id.toString();
-        localStorage.setItem('myStars_uid', MY_ID);
-    }
     if (!MY_ID) {
-        MY_ID = 'USER_' + Math.random().toString(36).substr(2, 9);
+        if (tg?.initDataUnsafe?.user?.username) {
+            MY_ID = tg.initDataUnsafe.user.username;
+        } else if (tg?.initDataUnsafe?.user?.id) {
+            MY_ID = tg.initDataUnsafe.user.id.toString();
+        } else {
+            MY_ID = 'USER_' + Math.random().toString(36).substr(2, 9);
+        }
         localStorage.setItem('myStars_uid', MY_ID);
     }
 
