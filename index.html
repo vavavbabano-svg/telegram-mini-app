@@ -73,6 +73,43 @@
         </button>
     </section>
 
+    <!-- Экран Рефералы -->
+    <section class="screen" id="screen-ref">
+        <div class="star-section">
+            <div class="star-container" style="width:120px;height:120px;">
+                <div class="star-glow star-glow--outer" style="width:100px;height:100px;"></div>
+                <div class="star-glow star-glow--inner" style="width:70px;height:70px;"></div>
+                <div class="spark spark--1"></div>
+                <div class="spark spark--2"></div>
+                <div class="spark spark--3"></div>
+                <div class="spark spark--4"></div>
+                <div class="spark spark--5"></div>
+                <span style="font-size:72px;position:relative;z-index:10;">👥</span>
+            </div>
+        </div>
+        <div class="text-section">
+            <h2 class="text-section__title">Пригласи друга</h2>
+            <p class="text-section__subtitle">1 друг = 5 звёзд на твой баланс</p>
+        </div>
+
+        <div class="card">
+            <p style="color:var(--text-secondary); font-size:14px;">Твоя реферальная ссылка:</p>
+            <div id="refLink" style="background:var(--bg-tertiary); border-radius:10px; padding:10px; margin-top:8px; word-break:break-all; font-size:13px; color:white;">
+                Загрузка...
+            </div>
+            <button class="button" id="copyRefBtn" style="margin-top:10px;">📋 Скопировать ссылку</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <p style="color:var(--text-quaternary); font-size:12px;">Приглашено друзей:</p>
+            <p style="font-size:36px; font-weight:800; color:#A855F7;" id="refCount">0</p>
+            <p style="color:var(--text-quaternary); font-size:12px;">Твой баланс:</p>
+            <p style="font-size:24px; font-weight:700; color:white;" id="refBalance">0 ⭐</p>
+            <button class="button" id="withdrawBtn" style="margin-top:10px;">📤 Заявка на вывод</button>
+            <p style="color:var(--text-quaternary); font-size:11px; margin-top:6px;">Минимум: 50 звёзд</p>
+        </div>
+    </section>
+
     <!-- Экран Розыгрыш -->
     <section class="screen" id="screen-raffle">
         <div class="star-section">
@@ -112,15 +149,15 @@
             </p>
         </div>
 
-<div class="card">
-    <p style="color: var(--text-secondary); font-size: 14px; font-weight:600; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
-        <img src="img/kubok.png" alt="Кубок" style="width: 24px; height: 24px; object-fit: contain;">
-        Победители прошлых розыгрышей
-    </p>
-    <div class="winners-list" id="winnersList">
-        <p style="color:var(--text-quaternary);font-size:13px;text-align:center;">Розыгрышей пока не было</p>
-    </div>
-</div>
+        <div class="card">
+            <p style="color: var(--text-secondary); font-size: 14px; font-weight:600; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <img src="img/kubok.png" alt="Кубок" style="width: 24px; height: 24px; object-fit: contain;">
+                Победители прошлых розыгрышей
+            </p>
+            <div class="winners-list" id="winnersList">
+                <p style="color:var(--text-quaternary);font-size:13px;text-align:center;">Розыгрышей пока не было</p>
+            </div>
+        </div>
     </section>
 
     <!-- FOOTER LINKS -->
@@ -146,6 +183,13 @@
             <path d="M12 12v.01"/>
         </svg>
         <span>Главная</span>
+    </button>
+    <button class="bottom-nav__btn" data-screen="screen-ref">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M16 16c0-2.21-1.79-4-4-4s-4 1.79-4 4"/>
+        </svg>
+        <span>Рефералы</span>
     </button>
     <button class="bottom-nav__btn" data-screen="screen-raffle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -12,6 +12,106 @@
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
 
+    // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
+    let MY_ID = localStorage.getItem('myStars_uid');
+    if (!MY_ID && tg?.initDataUnsafe?.user?.id) {
+        MY_ID = tg.initDataUnsafe.user.id.toString();
+        localStorage.setItem('myStars_uid', MY_ID);
+    }
+    if (!MY_ID) {
+        MY_ID = 'USER_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('myStars_uid', MY_ID);
+    }
+
+    // Реферальная ссылка
+    const refLink = `https://t.me/MyStars812_bot?startapp=ref_${MY_ID}`;
+    const refLinkEl = document.getElementById('refLink');
+    if (refLinkEl) refLinkEl.textContent = refLink;
+
+    // Копирование ссылки
+    const copyRefBtn = document.getElementById('copyRefBtn');
+    if (copyRefBtn) {
+        copyRefBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(refLink).then(() => {
+                alert('✅ Ссылка скопирована!');
+            }).catch(() => {
+                alert('📋 Скопируй вручную:\n' + refLink);
+            });
+        });
+    }
+
+    // Проверка реферала при заходе
+    let refParam = null;
+    if (tg?.initDataUnsafe?.start_param) {
+        refParam = tg.initDataUnsafe.start_param;
+    } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        refParam = urlParams.get('startapp') || urlParams.get('tgWebAppStartParam');
+    }
+
+    if (refParam && refParam.startsWith('ref_') && !localStorage.getItem('myStars_referrer')) {
+        const referrerId = refParam.replace('ref_', '');
+        if (referrerId !== MY_ID) {
+            localStorage.setItem('myStars_referrer', referrerId);
+            
+            const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
+            balances[referrerId] = (balances[referrerId] || 0) + 5;
+            localStorage.setItem('myStars_balances', JSON.stringify(balances));
+            
+            const referrers = JSON.parse(localStorage.getItem('myStars_referrers') || '{}');
+            referrers[referrerId] = (referrers[referrerId] || 0) + 1;
+            localStorage.setItem('myStars_referrers', JSON.stringify(referrers));
+        }
+    }
+
+    function updateRefUI() {
+        const referrers = JSON.parse(localStorage.getItem('myStars_referrers') || '{}');
+        const myRefs = referrers[MY_ID] || 0;
+        const refCountEl = document.getElementById('refCount');
+        if (refCountEl) refCountEl.textContent = myRefs;
+        
+        const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
+        const myBalance = balances[MY_ID] || 0;
+        const refBalanceEl = document.getElementById('refBalance');
+        if (refBalanceEl) refBalanceEl.textContent = myBalance + ' ⭐';
+    }
+
+    // Вывод средств
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', () => {
+            const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
+            const myBalance = balances[MY_ID] || 0;
+            
+            if (myBalance < 50) {
+                alert('Минимум для вывода: 50 звёзд');
+                return;
+            }
+            
+            if (confirm(`Вывести ${myBalance} звёзд? Заявка отправится администратору.`)) {
+                const message = `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n⭐ Сумма: ${myBalance} звёзд`;
+                
+                fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: '1444520038', text: message })
+                }).then(res => res.json()).then(data => {
+                    if (data.ok) {
+                        balances[MY_ID] = 0;
+                        localStorage.setItem('myStars_balances', JSON.stringify(balances));
+                        updateRefUI();
+                        alert('✅ Заявка отправлена! Админ свяжется с вами.');
+                    } else {
+                        alert('❌ Ошибка отправки');
+                    }
+                }).catch(() => {
+                    alert('❌ Ошибка соединения');
+                });
+            }
+        });
+    }
+
+    // ===== ПОКУПКА =====
     const usernameInput = document.getElementById('username');
     const starCountInput = document.getElementById('star-count');
     const summaryQty = document.getElementById('summaryQty');
@@ -89,7 +189,6 @@
         return res.json();
     }
 
-    // Только чтение розыгрыша из Supabase
     async function loadRaffle() {
         try {
             const [progRes, winnersRes] = await Promise.all([
@@ -160,6 +259,7 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(btn.dataset.screen).classList.add('active');
             
+            if (btn.dataset.screen === 'screen-ref') updateRefUI();
             if (btn.dataset.screen === 'screen-raffle') {
                 loadRaffle().then(({ progress, winners }) => {
                     const totalStars = progress?.total_stars || 0;
@@ -198,4 +298,5 @@
     });
 
     updateUI();
+    updateRefUI();
 })();
