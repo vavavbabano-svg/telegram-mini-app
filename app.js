@@ -70,12 +70,12 @@
             const refCountEl = document.getElementById('refCount');
             if (refCountEl) refCountEl.textContent = data.refs || 0;
             const refBalanceEl = document.getElementById('refBalance');
-            if (refBalanceEl) refBalanceEl.textContent = (data.balance || 0) + ' ⭐';
+            if (refBalanceEl) refBalanceEl.querySelector('span').textContent = (data.balance || 0);
         } catch(e) {
             const refCountEl = document.getElementById('refCount');
             if (refCountEl) refCountEl.textContent = '0';
             const refBalanceEl = document.getElementById('refBalance');
-            if (refBalanceEl) refBalanceEl.textContent = '0 ⭐';
+            if (refBalanceEl) refBalanceEl.querySelector('span').textContent = '0';
         }
     }
 
