@@ -8,12 +8,16 @@
         tg.expand();
     }
 
-    // Supabase (только чтение)
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
+    const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
+    if (!MY_ID && tg?.initDataUnsafe?.user?.username) {
+        MY_ID = tg.initDataUnsafe.user.username;
+        localStorage.setItem('myStars_uid', MY_ID);
+    }
     if (!MY_ID && tg?.initDataUnsafe?.user?.id) {
         MY_ID = tg.initDataUnsafe.user.id.toString();
         localStorage.setItem('myStars_uid', MY_ID);
@@ -23,12 +27,10 @@
         localStorage.setItem('myStars_uid', MY_ID);
     }
 
-    // Реферальная ссылка
     const refLink = `https://t.me/MyStars812_bot?startapp=ref_${MY_ID}`;
     const refLinkEl = document.getElementById('refLink');
     if (refLinkEl) refLinkEl.textContent = refLink;
 
-    // Копирование ссылки
     const copyRefBtn = document.getElementById('copyRefBtn');
     if (copyRefBtn) {
         copyRefBtn.addEventListener('click', () => {
@@ -40,7 +42,6 @@
         });
     }
 
-    // Проверка реферала при заходе
     let refParam = null;
     if (tg?.initDataUnsafe?.start_param) {
         refParam = tg.initDataUnsafe.start_param;
@@ -52,61 +53,55 @@
     if (refParam && refParam.startsWith('ref_') && !localStorage.getItem('myStars_referrer')) {
         const referrerId = refParam.replace('ref_', '');
         if (referrerId !== MY_ID) {
-            localStorage.setItem('myStars_referrer', referrerId);
-            
-            const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
-            balances[referrerId] = (balances[referrerId] || 0) + 5;
-            localStorage.setItem('myStars_balances', JSON.stringify(balances));
-            
-            const referrers = JSON.parse(localStorage.getItem('myStars_referrers') || '{}');
-            referrers[referrerId] = (referrers[referrerId] || 0) + 1;
-            localStorage.setItem('myStars_referrers', JSON.stringify(referrers));
+            fetch(`${LAVA_API}/referral`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: MY_ID, referrerId })
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    localStorage.setItem('myStars_referrer', referrerId);
+                }
+            }).catch(() => {});
         }
     }
 
-    function updateRefUI() {
-        const referrers = JSON.parse(localStorage.getItem('myStars_referrers') || '{}');
-        const myRefs = referrers[MY_ID] || 0;
-        const refCountEl = document.getElementById('refCount');
-        if (refCountEl) refCountEl.textContent = myRefs;
-        
-        const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
-        const myBalance = balances[MY_ID] || 0;
-        const refBalanceEl = document.getElementById('refBalance');
-        if (refBalanceEl) refBalanceEl.textContent = myBalance + ' ⭐';
+    async function updateRefUI() {
+        try {
+            const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
+            const data = await res.json();
+            const refCountEl = document.getElementById('refCount');
+            if (refCountEl) refCountEl.textContent = data.refs || 0;
+            const refBalanceEl = document.getElementById('refBalance');
+            if (refBalanceEl) refBalanceEl.textContent = (data.balance || 0) + ' ⭐';
+        } catch(e) {
+            const refCountEl = document.getElementById('refCount');
+            if (refCountEl) refCountEl.textContent = '0';
+            const refBalanceEl = document.getElementById('refBalance');
+            if (refBalanceEl) refBalanceEl.textContent = '0 ⭐';
+        }
     }
 
-    // Вывод средств
     const withdrawBtn = document.getElementById('withdrawBtn');
     if (withdrawBtn) {
-        withdrawBtn.addEventListener('click', () => {
-            const balances = JSON.parse(localStorage.getItem('myStars_balances') || '{}');
-            const myBalance = balances[MY_ID] || 0;
-            
-            if (myBalance < 50) {
+        withdrawBtn.addEventListener('click', async () => {
+            let balance = 0;
+            try {
+                const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
+                const data = await res.json();
+                balance = data.balance || 0;
+            } catch(e) {}
+
+            if (balance < 50) {
                 alert('Минимум для вывода: 50 звёзд');
                 return;
             }
-            
-            if (confirm(`Вывести ${myBalance} звёзд? Заявка отправится администратору.`)) {
-                const message = `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n⭐ Сумма: ${myBalance} звёзд`;
-                
+
+            if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
                 fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: '1444520038', text: message })
-                }).then(res => res.json()).then(data => {
-                    if (data.ok) {
-                        balances[MY_ID] = 0;
-                        localStorage.setItem('myStars_balances', JSON.stringify(balances));
-                        updateRefUI();
-                        alert('✅ Заявка отправлена! Админ свяжется с вами.');
-                    } else {
-                        alert('❌ Ошибка отправки');
-                    }
-                }).catch(() => {
-                    alert('❌ Ошибка соединения');
-                });
+                    body: JSON.stringify({ chat_id: '1444520038', text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n⭐ Сумма: ${balance} звёзд` })
+                }).then(() => alert('✅ Заявка отправлена!'));
             }
         });
     }
@@ -131,13 +126,13 @@
     }
 
     function updateUI() {
-        if (starCountInput) starCountInput.value = quantity === 0 ? '' : quantity;
+        if (starCountInput) starCountInput.value = quantity || '';
         summaryQty.innerText = quantity;
         totalPriceSpan.innerText = formatPrice(quantity * RUB_PER_STAR);
         btnText.innerText = `Купить ${quantity} звёзд`;
         if (btnMinus) {
-            if (quantity <= 50) btnMinus.classList.add('quantity__btn--disabled');
-            else btnMinus.classList.remove('quantity__btn--disabled');
+            const disabled = quantity <= 50;
+            btnMinus.classList.toggle('quantity__btn--disabled', disabled);
         }
     }
 
@@ -169,8 +164,7 @@
     starCountInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); starCountInput.blur(); } });
 
     function validateUsername() {
-        const val = usernameInput.value.trim();
-        if (val === '') {
+        if (!usernameInput.value.trim()) {
             usernameCard.style.borderColor = 'rgba(239, 68, 68, 0.7)';
             usernameCard.classList.add('shake');
             setTimeout(() => usernameCard.classList.remove('shake'), 600);
@@ -181,7 +175,7 @@
     }
 
     async function createLavaPayment(amount, stars, recipient) {
-        const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
+        const res = await fetch(`${LAVA_API}/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}`, orderId: `order_${Date.now()}`, username: recipient, stars })
@@ -221,7 +215,7 @@
             <div class="modal-card">
                 <h3>🛒 Подтверждение заказа</h3>
                 <p>Вы действительно хотите купить <strong>${quantity}</strong> звёзд за <strong>${formatPrice(quantity * RUB_PER_STAR)}</strong>?</p>
-                <div class="modal-buttons" id="modalButtons">
+                <div class="modal-buttons">
                     <button class="modal-btn cancel">Отмена</button>
                     <button class="modal-btn confirm" id="confirmBtn">Создание платежа...</button>
                 </div>
@@ -233,8 +227,7 @@
         try {
             const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
             if (data.success && data.confirmation_url) {
-                const confirmBtn = modal.querySelector('#confirmBtn');
-                confirmBtn.outerHTML = `
+                modal.querySelector('#confirmBtn').outerHTML = `
                     <a href="${data.confirmation_url}" target="_blank" rel="noopener noreferrer"
                        class="modal-btn confirm"
                        style="text-decoration:none;display:flex;align-items:center;justify-content:center;">
@@ -251,7 +244,6 @@
         }
     };
 
-    // Нижнее меню
     document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
@@ -263,14 +255,13 @@
             if (btn.dataset.screen === 'screen-raffle') {
                 loadRaffle().then(({ progress, winners }) => {
                     const totalStars = progress?.total_stars || 0;
-                    const threshold = progress?.threshold || 10000;
-                    const pct = Math.min(100, Math.round((totalStars / threshold) * 100));
+                    document.getElementById('raffleProgress').textContent = totalStars;
+                    const pct = Math.min(100, Math.round((totalStars / 10000) * 100));
                     const progressFill = document.getElementById('progressFill');
                     if (progressFill) {
                         progressFill.style.width = pct + '%';
                         progressFill.textContent = pct + '%';
                     }
-                    document.getElementById('raffleProgress').textContent = totalStars;
                     const winnersList = document.getElementById('winnersList');
                     if (winnersList) {
                         winnersList.innerHTML = winners.length ? winners.map(w => `
@@ -282,7 +273,7 @@
                                 </div>
                                 <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
                             </div>
-                        `).join('') : '<p style="color:var(--text-quaternary);font-size:13px;text-align:center;">Розыгрышей пока не было</p>';
+                        `).join('') : '<p style="color:var(--text-quaternary);text-align:center;">Розыгрышей пока не было</p>';
                     }
                 });
             }
