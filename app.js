@@ -8,6 +8,7 @@
         tg.expand();
     }
 
+    // Supabase (только чтение)
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
 
@@ -83,17 +84,12 @@
         const res = await fetch('https://lava-api.vavavbabano.workers.dev/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                amount, 
-                description: `Покупка ${stars} звёзд для ${recipient}`, 
-                orderId: `order_${Date.now()}`, 
-                username: recipient, 
-                stars 
-            })
+            body: JSON.stringify({ amount, description: `Покупка ${stars} звёзд для ${recipient}`, orderId: `order_${Date.now()}`, username: recipient, stars })
         });
         return res.json();
     }
 
+    // Только чтение розыгрыша из Supabase
     async function loadRaffle() {
         try {
             const [progRes, winnersRes] = await Promise.all([
@@ -109,80 +105,6 @@
             return { progress: progressArr[0] || null, winners };
         } catch(e) {
             return { progress: null, winners: [] };
-        }
-    }
-
-    async function savePurchaseAndUpdateRaffle(userId, username, stars, amount, recipient) {
-        await fetch(`${SUPABASE_URL}/rest/v1/purchases`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({ user_id: userId, username, stars, amount, recipient })
-        });
-
-        const getRes = await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?select=*&limit=1`, {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        const progressArr = await getRes.json();
-        const progress = progressArr[0] || { total_stars: 0, threshold: 10000, prize_pool: 500, id: 1 };
-        
-        let newTotal = progress.total_stars + stars;
-        let winner = null;
-        
-        if (newTotal >= progress.threshold) {
-            const buyersRes = await fetch(`${SUPABASE_URL}/rest/v1/purchases?select=username`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            });
-            const buyers = await buyersRes.json();
-            
-            if (buyers.length > 0) {
-                winner = buyers[Math.floor(Math.random() * buyers.length)].username;
-                await fetch(`${SUPABASE_URL}/rest/v1/winners`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    },
-                    body: JSON.stringify({ username: winner, prize: progress.prize_pool })
-                });
-            }
-            newTotal = newTotal - progress.threshold;
-        }
-        
-        await fetch(`${SUPABASE_URL}/rest/v1/raffle_progress?id=eq.${progress.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({ total_stars: newTotal })
-        });
-        
-        if (winner) {
-            alert(`🎉 Розыгрыш! Победитель @${winner} получает ${progress.prize_pool} звёзд!`);
-        }
-    }
-
-    async function checkPaymentStatus(orderId, userId, username, stars, amount, recipient) {
-        for (let i = 0; i < 30; i++) {
-            await new Promise(r => setTimeout(r, 5000));
-            try {
-                const res = await fetch(`https://lava-api.vavavbabano.workers.dev/status?orderId=${orderId}`);
-                const data = await res.json();
-                if (data.status === 200 && data.data?.invoice_status === 'paid') {
-                    await savePurchaseAndUpdateRaffle(userId, username, stars, amount, recipient);
-                    return;
-                }
-                if (data.data?.invoice_status === 'expired' || data.data?.invoice_status === 'failed') {
-                    return;
-                }
-            } catch(e) {}
         }
     }
 
@@ -212,11 +134,6 @@
         try {
             const data = await createLavaPayment(quantity * RUB_PER_STAR, quantity, recipient);
             if (data.success && data.confirmation_url) {
-                const userId = tg?.initDataUnsafe?.user?.id?.toString() || 'anon';
-                const username = tg?.initDataUnsafe?.user?.username || '';
-                if (data.orderId) {
-                    checkPaymentStatus(data.orderId, userId, username, quantity, quantity * RUB_PER_STAR, recipient);
-                }
                 const confirmBtn = modal.querySelector('#confirmBtn');
                 confirmBtn.outerHTML = `
                     <a href="${data.confirmation_url}" target="_blank" rel="noopener noreferrer"
@@ -235,12 +152,14 @@
         }
     };
 
+    // Нижнее меню
     document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
             btn.classList.add('bottom-nav__btn--active');
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(btn.dataset.screen).classList.add('active');
+            
             if (btn.dataset.screen === 'screen-raffle') {
                 loadRaffle().then(({ progress, winners }) => {
                     const totalStars = progress?.total_stars || 0;
