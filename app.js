@@ -118,46 +118,47 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME (через API) =====
-    const usernamePreview = document.getElementById('usernamePreview');
-    const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
+// ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME (через API) =====
+const usernamePreview = document.getElementById('usernamePreview');
+const userAvatar = document.getElementById('userAvatar');
+const userName = document.getElementById('userName');
 
-    let userInfoTimer = null;
-    usernameInput.addEventListener('input', () => {
-        usernameCard.style.borderColor = '';
-        let val = usernameInput.value.trim().replace(/@/g, '');
-        usernameInput.value = val;
+let userInfoTimer = null;
+usernameInput.addEventListener('input', () => {
+    usernameCard.style.borderColor = '';
+    let val = usernameInput.value.trim().replace(/@/g, '');
+    usernameInput.value = val;
+    
+    if (userInfoTimer) clearTimeout(userInfoTimer);
+    
+    if (val.length > 0) {
+        usernamePreview.style.display = 'flex';
         
-        if (userInfoTimer) clearTimeout(userInfoTimer);
+        // Показываем @username сразу, пока грузится
+        userName.textContent = '@' + val;
+        userAvatar.src = 'img/R.png';
         
-        if (val.length > 0) {
-            usernamePreview.style.display = 'flex';
-            userName.textContent = 'Загрузка...';
-            userAvatar.src = 'img/R.png';
-            
-            userInfoTimer = setTimeout(async () => {
-                try {
-                    const res = await fetch(`${LAVA_API}/getUserInfo?username=${val}`);
-                    const data = await res.json();
-                    
-                    if (data.success) {
-                        userName.textContent = data.firstName || '@' + val;
-                        userAvatar.src = data.photoUrl || 'img/R.png';
-                        userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
-                    } else {
-                        userName.textContent = '@' + val;
-                        userAvatar.src = 'img/R.png';
-                    }
-                } catch(e) {
-                    userName.textContent = '@' + val;
-                    userAvatar.src = 'img/R.png';
+        userInfoTimer = setTimeout(async () => {
+            try {
+                // Запрашиваем данные с сервера по username
+                const res = await fetch(`${LAVA_API}/getUserInfo?username=${val}`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    // Показываем имя и аватар из Telegram
+                    userName.textContent = data.firstName || '@' + val;
+                    userAvatar.src = data.photoUrl || 'img/R.png';
+                    userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
                 }
-            }, 500);
-        } else {
-            usernamePreview.style.display = 'none';
-        }
-    });
+                // Если ошибка — оставляем @username
+            } catch(e) {
+                // Оставляем @username
+            }
+        }, 500);
+    } else {
+        usernamePreview.style.display = 'none';
+    }
+});
 
     function formatPrice(value) {
         return value.toFixed(2).replace('.', ',') + ' ₽';
