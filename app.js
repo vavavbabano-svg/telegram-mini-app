@@ -12,24 +12,6 @@
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
 
-    // Сохраняем пользователя в Supabase при заходе
-    if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
-        fetch(`${SUPABASE_URL}/rest/v1/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                user_id: tg.initDataUnsafe.user.id,
-                username: tg.initDataUnsafe.user.username,
-                first_name: tg.initDataUnsafe.user.first_name || ''
-            })
-        }).catch(() => {});
-    }
-
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
     if (!MY_ID) {
@@ -136,7 +118,7 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME =====
+    // ===== ПОКАЗ ИМЕНИ ПРИ ВВОДЕ USERNAME =====
     const usernamePreview = document.getElementById('usernamePreview');
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
@@ -148,30 +130,16 @@
         
         if (val.length > 0) {
             usernamePreview.style.display = 'flex';
-            userName.textContent = '@' + val;
-            userAvatar.src = `https://t.me/i/userpic/${val}.jpg`;
-            userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
+            if (userAvatar) userAvatar.style.display = 'none';
             
-            // Ищем в Supabase
-            fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${val}&select=user_id,first_name&limit=1`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.length > 0 && data[0].first_name) {
-                    userName.textContent = data[0].first_name;
-                }
-                if (data.length > 0 && data[0].user_id) {
-                    fetch(`${LAVA_API}/getUserInfo?userId=${data[0].user_id}`)
-                        .then(r => r.json())
-                        .then(d => {
-                            if (d.success && d.photoUrl) {
-                                userAvatar.src = d.photoUrl;
-                                userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
-                            }
-                        }).catch(() => {});
-                }
-            }).catch(() => {});
+            const ownUsername = tg?.initDataUnsafe?.user?.username;
+            const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
+            
+            if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
+                userName.textContent = ownFirstName;
+            } else {
+                userName.textContent = '@' + val;
+            }
         } else {
             usernamePreview.style.display = 'none';
         }
