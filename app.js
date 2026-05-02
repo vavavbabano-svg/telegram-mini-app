@@ -118,28 +118,31 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME =====
+    // ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME (через API) =====
     const usernamePreview = document.getElementById('usernamePreview');
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
 
-    usernameInput.addEventListener('input', async () => {
+    let userInfoTimer = null;
+    usernameInput.addEventListener('input', () => {
         usernameCard.style.borderColor = '';
-        const val = usernameInput.value.trim().replace(/@/g, '');
+        let val = usernameInput.value.trim().replace(/@/g, '');
         usernameInput.value = val;
+        
+        if (userInfoTimer) clearTimeout(userInfoTimer);
         
         if (val.length > 0) {
             usernamePreview.style.display = 'flex';
+            userName.textContent = 'Загрузка...';
+            userAvatar.src = 'img/R.png';
             
-            const ownUserId = tg?.initDataUnsafe?.user?.id;
-            
-            if (ownUserId) {
+            userInfoTimer = setTimeout(async () => {
                 try {
-                    const res = await fetch(`${LAVA_API}/getUserInfo?userId=${ownUserId}`);
+                    const res = await fetch(`${LAVA_API}/getUserInfo?username=${val}`);
                     const data = await res.json();
                     
                     if (data.success) {
-                        userName.textContent = data.firstName || 'Пользователь';
+                        userName.textContent = data.firstName || '@' + val;
                         userAvatar.src = data.photoUrl || 'img/R.png';
                         userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
                     } else {
@@ -150,10 +153,7 @@
                     userName.textContent = '@' + val;
                     userAvatar.src = 'img/R.png';
                 }
-            } else {
-                userName.textContent = '@' + val;
-                userAvatar.src = 'img/R.png';
-            }
+            }, 500);
         } else {
             usernamePreview.style.display = 'none';
         }
