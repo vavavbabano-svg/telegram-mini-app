@@ -14,41 +14,24 @@
 
     // ОТЛАДКА
     console.log('tg существует:', !!tg);
-    console.log('initDataUnsafe:', JSON.stringify(tg?.initDataUnsafe));
-    console.log('user:', JSON.stringify(tg?.initDataUnsafe?.user));
-    console.log('user.id:', tg?.initDataUnsafe?.user?.id);
-    console.log('user.username:', tg?.initDataUnsafe?.user?.username);
+    console.log('initData:', tg?.initData?.substring(0, 50) + '...');
+    console.log('initDataUnsafe.user:', JSON.stringify(tg?.initDataUnsafe?.user));
 
-    // Функция сохранения пользователя в Supabase
-    function saveUserToDB(userId, username, firstName) {
-        if (!userId || !username) return;
-        fetch(`${SUPABASE_URL}/rest/v1/users`, {
+    // Сохраняем пользователя через Worker (с проверкой подписи)
+    function saveUserToDB() {
+        if (!tg?.initData) return;
+        fetch(`${LAVA_API}/saveUser`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                username: username,
-                first_name: firstName || ''
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ initData: tg.initData })
         })
         .then(res => res.json())
-        .then(data => console.log('Сохранён в Supabase:', data))
-        .catch(err => console.error('Ошибка Supabase:', err));
+        .then(data => console.log('Сохранён через Worker:', data))
+        .catch(err => console.error('Ошибка сохранения:', err));
     }
 
-    // Сохраняем пользователя при заходе (если данные доступны)
-    if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
-        saveUserToDB(
-            tg.initDataUnsafe.user.id,
-            tg.initDataUnsafe.user.username,
-            tg.initDataUnsafe.user.first_name
-        );
-    }
+    // Вызываем при заходе
+    saveUserToDB();
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
@@ -288,14 +271,8 @@
         
         const recipient = '@' + usernameInput.value.trim();
         
-        // Сохраняем покупателя в БД при покупке
-        if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
-            saveUserToDB(
-                tg.initDataUnsafe.user.id,
-                tg.initDataUnsafe.user.username,
-                tg.initDataUnsafe.user.first_name
-            );
-        }
+        // Сохраняем при покупке
+        saveUserToDB();
         
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
