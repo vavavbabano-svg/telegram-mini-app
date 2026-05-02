@@ -98,7 +98,10 @@
                 fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: '1444520038', text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n⭐ Сумма: ${balance} звёзд` })
+                    body: JSON.stringify({ 
+                        chat_id: '1444520038', 
+                        text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: ${tg?.initDataUnsafe?.user?.username || 'неизвестен'}\n⭐ Сумма: ${balance} звёзд` 
+                    })
                 }).then(() => alert('✅ Заявка отправлена!'));
             }
         });
@@ -115,8 +118,55 @@
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
+    // ===== АВАТАРКА И ИМЯ ПРИ ВВОДЕ USERNAME =====
+    const usernamePreview = document.getElementById('usernamePreview');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    let userInfoTimer = null;
+
     usernameInput.addEventListener('input', () => {
-        usernameInput.value = usernameInput.value.replace(/@/g, '');
+        usernameCard.style.borderColor = '';
+        const val = usernameInput.value.trim();
+        
+        // Убираем @ если ввели
+        usernameInput.value = val.replace(/@/g, '');
+        const cleanVal = usernameInput.value.trim();
+        
+        if (userInfoTimer) clearTimeout(userInfoTimer);
+        
+        if (cleanVal.length > 0) {
+            usernamePreview.style.display = 'flex';
+            userName.textContent = 'Загрузка...';
+            userAvatar.src = 'img/R.png';
+            
+            userInfoTimer = setTimeout(async () => {
+                try {
+                    const ownUserId = tg?.initDataUnsafe?.user?.id;
+                    
+                    if (ownUserId) {
+                        const res = await fetch(`${LAVA_API}/getUserInfo?userId=${ownUserId}`);
+                        const data = await res.json();
+                        
+                        if (data.success) {
+                            userName.textContent = data.firstName || 'Пользователь';
+                            userAvatar.src = data.photoUrl || 'img/R.png';
+                            userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
+                        } else {
+                            userName.textContent = '@' + cleanVal;
+                            userAvatar.src = 'img/R.png';
+                        }
+                    } else {
+                        userName.textContent = '@' + cleanVal;
+                        userAvatar.src = 'img/R.png';
+                    }
+                } catch(e) {
+                    userName.textContent = '@' + cleanVal;
+                    userAvatar.src = 'img/R.png';
+                }
+            }, 500);
+        } else {
+            usernamePreview.style.display = 'none';
+        }
     });
 
     function formatPrice(value) {

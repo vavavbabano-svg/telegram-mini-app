@@ -506,25 +506,28 @@ body {
 .username-preview {
     display: none;
 }
-/* BOTTOM NAV — современный стиль */
+
+/* BOTTOM NAV — фиксированная, не поднимается над клавиатурой */
 .bottom-nav {
     position: fixed;
-    bottom: 16px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(28, 28, 31, 0.85);
+    background: rgba(28, 28, 31, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(147, 51, 234, 0.25);
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     display: flex;
     justify-content: center;
     gap: 4px;
     align-items: center;
-    padding: 6px;
+    padding: 8px 6px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     z-index: 100;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(147, 51, 234, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
 }
+
 .bottom-nav__btn {
     display: flex;
     flex-direction: column;

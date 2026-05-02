@@ -39,6 +39,10 @@
                     <span class="username-at">@</span>
                     <input type="text" id="username" class="card__input username-input" placeholder="username" autocomplete="off" maxlength="32">
                 </div>
+                <div class="username-preview" id="usernamePreview" style="display:none; align-items:center; gap:10px; margin-top:10px;">
+                    <img id="userAvatar" src="" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                    <span id="userName" style="color:var(--text-secondary);font-size:14px;font-weight:500;"></span>
+                </div>
                 <div class="card__hint">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                     Укажите username получателя звёзд
@@ -73,51 +77,51 @@
         </button>
     </section>
 
-<!-- Экран Рефералы -->
-<section class="screen" id="screen-ref">
-    <div class="star-section">
-        <div class="star-container" style="width:120px;height:120px;">
-            <div class="star-glow star-glow--outer" style="width:100px;height:100px;"></div>
-            <div class="star-glow star-glow--inner" style="width:70px;height:70px;"></div>
-            <div class="spark spark--1"></div>
-            <div class="spark spark--2"></div>
-            <div class="spark spark--3"></div>
-            <div class="spark spark--4"></div>
-            <div class="spark spark--5"></div>
-            <img src="img/ref3.png" alt="Рефералы" style="width:110px;height:110px;object-fit:contain;position:relative;z-index:10;">
+    <!-- Экран Рефералы -->
+    <section class="screen" id="screen-ref">
+        <div class="star-section">
+            <div class="star-container" style="width:120px;height:120px;">
+                <div class="star-glow star-glow--outer" style="width:100px;height:100px;"></div>
+                <div class="star-glow star-glow--inner" style="width:70px;height:70px;"></div>
+                <div class="spark spark--1"></div>
+                <div class="spark spark--2"></div>
+                <div class="spark spark--3"></div>
+                <div class="spark spark--4"></div>
+                <div class="spark spark--5"></div>
+                <img src="img/ref3.png" alt="Рефералы" style="width:110px;height:110px;object-fit:contain;position:relative;z-index:10;">
+            </div>
         </div>
-    </div>
-    <div class="text-section">
-        <h2 class="text-section__title">Пригласи друга</h2>
-        <p class="text-section__subtitle">1 друг = 3 звёзды на твой баланс</p>
-    </div>
-
-    <div class="card">
-        <p style="color:var(--text-secondary); font-size:14px;">Твоя реферальная ссылка:</p>
-        <div id="refLink" style="background:var(--bg-tertiary); border-radius:10px; padding:10px; margin-top:8px; word-break:break-all; font-size:13px; color:white;">
-            Загрузка...
+        <div class="text-section">
+            <h2 class="text-section__title">Пригласи друга</h2>
+            <p class="text-section__subtitle">1 друг = 3 звёзды на твой баланс</p>
         </div>
-        <button class="button" id="copyRefBtn" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
-           <img src="img/ref4.png" alt="Копировать" style="width:28px;height:28px;object-fit:contain;">
-            Скопировать ссылку
-        </button>
-    </div>
 
-    <div class="card" style="text-align:center;">
-        <p style="color:var(--text-quaternary); font-size:12px;">Приглашено друзей:</p>
-        <p style="font-size:36px; font-weight:800; color:#A855F7;" id="refCount">0</p>
-        <p style="color:var(--text-quaternary); font-size:12px;">Твой баланс:</p>
-        <p style="font-size:24px; font-weight:700; color:white;" id="refBalance">
-            <img src="img/R.png" alt="Звёзды" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;">
-            <span>0</span>
-        </p>
-        <button class="button" id="withdrawBtn" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <img src="img/ref5.png" alt="Вывод" style="width:28px;height:28px;object-fit:contain;">
-            Заявка на вывод
-        </button>
-        <p style="color:var(--text-quaternary); font-size:11px; margin-top:6px;">Минимум: 50 звёзд</p>
-    </div>
-</section>
+        <div class="card">
+            <p style="color:var(--text-secondary); font-size:14px;">Твоя реферальная ссылка:</p>
+            <div id="refLink" style="background:var(--bg-tertiary); border-radius:10px; padding:10px; margin-top:8px; word-break:break-all; font-size:13px; color:white;">
+                Загрузка...
+            </div>
+            <button class="button" id="copyRefBtn" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <img src="img/ref4.png" alt="Копировать" style="width:28px;height:28px;object-fit:contain;">
+                Скопировать ссылку
+            </button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <p style="color:var(--text-quaternary); font-size:12px;">Приглашено друзей:</p>
+            <p style="font-size:36px; font-weight:800; color:#A855F7;" id="refCount">0</p>
+            <p style="color:var(--text-quaternary); font-size:12px;">Твой баланс:</p>
+            <p style="font-size:24px; font-weight:700; color:white;" id="refBalance">
+                <img src="img/R.png" alt="Звёзды" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;">
+                <span>0</span>
+            </p>
+            <button class="button" id="withdrawBtn" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <img src="img/ref5.png" alt="Вывод" style="width:28px;height:28px;object-fit:contain;">
+                Заявка на вывод
+            </button>
+            <p style="color:var(--text-quaternary); font-size:11px; margin-top:6px;">Минимум: 50 звёзд</p>
+        </div>
+    </section>
 
     <!-- Экран Розыгрыш -->
     <section class="screen" id="screen-raffle">
