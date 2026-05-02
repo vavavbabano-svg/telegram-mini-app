@@ -1,5 +1,5 @@
 (function() {
-    const RUB_PER_STAR = 1.45;
+    const RUB_PER_STAR = 1.40;
     let quantity = 100;
     let tg = null;
     if (window.Telegram && window.Telegram.WebApp) {
@@ -11,29 +11,6 @@
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
-
-    // ОТЛАДКА
-    console.log('tg существует:', !!tg);
-    console.log('initData:', tg?.initData?.substring(0, 50) + '...');
-    console.log('initDataUnsafe.user:', JSON.stringify(tg?.initDataUnsafe?.user));
-
-    // Сохраняем пользователя через Worker (с проверкой подписи)
-    function saveUserToDB() {
-        if (!tg?.initData) return;
-        fetch(`${LAVA_API}/saveUser`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ initData: tg.initData })
-        })
-        .then(res => res.json())
-        .then(data => console.log('Сохранён через Worker:', data))
-        .catch(err => console.error('Ошибка сохранения:', err));
-    }
-
-    // Вызываем при заходе
-    saveUserToDB();
-    console.log('initData существует:', !!tg?.initData);
-console.log('initData длина:', tg?.initData?.length);
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
@@ -48,7 +25,6 @@ console.log('initData длина:', tg?.initData?.length);
         localStorage.setItem('myStars_uid', MY_ID);
     }
 
-    // Сохраняем свой username для заявок
     if (tg?.initDataUnsafe?.user?.username) {
         localStorage.setItem('myStars_username', tg.initDataUnsafe.user.username);
     }
@@ -86,7 +62,6 @@ console.log('initData длина:', tg?.initData?.length);
             }).then(res => res.json()).then(data => {
                 if (data.success) {
                     localStorage.setItem('myStars_referrer', referrerId);
-                    console.log('Реферал засчитан:', referrerId);
                 }
             }).catch(() => {});
         }
@@ -149,42 +124,8 @@ console.log('initData длина:', tg?.initData?.length);
     const purchaseBtn = document.getElementById('purchaseBtn');
     const usernameCard = document.getElementById('usernameCard');
 
-    // ===== ПОКАЗ ИМЕНИ ПРИ ВВОДЕ USERNAME =====
-    const usernamePreview = document.getElementById('usernamePreview');
-    const userName = document.getElementById('userName');
-
     usernameInput.addEventListener('input', () => {
-        usernameCard.style.borderColor = '';
-        let val = usernameInput.value.trim().replace(/@/g, '');
-        usernameInput.value = val;
-        
-        if (val.length > 0) {
-            usernamePreview.style.display = 'flex';
-            
-            const ownUsername = tg?.initDataUnsafe?.user?.username;
-            const ownFirstName = tg?.initDataUnsafe?.user?.first_name;
-            
-            if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
-                userName.textContent = ownFirstName;
-            } else {
-                fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${val}&select=first_name&limit=1`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.length > 0 && data[0].first_name) {
-                        userName.textContent = data[0].first_name;
-                        console.log('Найден в БД:', data[0].first_name);
-                    } else {
-                        userName.textContent = '@' + val;
-                    }
-                }).catch(() => { 
-                    userName.textContent = '@' + val; 
-                });
-            }
-        } else {
-            usernamePreview.style.display = 'none';
-        }
+        usernameInput.value = usernameInput.value.replace(/@/g, '');
     });
 
     function formatPrice(value) {
@@ -272,10 +213,6 @@ console.log('initData длина:', tg?.initData?.length);
         if (quantity < 50) { alert('Минимальное количество звёзд: 50'); return; }
         
         const recipient = '@' + usernameInput.value.trim();
-        
-        // Сохраняем при покупке
-        saveUserToDB();
-        
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
         
