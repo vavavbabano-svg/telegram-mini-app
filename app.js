@@ -32,6 +32,8 @@
 
     // Вызываем при заходе
     saveUserToDB();
+    console.log('initData существует:', !!tg?.initData);
+console.log('initData длина:', tg?.initData?.length);
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
