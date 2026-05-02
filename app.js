@@ -84,34 +84,42 @@
     }
 
     const withdrawBtn = document.getElementById('withdrawBtn');
-    if (withdrawBtn) {
-        withdrawBtn.addEventListener('click', async () => {
-            let balance = 0;
-            try {
-                const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
-                const data = await res.json();
-                balance = data.balance || 0;
-            } catch(e) {}
+if (withdrawBtn) {
+    withdrawBtn.addEventListener('click', async () => {
+        let balance = 0;
+        try {
+            const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
+            const data = await res.json();
+            balance = data.balance || 0;
+        } catch(e) {}
 
-            if (balance < 50) {
-                alert('Минимум для вывода: 50 звёзд');
-                return;
-            }
+        if (balance < 50) {
+            alert('Минимум для вывода: 50 звёзд');
+            return;
+        }
 
-            const savedUsername = localStorage.getItem('myStars_username') || 'неизвестен';
+        // Запрашиваем username у пользователя
+        const userUsername = prompt('Введите ваш @username для связи:', localStorage.getItem('myStars_username') || '');
+        if (!userUsername || userUsername.trim() === '') {
+            alert('Необходимо указать username');
+            return;
+        }
 
-            if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
-                fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        chat_id: '1444520038', 
-                        text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: @${savedUsername}\n⭐ Сумма: ${balance} звёзд` 
-                    })
-                }).then(() => alert('✅ Заявка отправлена!'));
-            }
-        });
-    }
+        // Сохраняем для будущих заявок
+        localStorage.setItem('myStars_username', userUsername.replace('@', ''));
+
+        if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
+            fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    chat_id: '1444520038', 
+                    text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: @${userUsername.replace('@', '')}\n⭐ Сумма: ${balance} звёзд` 
+                })
+            }).then(() => alert('✅ Заявка отправлена!'));
+        }
+    });
+}
 
     // ===== ПОКУПКА =====
     const usernameInput = document.getElementById('username');
