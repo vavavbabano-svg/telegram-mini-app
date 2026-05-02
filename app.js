@@ -19,8 +19,9 @@
     console.log('user.id:', tg?.initDataUnsafe?.user?.id);
     console.log('user.username:', tg?.initDataUnsafe?.user?.username);
 
-    // Сохраняем пользователя в Supabase при заходе
-    if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
+    // Функция сохранения пользователя в Supabase
+    function saveUserToDB(userId, username, firstName) {
+        if (!userId || !username) return;
         fetch(`${SUPABASE_URL}/rest/v1/users`, {
             method: 'POST',
             headers: {
@@ -30,14 +31,23 @@
                 'Prefer': 'resolution=merge-duplicates'
             },
             body: JSON.stringify({
-                user_id: tg.initDataUnsafe.user.id,
-                username: tg.initDataUnsafe.user.username,
-                first_name: tg.initDataUnsafe.user.first_name || ''
+                user_id: userId,
+                username: username,
+                first_name: firstName || ''
             })
         })
         .then(res => res.json())
         .then(data => console.log('Сохранён в Supabase:', data))
         .catch(err => console.error('Ошибка Supabase:', err));
+    }
+
+    // Сохраняем пользователя при заходе (если данные доступны)
+    if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
+        saveUserToDB(
+            tg.initDataUnsafe.user.id,
+            tg.initDataUnsafe.user.username,
+            tg.initDataUnsafe.user.first_name
+        );
     }
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
@@ -172,7 +182,6 @@
             if (ownUsername && val.toLowerCase() === ownUsername.toLowerCase() && ownFirstName) {
                 userName.textContent = ownFirstName;
             } else {
-                // Ищем в Supabase
                 fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${val}&select=first_name&limit=1`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 })
@@ -278,6 +287,16 @@
         if (quantity < 50) { alert('Минимальное количество звёзд: 50'); return; }
         
         const recipient = '@' + usernameInput.value.trim();
+        
+        // Сохраняем покупателя в БД при покупке
+        if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
+            saveUserToDB(
+                tg.initDataUnsafe.user.id,
+                tg.initDataUnsafe.user.username,
+                tg.initDataUnsafe.user.first_name
+            );
+        }
+        
         const old = document.querySelector('.modal-overlay');
         if (old) old.remove();
         
