@@ -122,48 +122,38 @@
     const usernamePreview = document.getElementById('usernamePreview');
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
-    let userInfoTimer = null;
 
-    usernameInput.addEventListener('input', () => {
+    usernameInput.addEventListener('input', async () => {
         usernameCard.style.borderColor = '';
-        const val = usernameInput.value.trim();
+        const val = usernameInput.value.trim().replace(/@/g, '');
+        usernameInput.value = val;
         
-        // Убираем @ если ввели
-        usernameInput.value = val.replace(/@/g, '');
-        const cleanVal = usernameInput.value.trim();
-        
-        if (userInfoTimer) clearTimeout(userInfoTimer);
-        
-        if (cleanVal.length > 0) {
+        if (val.length > 0) {
             usernamePreview.style.display = 'flex';
-            userName.textContent = 'Загрузка...';
-            userAvatar.src = 'img/R.png';
             
-            userInfoTimer = setTimeout(async () => {
+            const ownUserId = tg?.initDataUnsafe?.user?.id;
+            
+            if (ownUserId) {
                 try {
-                    const ownUserId = tg?.initDataUnsafe?.user?.id;
+                    const res = await fetch(`${LAVA_API}/getUserInfo?userId=${ownUserId}`);
+                    const data = await res.json();
                     
-                    if (ownUserId) {
-                        const res = await fetch(`${LAVA_API}/getUserInfo?userId=${ownUserId}`);
-                        const data = await res.json();
-                        
-                        if (data.success) {
-                            userName.textContent = data.firstName || 'Пользователь';
-                            userAvatar.src = data.photoUrl || 'img/R.png';
-                            userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
-                        } else {
-                            userName.textContent = '@' + cleanVal;
-                            userAvatar.src = 'img/R.png';
-                        }
+                    if (data.success) {
+                        userName.textContent = data.firstName || 'Пользователь';
+                        userAvatar.src = data.photoUrl || 'img/R.png';
+                        userAvatar.onerror = () => { userAvatar.src = 'img/R.png'; };
                     } else {
-                        userName.textContent = '@' + cleanVal;
+                        userName.textContent = '@' + val;
                         userAvatar.src = 'img/R.png';
                     }
                 } catch(e) {
-                    userName.textContent = '@' + cleanVal;
+                    userName.textContent = '@' + val;
                     userAvatar.src = 'img/R.png';
                 }
-            }, 500);
+            } else {
+                userName.textContent = '@' + val;
+                userAvatar.src = 'img/R.png';
+            }
         } else {
             usernamePreview.style.display = 'none';
         }
