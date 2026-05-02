@@ -12,6 +12,13 @@
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
 
+    // ОТЛАДКА
+console.log('tg существует:', !!tg);
+console.log('initDataUnsafe:', JSON.stringify(tg?.initDataUnsafe));
+console.log('user:', JSON.stringify(tg?.initDataUnsafe?.user));
+console.log('user.id:', tg?.initDataUnsafe?.user?.id);
+console.log('user.username:', tg?.initDataUnsafe?.user?.username);
+
     // Сохраняем пользователя в Supabase при заходе
     if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
         fetch(`${SUPABASE_URL}/rest/v1/users`, {
