@@ -13,11 +13,11 @@
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
 
     // ОТЛАДКА
-console.log('tg существует:', !!tg);
-console.log('initDataUnsafe:', JSON.stringify(tg?.initDataUnsafe));
-console.log('user:', JSON.stringify(tg?.initDataUnsafe?.user));
-console.log('user.id:', tg?.initDataUnsafe?.user?.id);
-console.log('user.username:', tg?.initDataUnsafe?.user?.username);
+    console.log('tg существует:', !!tg);
+    console.log('initDataUnsafe:', JSON.stringify(tg?.initDataUnsafe));
+    console.log('user:', JSON.stringify(tg?.initDataUnsafe?.user));
+    console.log('user.id:', tg?.initDataUnsafe?.user?.id);
+    console.log('user.username:', tg?.initDataUnsafe?.user?.username);
 
     // Сохраняем пользователя в Supabase при заходе
     if (tg?.initDataUnsafe?.user?.id && tg?.initDataUnsafe?.user?.username) {
@@ -34,7 +34,10 @@ console.log('user.username:', tg?.initDataUnsafe?.user?.username);
                 username: tg.initDataUnsafe.user.username,
                 first_name: tg.initDataUnsafe.user.first_name || ''
             })
-        }).catch(() => {});
+        })
+        .then(res => res.json())
+        .then(data => console.log('Сохранён в Supabase:', data))
+        .catch(err => console.error('Ошибка Supabase:', err));
     }
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
@@ -48,6 +51,11 @@ console.log('user.username:', tg?.initDataUnsafe?.user?.username);
             MY_ID = 'USER_' + Math.random().toString(36).substr(2, 9);
         }
         localStorage.setItem('myStars_uid', MY_ID);
+    }
+
+    // Сохраняем свой username для заявок
+    if (tg?.initDataUnsafe?.user?.username) {
+        localStorage.setItem('myStars_username', tg.initDataUnsafe.user.username);
     }
 
     const refLink = `https://t.me/MyStars812_bot?startapp=ref_${MY_ID}`;
@@ -83,6 +91,7 @@ console.log('user.username:', tg?.initDataUnsafe?.user?.username);
             }).then(res => res.json()).then(data => {
                 if (data.success) {
                     localStorage.setItem('myStars_referrer', referrerId);
+                    console.log('Реферал засчитан:', referrerId);
                 }
             }).catch(() => {});
         }
@@ -119,13 +128,15 @@ console.log('user.username:', tg?.initDataUnsafe?.user?.username);
                 return;
             }
 
+            const savedUsername = localStorage.getItem('myStars_username') || 'неизвестен';
+
             if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
                 fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         chat_id: '1444520038', 
-                        text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: ${tg?.initDataUnsafe?.user?.username || 'неизвестен'}\n⭐ Сумма: ${balance} звёзд` 
+                        text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: @${savedUsername}\n⭐ Сумма: ${balance} звёзд` 
                     })
                 }).then(() => alert('✅ Заявка отправлена!'));
             }
@@ -169,10 +180,13 @@ console.log('user.username:', tg?.initDataUnsafe?.user?.username);
                 .then(data => {
                     if (data.length > 0 && data[0].first_name) {
                         userName.textContent = data[0].first_name;
+                        console.log('Найден в БД:', data[0].first_name);
                     } else {
                         userName.textContent = '@' + val;
                     }
-                }).catch(() => { userName.textContent = '@' + val; });
+                }).catch(() => { 
+                    userName.textContent = '@' + val; 
+                });
             }
         } else {
             usernamePreview.style.display = 'none';
