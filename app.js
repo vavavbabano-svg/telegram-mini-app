@@ -11,7 +11,6 @@
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
-    const VPN_API = 'https://194.87.134.111:8080';
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
@@ -258,146 +257,42 @@
         }
     };
 
-// ===== VPN =====
-const VPN_API = 'http://194.87.134.111:8080';
-const vpnResult = document.getElementById('vpnResult');
-const vpnLink = document.getElementById('vpnLink');
-const copyVpnBtn = document.getElementById('copyVpnBtn');
-
-document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
-    btn.addEventListener('click', async function() {
-        const price = parseInt(this.dataset.price);
-        const tariffName = price === 200 ? 'Быстрый' : 'Стандарт';
-        
-        // Меняем кнопку "Купить" на две кнопки
-        this.outerHTML = `
-            <div style="display:flex; gap:10px; margin-top:12px;">
-                <button class="button pay-vpn-btn" style="flex:1;" data-price="${price}" data-tariff="${tariffName}">
-                    💳 Оплатить
-                </button>
-                <button class="button" id="getVpnBtn" disabled style="flex:1;opacity:0.5;">
-                    🔒 Ключ
-                </button>
-            </div>
-        `;
-        
-        // Кнопка "Оплатить" — создаёт платёж при нажатии
-        setTimeout(() => {
-            const payBtn = document.querySelector('.pay-vpn-btn');
-            if (payBtn) {
-                payBtn.addEventListener('click', async function() {
-                    this.textContent = '⏳';
-                    this.disabled = true;
-                    
-                    try {
-                        const res = await fetch(`${LAVA_API}/`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                amount: this.dataset.price, 
-                                description: `Подписка ${this.dataset.tariff} на 1 месяц`,
-                                orderId: `vpn_${Date.now()}`,
-                                username: 'VPN',
-                                stars: 0 
-                            })
-                        });
-                        const data = await res.json();
-                        
-                        if (data.success && data.confirmation_url) {
-                            this.outerHTML = `<a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;flex:1;text-align:center;">💳 Оплатить</a>`;
-                        } else {
-                            alert('Ошибка создания платежа');
-                            this.textContent = '💳 Оплатить';
-                            this.disabled = false;
-                        }
-                    } catch(e) {
-                        alert('Ошибка соединения');
-                        this.textContent = '💳 Оплатить';
-                        this.disabled = false;
+    // ===== НИЖНЕЕ МЕНЮ =====
+    document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
+            btn.classList.add('bottom-nav__btn--active');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(btn.dataset.screen).classList.add('active');
+            
+            if (btn.dataset.screen === 'screen-ref') updateRefUI();
+            if (btn.dataset.screen === 'screen-raffle') {
+                loadRaffle().then(({ progress, winners }) => {
+                    const totalStars = progress?.total_stars || 0;
+                    document.getElementById('raffleProgress').textContent = totalStars;
+                    const pct = Math.min(100, Math.round((totalStars / 10000) * 100));
+                    const progressFill = document.getElementById('progressFill');
+                    if (progressFill) {
+                        progressFill.style.width = pct + '%';
+                        progressFill.textContent = pct + '%';
+                    }
+                    const winnersList = document.getElementById('winnersList');
+                    if (winnersList) {
+                        winnersList.innerHTML = winners.length ? winners.map(w => `
+                            <div class="winner-item">
+                                <span class="medal">⭐</span>
+                                <div>
+                                    <div class="name">@${w.username}</div>
+                                    <div style="color:var(--text-quaternary);font-size:11px;">${new Date(w.created_at).toLocaleString('ru-RU')}</div>
+                                </div>
+                                <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
+                            </div>
+                        `).join('') : '<p style="color:var(--text-quaternary);text-align:center;">Розыгрышей пока не было</p>';
                     }
                 });
             }
-        }, 100);
-        
-        // Кнопка "Ключ" — активна через 15 секунд
-        setTimeout(() => {
-            const getBtn = document.getElementById('getVpnBtn');
-            if (getBtn) {
-                getBtn.disabled = false;
-                getBtn.style.opacity = '1';
-                
-                getBtn.addEventListener('click', async () => {
-                    getBtn.textContent = '⏳';
-                    getBtn.disabled = true;
-                    
-                    try {
-                        const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
-                        const vpnData = await vpnRes.json();
-                        
-                        if (vpnData.success && vpnData.link) {
-                            vpnLink.textContent = vpnData.link;
-                            vpnResult.style.display = 'block';
-                            getBtn.style.display = 'none';
-                        } else {
-                            alert('Ошибка создания ключа: ' + (vpnData.error || 'неизвестно'));
-                            getBtn.textContent = '🔒 Ключ';
-                            getBtn.disabled = false;
-                        }
-                    } catch(e) {
-                        alert('Сервер недоступен. Попробуйте позже.');
-                        getBtn.textContent = '🔒 Ключ';
-                        getBtn.disabled = false;
-                    }
-                });
-            }
-        }, 15000);
-    });
-});
-
-if (copyVpnBtn) {
-    copyVpnBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(vpnLink.textContent).then(() => {
-            alert('✅ Скопировано! Вставьте в HAPP VPN');
         });
     });
-}
-
-// ===== НИЖНЕЕ МЕНЮ =====
-document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
-        btn.classList.add('bottom-nav__btn--active');
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(btn.dataset.screen).classList.add('active');
-        
-        if (btn.dataset.screen === 'screen-ref') updateRefUI();
-        if (btn.dataset.screen === 'screen-raffle') {
-            loadRaffle().then(({ progress, winners }) => {
-                const totalStars = progress?.total_stars || 0;
-                document.getElementById('raffleProgress').textContent = totalStars;
-                const pct = Math.min(100, Math.round((totalStars / 10000) * 100));
-                const progressFill = document.getElementById('progressFill');
-                if (progressFill) {
-                    progressFill.style.width = pct + '%';
-                    progressFill.textContent = pct + '%';
-                }
-                const winnersList = document.getElementById('winnersList');
-                if (winnersList) {
-                    winnersList.innerHTML = winners.length ? winners.map(w => `
-                        <div class="winner-item">
-                            <span class="medal">⭐</span>
-                            <div>
-                                <div class="name">@${w.username}</div>
-                                <div style="color:var(--text-quaternary);font-size:11px;">${new Date(w.created_at).toLocaleString('ru-RU')}</div>
-                            </div>
-                            <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
-                        </div>
-                    `).join('') : '<p style="color:var(--text-quaternary);text-align:center;">Розыгрышей пока не было</p>';
-                }
-            });
-        }
-    });
-});
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
     document.addEventListener('click', (e) => {
