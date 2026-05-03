@@ -169,44 +169,63 @@
         </div>
     </section>
 
-    <!-- Экран VPN -->
-    <section class="screen" id="screen-vpn">
-        <div class="star-section">
-            <div class="star-container" style="width:120px;height:120px;">
-                <div class="star-glow star-glow--outer" style="width:100px;height:100px;"></div>
-                <div class="star-glow star-glow--inner" style="width:70px;height:70px;"></div>
-                <div class="spark spark--1"></div>
-                <div class="spark spark--2"></div>
-                <div class="spark spark--3"></div>
-                <div class="spark spark--4"></div>
-                <div class="spark spark--5"></div>
-                <span style="font-size:64px;position:relative;z-index:10;">🔒</span>
-            </div>
+<!-- Экран VPN -->
+<section class="screen" id="screen-vpn">
+    <div class="star-section">
+        <div class="star-container" style="width:120px;height:120px;">
+            <div class="star-glow star-glow--outer" style="width:100px;height:100px;"></div>
+            <div class="star-glow star-glow--inner" style="width:70px;height:70px;"></div>
+            <div class="spark spark--1"></div>
+            <div class="spark spark--2"></div>
+            <div class="spark spark--3"></div>
+            <div class="spark spark--4"></div>
+            <div class="spark spark--5"></div>
+            <span style="font-size:64px;position:relative;z-index:10;">🔒</span>
         </div>
-        <div class="text-section">
-            <h2 class="text-section__title">VPN Доступ</h2>
-            <p class="text-section__subtitle">Быстрый и безопасный VPN</p>
-        </div>
+    </div>
+    <div class="text-section">
+        <h2 class="text-section__title">VPN Доступ</h2>
+        <p class="text-section__subtitle">Быстрый и безопасный VPN</p>
+    </div>
 
+    <!-- Тариф Стандарт -->
+    <div class="card" style="text-align:center;">
+        <p style="color:var(--text-secondary); font-size:14px;">Тариф "Стандарт"</p>
+        <p style="font-size:36px; font-weight:800; color:#A855F7;">100 ₽</p>
+        <p style="color:var(--text-quaternary); font-size:12px;">/ месяц</p>
+        <p style="color:var(--text-tertiary); font-size:13px; margin-top:8px;">
+            • Безлимитный трафик<br>
+            • Все устройства<br>
+            • Стандартная скорость
+        </p>
+        <button class="button vpn-buy-btn" data-price="100" style="margin-top:12px;">
+            🔒 Купить Стандарт
+        </button>
+    </div>
+
+    <!-- Тариф Быстрый -->
+    <div class="card" style="text-align:center;">
+        <p style="color:var(--text-secondary); font-size:14px;">Тариф "Быстрый" ⚡</p>
+        <p style="font-size:36px; font-weight:800; color:#A855F7;">200 ₽</p>
+        <p style="color:var(--text-quaternary); font-size:12px;">/ месяц</p>
+        <p style="color:var(--text-tertiary); font-size:13px; margin-top:8px;">
+            • Безлимитный трафик<br>
+            • Все устройства<br>
+            • Повышенная скорость
+        </p>
+        <button class="button vpn-buy-btn" data-price="200" style="margin-top:12px;">
+            ⚡ Купить Быстрый
+        </button>
+    </div>
+
+    <div id="vpnResult" style="display:none;">
         <div class="card" style="text-align:center;">
-            <p style="color:var(--text-secondary); font-size:14px;">Тариф "Стандарт"</p>
-            <p style="font-size:36px; font-weight:800; color:#A855F7;">100 ₽</p>
-            <p style="color:var(--text-quaternary); font-size:12px;">/ месяц</p>
-            <p style="color:var(--text-tertiary); font-size:13px; margin-top:8px;">
-                • Безлимитный трафик<br>
-                • Все устройства<br>
-                • Высокая скорость
-            </p>
-            <button class="button" id="buyVpnBtn" style="margin-top:12px;">
-                🔒 Купить VPN
-            </button>
-            <div id="vpnResult" style="margin-top:12px; display:none;">
-                <p style="color:var(--text-secondary); font-size:13px;">Твоя ссылка для подключения:</p>
-                <div id="vpnLink" style="background:var(--bg-tertiary); border-radius:10px; padding:10px; margin-top:8px; word-break:break-all; font-size:12px; color:white;"></div>
-                <button class="button" id="copyVpnBtn" style="margin-top:8px; background:#2a2a2e; box-shadow:none;">📋 Скопировать</button>
-            </div>
+            <p style="color:var(--text-secondary); font-size:13px;">Твоя ссылка для подключения:</p>
+            <div id="vpnLink" style="background:var(--bg-tertiary); border-radius:10px; padding:10px; margin-top:8px; word-break:break-all; font-size:12px; color:white;"></div>
+            <button class="button" id="copyVpnBtn" style="margin-top:8px; background:#2a2a2e; box-shadow:none;">📋 Скопировать</button>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- FOOTER LINKS -->
     <div class="footer-links">
