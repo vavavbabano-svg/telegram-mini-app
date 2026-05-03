@@ -11,7 +11,7 @@
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
-    const VPN_API = 'https://194.87.134.111:8443';
+    const VPN_API = 'https://194.87.134.111:8080';
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
@@ -259,6 +259,7 @@
     };
 
 // ===== VPN =====
+const VPN_API = 'http://194.87.134.111:8080';
 const vpnResult = document.getElementById('vpnResult');
 const vpnLink = document.getElementById('vpnLink');
 const copyVpnBtn = document.getElementById('copyVpnBtn');
@@ -305,12 +306,12 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                         if (data.success && data.confirmation_url) {
                             this.outerHTML = `<a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;flex:1;text-align:center;">💳 Оплатить</a>`;
                         } else {
-                            alert('Ошибка');
+                            alert('Ошибка создания платежа');
                             this.textContent = '💳 Оплатить';
                             this.disabled = false;
                         }
                     } catch(e) {
-                        alert('Ошибка');
+                        alert('Ошибка соединения');
                         this.textContent = '💳 Оплатить';
                         this.disabled = false;
                     }
@@ -337,8 +338,16 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                             vpnLink.textContent = vpnData.link;
                             vpnResult.style.display = 'block';
                             getBtn.style.display = 'none';
+                        } else {
+                            alert('Ошибка создания ключа: ' + (vpnData.error || 'неизвестно'));
+                            getBtn.textContent = '🔒 Ключ';
+                            getBtn.disabled = false;
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        alert('Сервер недоступен. Попробуйте позже.');
+                        getBtn.textContent = '🔒 Ключ';
+                        getBtn.disabled = false;
+                    }
                 });
             }
         }, 15000);
