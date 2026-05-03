@@ -362,42 +362,42 @@ if (copyVpnBtn) {
     });
 }
 
-    // ===== НИЖНЕЕ МЕНЮ =====
-    document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
-            btn.classList.add('bottom-nav__btn--active');
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(btn.dataset.screen).classList.add('active');
-            
-            if (btn.dataset.screen === 'screen-ref') updateRefUI();
-            if (btn.dataset.screen === 'screen-raffle') {
-                loadRaffle().then(({ progress, winners }) => {
-                    const totalStars = progress?.total_stars || 0;
-                    document.getElementById('raffleProgress').textContent = totalStars;
-                    const pct = Math.min(100, Math.round((totalStars / 10000) * 100));
-                    const progressFill = document.getElementById('progressFill');
-                    if (progressFill) {
-                        progressFill.style.width = pct + '%';
-                        progressFill.textContent = pct + '%';
-                    }
-                    const winnersList = document.getElementById('winnersList');
-                    if (winnersList) {
-                        winnersList.innerHTML = winners.length ? winners.map(w => `
-                            <div class="winner-item">
-                                <span class="medal">⭐</span>
-                                <div>
-                                    <div class="name">@${w.username}</div>
-                                    <div style="color:var(--text-quaternary);font-size:11px;">${new Date(w.created_at).toLocaleString('ru-RU')}</div>
-                                </div>
-                                <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
+// ===== НИЖНЕЕ МЕНЮ =====
+document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
+        btn.classList.add('bottom-nav__btn--active');
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(btn.dataset.screen).classList.add('active');
+        
+        if (btn.dataset.screen === 'screen-ref') updateRefUI();
+        if (btn.dataset.screen === 'screen-raffle') {
+            loadRaffle().then(({ progress, winners }) => {
+                const totalStars = progress?.total_stars || 0;
+                document.getElementById('raffleProgress').textContent = totalStars;
+                const pct = Math.min(100, Math.round((totalStars / 10000) * 100));
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) {
+                    progressFill.style.width = pct + '%';
+                    progressFill.textContent = pct + '%';
+                }
+                const winnersList = document.getElementById('winnersList');
+                if (winnersList) {
+                    winnersList.innerHTML = winners.length ? winners.map(w => `
+                        <div class="winner-item">
+                            <span class="medal">⭐</span>
+                            <div>
+                                <div class="name">@${w.username}</div>
+                                <div style="color:var(--text-quaternary);font-size:11px;">${new Date(w.created_at).toLocaleString('ru-RU')}</div>
                             </div>
-                        `).join('') : '<p style="color:var(--text-quaternary);text-align:center;">Розыгрышей пока не было</p>';
-                    }
-                });
-            }
-        });
+                            <span class="prize" style="margin-left:auto;">+${w.prize}⭐</span>
+                        </div>
+                    `).join('') : '<p style="color:var(--text-quaternary);text-align:center;">Розыгрышей пока не было</p>';
+                }
+            });
+        }
     });
+});
 
     usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') purchaseBtn.click(); });
     document.addEventListener('click', (e) => {
