@@ -263,82 +263,84 @@
     const vpnLink = document.getElementById('vpnLink');
     const copyVpnBtn = document.getElementById('copyVpnBtn');
 
-    document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const price = parseInt(this.dataset.price);
-            const tariffName = price === 200 ? 'Быстрый' : 'Стандарт';
+document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const price = parseInt(this.dataset.price);
+        const tariffName = price === 200 ? 'Быстрый' : 'Стандарт';
+        
+        if (!confirm(`Купить тариф "${tariffName}" за ${price} ₽?`)) return;
+        
+        this.textContent = '⏳ Создание платежа...';
+        this.disabled = true;
+        
+        try {
+            const res = await fetch(`${LAVA_API}/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    amount: price, 
+                    description: `Подписка ${tariffName} на 1 месяц`,
+                    orderId: `vpn_${Date.now()}`,
+                    username: 'VPN',
+                    stars: 0 
+                })
+            });
+            const data = await res.json();
             
-            this.textContent = '⏳ Создание платежа...';
-            this.disabled = true;
-            
-            try {
-                const res = await fetch(`${LAVA_API}/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        amount: price, 
-                        description: `Подписка ${tariffName} на 1 месяц`,
-                        orderId: `vpn_${Date.now()}`,
-                        username: 'VPN',
-                        stars: 0 
-                    })
-                });
-                const data = await res.json();
+            if (data.success && data.confirmation_url) {
+                this.outerHTML = `
+                    <a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                        💳 Оплатить (${price} ₽)
+                    </a>
+                    <button class="button" id="getVpnBtn" disabled style="opacity:0.5;">
+                        Получить ключ
+                    </button>
+                `;
                 
-                if (data.success && data.confirmation_url) {
-                    this.outerHTML = `
-                        <a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
-                            💳 Оплатить (${price} ₽)
-                        </a>
-                        <button class="button" id="getVpnBtn" disabled style="opacity:0.5;">
-                            Получить ключ
-                        </button>
-                    `;
-                    
-                    setTimeout(() => {
-                        const getBtn = document.getElementById('getVpnBtn');
-                        if (getBtn) {
-                            getBtn.disabled = false;
-                            getBtn.style.opacity = '1';
+                setTimeout(() => {
+                    const getBtn = document.getElementById('getVpnBtn');
+                    if (getBtn) {
+                        getBtn.disabled = false;
+                        getBtn.style.opacity = '1';
+                        
+                        getBtn.addEventListener('click', async () => {
+                            getBtn.textContent = '⏳ Создаём ключ...';
+                            getBtn.disabled = true;
                             
-                            getBtn.addEventListener('click', async () => {
-                                getBtn.textContent = '⏳ Создаём ключ...';
-                                getBtn.disabled = true;
+                            try {
+                                const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
+                                const vpnData = await vpnRes.json();
                                 
-                                try {
-                                    const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
-                                    const vpnData = await vpnRes.json();
-                                    
-                                    if (vpnData.success && vpnData.link) {
-                                        vpnLink.textContent = vpnData.link;
-                                        vpnResult.style.display = 'block';
-                                        getBtn.style.display = 'none';
-                                    } else {
-                                        alert('Ошибка создания ключа');
-                                        getBtn.textContent = 'Получить ключ';
-                                        getBtn.disabled = false;
-                                    }
-                                } catch(e) {
-                                    alert('Сервер недоступен');
+                                if (vpnData.success && vpnData.link) {
+                                    vpnLink.textContent = vpnData.link;
+                                    vpnResult.style.display = 'block';
+                                    getBtn.style.display = 'none';
+                                } else {
+                                    alert('Ошибка создания ключа');
                                     getBtn.textContent = 'Получить ключ';
                                     getBtn.disabled = false;
                                 }
-                            });
-                        }
-                    }, 15000);
-                    
-                } else {
-                    alert('Ошибка создания платежа');
-                    this.textContent = price === 200 ? '⚡ Купить Быстрый' : '🔒 Купить Стандарт';
-                    this.disabled = false;
-                }
-            } catch(e) {
-                alert('Ошибка соединения');
+                            } catch(e) {
+                                alert('Сервер недоступен');
+                                getBtn.textContent = 'Получить ключ';
+                                getBtn.disabled = false;
+                            }
+                        });
+                    }
+                }, 15000);
+                
+            } else {
+                alert('Ошибка создания платежа');
                 this.textContent = price === 200 ? '⚡ Купить Быстрый' : '🔒 Купить Стандарт';
                 this.disabled = false;
             }
-        });
+        } catch(e) {
+            alert('Ошибка соединения');
+            this.textContent = price === 200 ? '⚡ Купить Быстрый' : '🔒 Купить Стандарт';
+            this.disabled = false;
+        }
     });
+});
 
     if (copyVpnBtn) {
         copyVpnBtn.addEventListener('click', () => {
