@@ -11,6 +11,7 @@
     const SUPABASE_URL = 'https://naxxslgxyelefzdxjhze.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cU_zUkI5f_qltx0KQIe6xw_k4JLk-IF';
     const LAVA_API = 'https://lava-api.vavavbabano.workers.dev';
+    const VPN_API = 'http://194.87.134.111:3000';
 
     // ===== РЕФЕРАЛЬНАЯ СИСТЕМА =====
     let MY_ID = localStorage.getItem('myStars_uid');
@@ -84,44 +85,42 @@
     }
 
     const withdrawBtn = document.getElementById('withdrawBtn');
-if (withdrawBtn) {
-    withdrawBtn.addEventListener('click', async () => {
-        let balance = 0;
-        try {
-            const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
-            const data = await res.json();
-            balance = data.balance || 0;
-        } catch(e) {}
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', async () => {
+            let balance = 0;
+            try {
+                const res = await fetch(`${LAVA_API}/referral?userId=${MY_ID}`);
+                const data = await res.json();
+                balance = data.balance || 0;
+            } catch(e) {}
 
-        if (balance < 50) {
-            alert('Минимум для вывода: 50 звёзд');
-            return;
-        }
+            if (balance < 50) {
+                alert('Минимум для вывода: 50 звёзд');
+                return;
+            }
 
-        // Запрашиваем username у пользователя
-        const userUsername = prompt('Введите ваш @username для связи:', localStorage.getItem('myStars_username') || '');
-        if (!userUsername || userUsername.trim() === '') {
-            alert('Необходимо указать username');
-            return;
-        }
+            const userUsername = prompt('Введите ваш @username для связи:', localStorage.getItem('myStars_username') || '');
+            if (!userUsername || userUsername.trim() === '') {
+                alert('Необходимо указать username');
+                return;
+            }
 
-        // Сохраняем для будущих заявок
-        localStorage.setItem('myStars_username', userUsername.replace('@', ''));
+            localStorage.setItem('myStars_username', userUsername.replace('@', ''));
 
-        if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
-            fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    chat_id: '1444520038', 
-                    text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: @${userUsername.replace('@', '')}\n⭐ Сумма: ${balance} звёзд` 
-                })
-            }).then(() => alert('✅ Заявка отправлена!'));
-        }
-    });
-}
+            if (confirm(`Вывести ${balance} звёзд? Заявка отправится администратору.`)) {
+                fetch('https://api.telegram.org/bot8654809780:AAHm6nBkZYWQCDlZ1TbGiEBOCks_zpOF5bE/sendMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        chat_id: '1444520038', 
+                        text: `📤 Заявка на вывод\n👤 ID: ${MY_ID}\n📱 Username: @${userUsername.replace('@', '')}\n⭐ Сумма: ${balance} звёзд` 
+                    })
+                }).then(() => alert('✅ Заявка отправлена!'));
+            }
+        });
+    }
 
-    // ===== ПОКУПКА =====
+    // ===== ПОКУПКА ЗВЁЗД =====
     const usernameInput = document.getElementById('username');
     const starCountInput = document.getElementById('star-count');
     const summaryQty = document.getElementById('summaryQty');
@@ -259,6 +258,85 @@ if (withdrawBtn) {
         }
     };
 
+    // ===== VPN =====
+    const buyVpnBtn = document.getElementById('buyVpnBtn');
+    const vpnResult = document.getElementById('vpnResult');
+    const vpnLink = document.getElementById('vpnLink');
+    const copyVpnBtn = document.getElementById('copyVpnBtn');
+
+    if (buyVpnBtn) {
+        buyVpnBtn.addEventListener('click', async () => {
+            buyVpnBtn.textContent = '⏳ Создание платежа...';
+            buyVpnBtn.disabled = true;
+            
+            try {
+                const res = await fetch(`${LAVA_API}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        amount: 100, 
+                        description: 'VPN доступ на 1 месяц', 
+                        orderId: `vpn_${Date.now()}`,
+                        username: 'VPN',
+                        stars: 0 
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success && data.confirmation_url) {
+                    buyVpnBtn.outerHTML = `
+                        <a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">
+                            💳 Перейти к оплате (100 ₽)
+                        </a>
+                    `;
+                    
+                    // Кнопка "Получить VPN" после оплаты
+                    setTimeout(() => {
+                        const getVpnBtn = document.createElement('button');
+                        getVpnBtn.className = 'button';
+                        getVpnBtn.textContent = '🔒 Получить VPN';
+                        getVpnBtn.style.marginTop = '12px';
+                        getVpnBtn.onclick = async () => {
+                            getVpnBtn.textContent = '⏳ Создаём ключ...';
+                            getVpnBtn.disabled = true;
+                            try {
+                                const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
+                                const vpnData = await vpnRes.json();
+                                if (vpnData.success && vpnData.link) {
+                                    vpnLink.textContent = vpnData.link;
+                                    vpnResult.style.display = 'block';
+                                    getVpnBtn.style.display = 'none';
+                                }
+                            } catch(e) {
+                                alert('Ошибка создания ключа');
+                                getVpnBtn.textContent = '🔒 Получить VPN';
+                                getVpnBtn.disabled = false;
+                            }
+                        };
+                        document.getElementById('screen-vpn').querySelector('.card').appendChild(getVpnBtn);
+                    }, 500);
+                } else {
+                    alert('Ошибка создания платежа');
+                    buyVpnBtn.textContent = '🔒 Купить VPN';
+                    buyVpnBtn.disabled = false;
+                }
+            } catch(e) {
+                alert('Ошибка соединения');
+                buyVpnBtn.textContent = '🔒 Купить VPN';
+                buyVpnBtn.disabled = false;
+            }
+        });
+    }
+
+    if (copyVpnBtn) {
+        copyVpnBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(vpnLink.textContent).then(() => {
+                alert('✅ Ссылка скопирована! Вставьте её в HAPP VPN');
+            });
+        });
+    }
+
+    // ===== НИЖНЕЕ МЕНЮ =====
     document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.bottom-nav__btn').forEach(b => b.classList.remove('bottom-nav__btn--active'));
