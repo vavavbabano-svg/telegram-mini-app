@@ -259,6 +259,7 @@
     };
 
 // ===== VPN =====
+const VPN_API = 'https://194.87.134.111:8443';
 const vpnResult = document.getElementById('vpnResult');
 const vpnLink = document.getElementById('vpnLink');
 const copyVpnBtn = document.getElementById('copyVpnBtn');
@@ -277,7 +278,7 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     amount: price, 
-                    description: `VPN ${tariffName} на 1 месяц`,
+                    description: `Подписка ${tariffName} на 1 месяц`,
                     orderId: `vpn_${Date.now()}`,
                     username: 'VPN',
                     stars: 0 
@@ -291,18 +292,14 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                         💳 Оплатить (${price} ₽)
                     </a>
                     <button class="button" id="getVpnBtn" disabled style="opacity:0.5;">
-                        ⏳ Получить ключ (проверка оплаты...)
+                        Получить ключ
                     </button>
                 `;
                 
-                let secondsLeft = 5;
-                const getBtn = document.getElementById('getVpnBtn');
-                
-                const countdown = setInterval(() => {
-                    secondsLeft--;
-                    if (secondsLeft <= 0) {
-                        clearInterval(countdown);
-                        getBtn.textContent = '🔒 Получить ключ';
+                // Таймер 15 секунд (невидимый)
+                setTimeout(() => {
+                    const getBtn = document.getElementById('getVpnBtn');
+                    if (getBtn) {
                         getBtn.disabled = false;
                         getBtn.style.opacity = '1';
                         
@@ -311,7 +308,7 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                             getBtn.disabled = true;
                             
                             try {
-                                const vpnRes = await fetch('http://194.87.134.111:3000/create-key', { method: 'POST' });
+                                const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
                                 const vpnData = await vpnRes.json();
                                 
                                 if (vpnData.success && vpnData.link) {
@@ -320,19 +317,17 @@ document.querySelectorAll('.vpn-buy-btn').forEach(btn => {
                                     getBtn.style.display = 'none';
                                 } else {
                                     alert('Ошибка создания ключа');
-                                    getBtn.textContent = '🔒 Получить ключ';
+                                    getBtn.textContent = 'Получить ключ';
                                     getBtn.disabled = false;
                                 }
                             } catch(e) {
                                 alert('Сервер недоступен');
-                                getBtn.textContent = '🔒 Получить ключ';
+                                getBtn.textContent = 'Получить ключ';
                                 getBtn.disabled = false;
                             }
                         });
-                    } else {
-                        getBtn.textContent = `⏳ Получить ключ (ещё ${secondsLeft}с...)`;
                     }
-                }, 1000);
+                }, 15000);
                 
             } else {
                 alert('Ошибка создания платежа');
