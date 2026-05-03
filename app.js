@@ -258,113 +258,103 @@
         }
     };
 
-// ===== VPN =====
-const buyVpnBtn = document.getElementById('buyVpnBtn');
-const vpnResult = document.getElementById('vpnResult');
-const vpnLink = document.getElementById('vpnLink');
-const copyVpnBtn = document.getElementById('copyVpnBtn');
+    // ===== VPN =====
+    const buyVpnBtn = document.getElementById('buyVpnBtn');
+    const vpnResult = document.getElementById('vpnResult');
+    const vpnLink = document.getElementById('vpnLink');
+    const copyVpnBtn = document.getElementById('copyVpnBtn');
+    let vpnOrderId = null;
 
-let vpnOrderId = null;
-
-if (buyVpnBtn) {
-    buyVpnBtn.addEventListener('click', async () => {
-        buyVpnBtn.textContent = '⏳ Создание платежа...';
-        buyVpnBtn.disabled = true;
-        
-        try {
-            vpnOrderId = `vpn_${Date.now()}`;
-            const res = await fetch(`${LAVA_API}/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    amount: 2, 
-                    description: 'Подписка на 1 месяц',
-                    orderId: vpnOrderId,
-                    username: 'VPN',
-                    stars: 0 
-                })
-            });
-            const data = await res.json();
+    if (buyVpnBtn) {
+        buyVpnBtn.addEventListener('click', async () => {
+            buyVpnBtn.textContent = '⏳ Создание платежа...';
+            buyVpnBtn.disabled = true;
             
-            if (data.success && data.confirmation_url) {
-                buyVpnBtn.outerHTML = `
-                    <a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">
-                        💳 Перейти к оплате (2 ₽)
-                    </a>
-                    <button class="button" id="getVpnBtn" style="margin-top:12px; background:#2a2a2e; box-shadow:none;">
-                        🔒 Получить VPN
-                    </button>
-                    <p style="color:var(--text-quaternary);font-size:12px;text-align:center;margin-top:6px;">Нажмите после оплаты</p>
-                `;
+            try {
+                vpnOrderId = `vpn_${Date.now()}`;
+                const res = await fetch(`${LAVA_API}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        amount: 2, 
+                        description: 'Подписка на 1 месяц',
+                        orderId: vpnOrderId,
+                        username: 'VPN',
+                        stars: 0 
+                    })
+                });
+                const data = await res.json();
                 
-                // Кнопка "Получить VPN"
-                setTimeout(() => {
-                    const getBtn = document.getElementById('getVpnBtn');
-                    if (getBtn) {
-                        getBtn.addEventListener('click', async () => {
-                            getBtn.textContent = '⏳ Проверка оплаты...';
-                            getBtn.disabled = true;
-                            
-                            try {
-                                const statusRes = await fetch(`${LAVA_API}/status?orderId=${vpnOrderId}`);
-                                const statusData = await statusRes.json();
+                if (data.success && data.confirmation_url) {
+                    buyVpnBtn.outerHTML = `
+                        <a href="${data.confirmation_url}" target="_blank" class="button" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">
+                            💳 Перейти к оплате (2 ₽)
+                        </a>
+                        <button class="button" id="getVpnBtn" style="margin-top:12px; background:#2a2a2e; box-shadow:none;">
+                            🔒 Получить VPN
+                        </button>
+                        <p style="color:var(--text-quaternary);font-size:12px;text-align:center;margin-top:6px;">Нажмите после оплаты</p>
+                    `;
+                    
+                    setTimeout(() => {
+                        const getBtn = document.getElementById('getVpnBtn');
+                        if (getBtn) {
+                            getBtn.addEventListener('click', async () => {
+                                getBtn.textContent = '⏳ Проверка оплаты...';
+                                getBtn.disabled = true;
                                 
-                                if (statusData.data?.invoice_status === 'paid') {
-                                    getBtn.textContent = '⏳ Создаём ключ...';
-                                    const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
-                                    const vpnData = await vpnRes.json();
+                                try {
+                                    const statusRes = await fetch(`${LAVA_API}/status?orderId=${vpnOrderId}`);
+                                    const statusData = await statusRes.json();
                                     
-                                    if (vpnData.success && vpnData.link) {
-                                        vpnLink.textContent = vpnData.link;
-                                        vpnResult.style.display = 'block';
-                                        getBtn.style.display = 'none';
+                                    if (statusData.status_check === true) {
+                                        getBtn.textContent = '⏳ Создаём ключ...';
+                                        const vpnRes = await fetch(`${VPN_API}/create-key`, { method: 'POST' });
+                                        const vpnData = await vpnRes.json();
+                                        
+                                        if (vpnData.success && vpnData.link) {
+                                            vpnLink.textContent = vpnData.link;
+                                            vpnResult.style.display = 'block';
+                                            getBtn.style.display = 'none';
+                                        } else {
+                                            alert('Ошибка создания ключа');
+                                            getBtn.textContent = '🔒 Получить VPN';
+                                            getBtn.disabled = false;
+                                        }
                                     } else {
-                                        alert('Ошибка создания ключа');
+                                        alert('❌ Платёж не найден. Оплатите и попробуйте снова.');
                                         getBtn.textContent = '🔒 Получить VPN';
                                         getBtn.disabled = false;
                                     }
-                                } else {
-                                    alert('❌ Платёж не найден. Оплатите и попробуйте снова.');
+                                } catch(e) {
+                                    alert('Ошибка проверки оплаты');
                                     getBtn.textContent = '🔒 Получить VPN';
                                     getBtn.disabled = false;
                                 }
-                            } catch(e) {
-                                alert('Ошибка проверки оплаты');
-                                getBtn.textContent = '🔒 Получить VPN';
-                                getBtn.disabled = false;
-                            }
-                        });
-                    }
-                }, 500);
-                
-            } else {
-                alert('Ошибка создания платежа');
+                            });
+                        }
+                    }, 500);
+                    
+                } else {
+                    alert('Ошибка создания платежа');
+                    buyVpnBtn.textContent = '🔒 Купить VPN';
+                    buyVpnBtn.disabled = false;
+                }
+            } catch(e) {
+                alert('Ошибка соединения');
                 buyVpnBtn.textContent = '🔒 Купить VPN';
                 buyVpnBtn.disabled = false;
             }
-        } catch(e) {
-            alert('Ошибка соединения');
-            buyVpnBtn.textContent = '🔒 Купить VPN';
-            buyVpnBtn.disabled = false;
-        }
-    });
-}
-
-if (copyVpnBtn) {
-    copyVpnBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(vpnLink.textContent).then(() => {
-            alert('✅ Ссылка скопирована! Вставьте её в HAPP VPN');
         });
-    });
-}
+    }
 
-if (copyVpnBtn) {
-    copyVpnBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(vpnLink.textContent).then(() => {
-            alert('✅ Ссылка скопирована! Вставьте её в HAPP VPN');
+    if (copyVpnBtn) {
+        copyVpnBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(vpnLink.textContent).then(() => {
+                alert('✅ Ссылка скопирована! Вставьте её в HAPP VPN');
+            });
         });
-    });
-}
+    }
 
     // ===== НИЖНЕЕ МЕНЮ =====
     document.querySelectorAll('.bottom-nav__btn').forEach(btn => {
