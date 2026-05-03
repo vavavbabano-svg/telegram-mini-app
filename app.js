@@ -278,7 +278,7 @@ if (buyVpnBtn) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     amount: 2, 
-                    description: 'VPN доступ на 1 месяц', 
+                    description: 'Подписка на 1 месяц',
                     orderId: vpnOrderId,
                     username: 'VPN',
                     stars: 0 
